@@ -19,20 +19,30 @@ interface Category {
   icon: string
 }
 
+interface FriendCheckin {
+  locationId: string
+  userId: string
+  username: string
+  color: string
+}
+
 interface Props {
   locations: Location[]
   categories: Category[]
   userCheckinLocationIds: string[]
+  friendCheckins: FriendCheckin[]
   isLoggedIn: boolean
 }
 
-export function MapView({ locations, categories, userCheckinLocationIds, isLoggedIn }: Props) {
+export function MapView({ locations, categories, userCheckinLocationIds, friendCheckins, isLoggedIn }: Props) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
+  const friendLayerRef = useRef<any[]>([])
   const checkedSet = new Set(userCheckinLocationIds)
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     new Set(categories.map(c => c.id))
   )
+  const [friendModeOn, setFriendModeOn] = useState(false)
 
   function toggleCategory(id: string) {
     setActiveCategories(prev => {
@@ -51,7 +61,6 @@ export function MapView({ locations, categories, userCheckinLocationIds, isLogge
       await import('leaflet.markercluster/dist/MarkerCluster.css')
       await import('leaflet.markercluster/dist/MarkerCluster.Default.css')
       await import('leaflet.markercluster')
-      // leaflet.markercluster extends L in-place
       const MarkerClusterGroup = (L as any).MarkerClusterGroup
 
       const map = L.map(mapRef.current!, {
@@ -108,6 +117,50 @@ export function MapView({ locations, categories, userCheckinLocationIds, isLogge
     initMap()
   }, [])
 
+  // Toggle friend layer
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map) return
+
+    const doToggle = async () => {
+      const L = (await import('leaflet')).default
+
+      // Remove existing friend markers
+      friendLayerRef.current.forEach(m => map.removeLayer(m))
+      friendLayerRef.current = []
+
+      if (!friendModeOn || friendCheckins.length === 0) return
+
+      const friendCheckinMap: Record<string, { color: string; names: string[] }> = {}
+      friendCheckins.forEach(fc => {
+        if (!friendCheckinMap[fc.locationId]) {
+          friendCheckinMap[fc.locationId] = { color: fc.color, names: [] }
+        }
+        friendCheckinMap[fc.locationId].names.push(fc.username)
+      })
+
+      Object.entries(friendCheckinMap).forEach(([locId, info]) => {
+        const loc = locations.find(l => l.id === locId)
+        if (!loc) return
+        const friendIcon = L.divIcon({
+          html: `<div style="width:14px;height:14px;border-radius:50%;background:${info.color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.3)"></div>`,
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+          className: '',
+        })
+        const marker = L.marker([loc.lat, loc.lng], { icon: friendIcon })
+          .bindPopup(
+            `<div style="padding:8px 12px"><strong>${loc.name}</strong><br/><span style="font-size:11px;color:#666">${info.names.join(', ')} が訪問</span></div>`,
+            { closeButton: false }
+          )
+          .addTo(map)
+        friendLayerRef.current.push(marker)
+      })
+    }
+
+    doToggle()
+  }, [friendModeOn, friendCheckins, locations])
+
   return (
     <div className="relative w-full h-screen">
       <div ref={mapRef} className="w-full h-full" />
@@ -116,6 +169,16 @@ export function MapView({ locations, categories, userCheckinLocationIds, isLogge
         activeIds={activeCategories}
         onToggle={toggleCategory}
       />
+      {friendCheckins.length > 0 && (
+        <button
+          onClick={() => setFriendModeOn(v => !v)}
+          className={`absolute top-4 right-4 z-[500] px-3 py-2 rounded-xl text-sm font-medium shadow transition-colors ${
+            friendModeOn ? 'bg-purple-600 text-white' : 'bg-white/90 text-gray-600'
+          }`}
+        >
+          👥 フレンド
+        </button>
+      )}
       {!isLoggedIn && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[500] bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow text-sm text-gray-600">
           打卡するには{' '}
