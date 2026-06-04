@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { LeaderboardTable } from './LeaderboardTable'
+import { useDictionary } from '@/lib/i18n/context'
 
 interface Entry {
   rank: number
@@ -28,11 +29,12 @@ type ScopeTab = 'global' | 'friends'
 export function LeaderboardTabs(props: Props) {
   const [metric, setMetric] = useState<MetricTab>('xp')
   const [scope, setScope] = useState<ScopeTab>('global')
+  const dict = useDictionary()
 
   const METRICS: { key: MetricTab; label: string; unit: string }[] = [
     { key: 'xp', label: 'XP', unit: 'XP' },
-    { key: 'checkins', label: '打卡数', unit: '回' },
-    { key: 'badges', label: 'バッジ', unit: '個' },
+    { key: 'checkins', label: dict.leaderboard.checkins, unit: dict.leaderboard.timesUnit },
+    { key: 'badges', label: dict.leaderboard.badges, unit: dict.leaderboard.countUnit },
   ]
 
   const dataMap: Record<ScopeTab, Record<MetricTab, Entry[]>> = {
@@ -45,7 +47,7 @@ export function LeaderboardTabs(props: Props) {
 
   return (
     <div className="max-w-md mx-auto p-4 space-y-4">
-      <h1 className="text-xl font-bold">ランキング</h1>
+      <h1 className="text-xl font-bold">{dict.leaderboard.title}</h1>
 
       <div className="flex gap-2">
         {(['global', 'friends'] as ScopeTab[]).map(s => (
@@ -56,7 +58,7 @@ export function LeaderboardTabs(props: Props) {
               scope === s ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500'
             }`}
           >
-            {s === 'global' ? '🌏 全体' : '👥 フレンド'}
+            {s === 'global' ? dict.leaderboard.global : dict.leaderboard.friendsTab}
           </button>
         ))}
       </div>
@@ -76,9 +78,9 @@ export function LeaderboardTabs(props: Props) {
       </div>
 
       {!props.isLoggedIn && scope === 'friends' ? (
-        <p className="text-center text-gray-400 text-sm py-8">ログインするとフレンドランキングが見られます</p>
+        <p className="text-center text-gray-400 text-sm py-8">{dict.leaderboard.loginForFriends}</p>
       ) : currentData.length === 0 ? (
-        <p className="text-center text-gray-400 text-sm py-8">データがありません</p>
+        <p className="text-center text-gray-400 text-sm py-8">{dict.leaderboard.noData}</p>
       ) : (
         <LeaderboardTable entries={currentData} unit={currentUnit} />
       )}

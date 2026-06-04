@@ -6,9 +6,11 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useDictionary } from '@/lib/i18n/context'
 
 export function RegisterForm() {
   const router = useRouter()
+  const dict = useDictionary()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
@@ -40,7 +42,7 @@ export function RegisterForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="username">ユーザー名</Label>
+        <Label htmlFor="username">{dict.auth.username}</Label>
         <Input
           id="username"
           type="text"
@@ -53,7 +55,7 @@ export function RegisterForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">メールアドレス</Label>
+        <Label htmlFor="email">{dict.auth.email}</Label>
         <Input
           id="email"
           type="email"
@@ -64,7 +66,7 @@ export function RegisterForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">パスワード</Label>
+        <Label htmlFor="password">{dict.auth.password}</Label>
         <Input
           id="password"
           type="password"
@@ -77,7 +79,7 @@ export function RegisterForm() {
       </div>
       {error && <p className="text-sm text-red-500">{error}</p>}
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? '登録中...' : 'アカウント作成'}
+        {loading ? dict.auth.signingUp : dict.auth.createAccount}
       </Button>
     </form>
   )

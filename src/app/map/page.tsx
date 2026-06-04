@@ -9,7 +9,7 @@ export default async function MapPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   const [{ data: locations }, { data: categories }] = await Promise.all([
-    supabase.from('locations').select('*, categories(id, name, color, icon)').eq('is_active', true),
+    supabase.from('locations').select('*, categories(id, name, color, icon, checkin_radius_meters, xp_per_checkin)').eq('is_active', true),
     supabase.from('categories').select('*'),
   ])
 
@@ -24,7 +24,6 @@ export default async function MapPage() {
       .eq('is_first', true) as { data: { location_id: string }[] | null; error: unknown }
     userCheckinLocationIds = checkins?.map(c => c.location_id) ?? []
 
-    // Friend check-ins
     const { data: friendships } = await (supabase as any)
       .from('friendships')
       .select('requester_id, addressee_id')

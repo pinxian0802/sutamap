@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { CategoryFilter } from './CategoryFilter'
+import { CheckinModal } from './CheckinModal'
+import { useDictionary } from '@/lib/i18n/context'
 
 interface Location {
   id: string
@@ -9,7 +11,7 @@ interface Location {
   lat: number
   lng: number
   category_id: string
-  categories: { id: string; name: string; color: string; icon: string }
+  categories: { id: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
 }
 
 interface Category {
@@ -43,6 +45,8 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     new Set(categories.map(c => c.id))
   )
   const [friendModeOn, setFriendModeOn] = useState(false)
+  const [checkinLocationId, setCheckinLocationId] = useState<string | null>(null)
+  const dict = useDictionary()
 
   function toggleCategory(id: string) {
     setActiveCategories(prev => {
@@ -53,7 +57,8 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
   }
 
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return
+    if (!mapRef.current) return
+    let cancelled = false
 
     const initMap = async () => {
       const L = (await import('leaflet')).default
@@ -62,6 +67,8 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
       await import('leaflet.markercluster/dist/MarkerCluster.Default.css')
       await import('leaflet.markercluster')
       const MarkerClusterGroup = (L as any).MarkerClusterGroup
+
+      if (cancelled) return
 
       const map = L.map(mapRef.current!, {
         center: [37.5, 136.5],
@@ -96,15 +103,16 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
           className: '',
         })
 
+        const buttonLabel = isChecked ? dict.map.revisit : dict.map.checkin
         const marker = L.marker([loc.lat, loc.lng], { icon })
         marker.bindPopup(`
           <div style="padding:12px 16px;min-width:160px">
             <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:4px">${loc.categories.name}</div>
             <div style="font-size:15px;font-weight:600;color:#1a1814;margin-bottom:8px">${loc.name}</div>
             <button
-              onclick="window.location.href='/checkin/${loc.id}'"
+              onclick="document.dispatchEvent(new CustomEvent('open-checkin',{detail:{id:'${loc.id}'}}))"
               style="width:100%;padding:6px;background:${color};color:white;border:none;border-radius:8px;font-size:12px;cursor:pointer"
-            >${isChecked ? '再訪する' : '打卡する'}</button>
+            >${buttonLabel}</button>
           </div>
         `, { closeButton: false })
 
@@ -115,9 +123,26 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     }
 
     initMap()
+
+    const handleOpenCheckin = (e: Event) => {
+      const id = (e as CustomEvent).detail?.id
+      if (id) {
+        mapInstanceRef.current?.closePopup()
+        setCheckinLocationId(id)
+      }
+    }
+    document.addEventListener('open-checkin', handleOpenCheckin)
+
+    return () => {
+      cancelled = true
+      document.removeEventListener('open-checkin', handleOpenCheckin)
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove()
+        mapInstanceRef.current = null
+      }
+    }
   }, [])
 
-  // Toggle friend layer
   useEffect(() => {
     const map = mapInstanceRef.current
     if (!map) return
@@ -125,7 +150,6 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     const doToggle = async () => {
       const L = (await import('leaflet')).default
 
-      // Remove existing friend markers
       friendLayerRef.current.forEach(m => map.removeLayer(m))
       friendLayerRef.current = []
 
@@ -150,7 +174,7 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
         })
         const marker = L.marker([loc.lat, loc.lng], { icon: friendIcon })
           .bindPopup(
-            `<div style="padding:8px 12px"><strong>${loc.name}</strong><br/><span style="font-size:11px;color:#666">${info.names.join(', ')} が訪問</span></div>`,
+            `<div style="padding:8px 12px"><strong>${loc.name}</strong><br/><span style="font-size:11px;color:#666">${info.names.join(', ')} ${dict.map.visited}</span></div>`,
             { closeButton: false }
           )
           .addTo(map)
@@ -176,16 +200,39 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
             friendModeOn ? 'bg-purple-600 text-white' : 'bg-white/90 text-gray-600'
           }`}
         >
-          👥 フレンド
+          {dict.map.friends}
         </button>
       )}
       {!isLoggedIn && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[500] bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow text-sm text-gray-600">
-          打卡するには{' '}
-          <a href="/auth/login" className="text-blue-600 font-medium underline">ログイン</a>
-          {' '}が必要です
+          {dict.map.loginRequired}{' '}
+          <a href="/auth/login" className="text-blue-600 font-medium underline">{dict.map.loginLink}</a>
+          {dict.map.loginSuffix ? ` ${dict.map.loginSuffix}` : ''}
         </div>
       )}
+      {checkinLocationId && (() => {
+        const loc = locations.find(l => l.id === checkinLocationId)
+        if (!loc) return null
+        return (
+          <CheckinModal
+            location={{
+              id: loc.id,
+              name: loc.name,
+              lat: loc.lat,
+              lng: loc.lng,
+              categories: {
+                name: loc.categories.name,
+                color: loc.categories.color,
+                checkin_radius_meters: loc.categories.checkin_radius_meters,
+                xp_per_checkin: loc.categories.xp_per_checkin,
+              },
+            }}
+            isLoggedIn={isLoggedIn}
+            alreadyCheckedIn={checkedSet.has(checkinLocationId)}
+            onClose={() => setCheckinLocationId(null)}
+          />
+        )
+      })()}
     </div>
   )
 }

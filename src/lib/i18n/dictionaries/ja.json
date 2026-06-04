@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "title": "sutamap",
+    "description": "日本各地を巡るスタンプラリーゲーム"
+  },
+  "nav": {
+    "map": "地図",
+    "categories": "テーマ",
+    "leaderboard": "ランキング",
+    "friends": "フレンド",
+    "profile": "プロフィール"
+  },
+  "auth": {
+    "login": "ログイン",
+    "loginTitle": "ログイン",
+    "loginSubtitle": "sutamap へようこそ",
+    "loggingIn": "ログイン中...",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "noAccount": "アカウントをお持ちでない方は",
+    "signUp": "新規登録",
+    "signUpTitle": "新規登録",
+    "signUpSubtitle": "アカウントを作成してスタンプラリーを始めよう",
+    "username": "ユーザー名",
+    "signingUp": "登録中...",
+    "createAccount": "アカウント作成",
+    "hasAccount": "すでにアカウントをお持ちの方は"
+  },
+  "map": {
+    "revisit": "再訪する",
+    "checkin": "打卡する",
+    "friends": "👥 フレンド",
+    "loginRequired": "打卡するには",
+    "loginLink": "ログイン",
+    "loginSuffix": "が必要です",
+    "visited": "が訪問",
+    "category": "テーマ"
+  },
+  "checkin": {
+    "gpsError": "位置情報の取得に失敗しました。写真にGPS情報がある写真を使ってください。",
+    "tooFar": "距離が遠すぎます（{dist}m / 許容{radius}m）",
+    "uploadFailed": "写真のアップロードに失敗しました",
+    "failed": "チェックイン失敗",
+    "loginRequired": "打卡するにはログインが必要です",
+    "complete": "チェックイン完了！",
+    "xpEarned": "+{xp} XP 獲得！",
+    "titleEarned": "🎉 称号獲得！",
+    "badgeEarned": "🏅 バッジ獲得！",
+    "backToMap": "地図に戻る",
+    "tryAgain": "もう一度試す",
+    "alreadyVisited": "✅ 訪問済み（再訪記録として保存されます・XPは加算されません）",
+    "checkingIn": "チェックイン中...",
+    "submit": "チェックイン"
+  },
+  "photo": {
+    "processFailed": "写真の処理に失敗しました",
+    "select": "写真を選択",
+    "processing": "処理中...",
+    "change": "写真を変更"
+  },
+  "categories": {
+    "title": "テーマ一覧",
+    "complete": "完了！",
+    "spots": "箇所",
+    "xpPerSpot": "XP/箇所",
+    "friendsWorking": "フレンドも挑戦中"
+  },
+  "friends": {
+    "title": "フレンド",
+    "add": "+ 追加",
+    "requests": "フレンド申請",
+    "noFriends": "まだフレンドがいません",
+    "accept": "承認",
+    "reject": "拒否",
+    "pending": "申請中",
+    "remove": "削除",
+    "addFriend": "フレンドを追加",
+    "search": "検索",
+    "qrCode": "QRコード",
+    "searchPlaceholder": "ユーザー名またはID",
+    "sending": "送信中...",
+    "sendRequest": "申請を送る",
+    "requestSent": "フレンド申請を送りました！",
+    "error": "エラーが発生しました",
+    "qrDescription": "自分のQRコードを見せてスキャンしてもらう",
+    "copyLink": "リンクをコピー"
+  },
+  "leaderboard": {
+    "title": "ランキング",
+    "global": "🌏 全体",
+    "friendsTab": "👥 フレンド",
+    "checkins": "打卡数",
+    "badges": "バッジ",
+    "timesUnit": "回",
+    "countUnit": "個",
+    "loginForFriends": "ログインするとフレンドランキングが見られます",
+    "noData": "データがありません"
+  },
+  "profile": {
+    "badges": "バッジ",
+    "titles": "称号",
+    "active": "表示中",
+    "progress": "進捗"
+  },
+  "common": {
+    "unknown": "不明"
+  }
+}

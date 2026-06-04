@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useDictionary } from '@/lib/i18n/context'
 
 interface Props {
   friendshipId: string
@@ -14,6 +15,7 @@ interface Props {
 
 export function FriendCard({ friendshipId, userId, username, level, status, isRequester }: Props) {
   const router = useRouter()
+  const dict = useDictionary()
 
   async function handleAccept() {
     await fetch(`/api/friends/${friendshipId}`, {
@@ -54,15 +56,15 @@ export function FriendCard({ friendshipId, userId, username, level, status, isRe
       <div className="flex gap-2">
         {status === 'pending' && !isRequester && (
           <>
-            <button onClick={handleAccept} className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full">承認</button>
-            <button onClick={handleReject} className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">拒否</button>
+            <button onClick={handleAccept} className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full">{dict.friends.accept}</button>
+            <button onClick={handleReject} className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">{dict.friends.reject}</button>
           </>
         )}
         {status === 'pending' && isRequester && (
-          <span className="text-xs text-gray-400 px-2">申請中</span>
+          <span className="text-xs text-gray-400 px-2">{dict.friends.pending}</span>
         )}
         {status === 'accepted' && (
-          <button onClick={handleRemove} className="text-xs text-red-400 px-2">削除</button>
+          <button onClick={handleRemove} className="text-xs text-red-400 px-2">{dict.friends.remove}</button>
         )}
       </div>
     </div>

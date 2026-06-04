@@ -1,3 +1,7 @@
+'use client'
+
+import { useDictionary } from '@/lib/i18n/context'
+
 interface Badge {
   id: string
   name: string
@@ -12,10 +16,11 @@ interface Props {
 
 export function BadgeWall({ earnedBadges, allBadges }: Props) {
   const earnedIds = new Set(earnedBadges.map(b => b.id))
+  const dict = useDictionary()
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-5">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">バッジ</h2>
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{dict.profile.badges}</h2>
       <div className="grid grid-cols-4 gap-3">
         {allBadges.map(badge => {
           const earned = earnedIds.has(badge.id)

@@ -1,7 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { CategoryCard } from '@/components/categories/CategoryCard'
+import { getDictionary } from '@/lib/i18n/dictionaries'
+import { getLocale } from '@/lib/i18n/server'
 
 export default async function CategoriesPage() {
+  const dict = await getDictionary(await getLocale())
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -30,7 +33,6 @@ export default async function CategoriesPage() {
       if (catId) checkedPerCategory[catId] = (checkedPerCategory[catId] ?? 0) + 1
     })
 
-    // Get accepted friends
     const { data: friendships } = await supabase
       .from('friendships')
       .select('requester_id, addressee_id')
@@ -70,7 +72,7 @@ export default async function CategoriesPage() {
 
   return (
     <div className="max-w-md mx-auto p-4 space-y-4">
-      <h1 className="text-xl font-bold">テーマ一覧</h1>
+      <h1 className="text-xl font-bold">{dict.categories.title}</h1>
       {(categories ?? []).map((cat: any) => (
         <CategoryCard
           key={cat.id}

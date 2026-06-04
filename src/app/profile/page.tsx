@@ -24,7 +24,6 @@ export default async function ProfilePage() {
     supabase.from('categories').select('*') as any,
   ])
 
-  // Build per-category progress
   const { data: firstCheckins } = await supabase
     .from('checkins')
     .select('location_id, locations(category_id)')

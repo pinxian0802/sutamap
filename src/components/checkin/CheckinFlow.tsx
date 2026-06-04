@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { PhotoCapture } from './PhotoCapture'
 import { haversineDistance } from '@/lib/geo/distance'
 import { Button } from '@/components/ui/button'
+import { useDictionary, formatTemplate } from '@/lib/i18n/context'
 
 interface Location {
   id: string
@@ -18,12 +19,14 @@ interface Props {
   location: Location
   isLoggedIn: boolean
   alreadyCheckedIn: boolean
+  onComplete?: () => void
 }
 
 type Step = 'photo' | 'gps' | 'submitting' | 'success' | 'error'
 
-export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
+export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete }: Props) {
   const router = useRouter()
+  const dict = useDictionary()
   const [step, setStep] = useState<Step>('photo')
   const [photo, setPhoto] = useState<Blob | null>(null)
   const [photoGps, setPhotoGps] = useState<{ lat: number; lng: number } | null>(null)
@@ -54,32 +57,32 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
         lat = pos.coords.latitude
         lng = pos.coords.longitude
       } catch {
-        setError('位置情報の取得に失敗しました。写真にGPS情報がある写真を使ってください。')
+        setError(dict.checkin.gpsError)
         setStep('error')
         return
       }
     }
 
-    // Pre-check distance client-side
     const dist = haversineDistance(lat, lng, location.lat, location.lng)
     if (dist > location.categories.checkin_radius_meters) {
-      setError(`距離が遠すぎます（${Math.round(dist)}m / 許容${location.categories.checkin_radius_meters}m）`)
+      setError(formatTemplate(dict.checkin.tooFar, {
+        dist: Math.round(dist),
+        radius: location.categories.checkin_radius_meters,
+      }))
       setStep('error')
       return
     }
 
-    // Upload photo
     const formData = new FormData()
     formData.append('file', photo, 'checkin.jpg')
     const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData })
     if (!uploadRes.ok) {
-      setError('写真のアップロードに失敗しました')
+      setError(dict.checkin.uploadFailed)
       setStep('error')
       return
     }
     const { url: photoUrl } = await uploadRes.json()
 
-    // Submit check-in
     const checkinRes = await fetch('/api/checkin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -88,7 +91,7 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
     const data = await checkinRes.json()
 
     if (!checkinRes.ok) {
-      setError(data.error ?? 'チェックイン失敗')
+      setError(data.error ?? dict.checkin.failed)
       setStep('error')
       return
     }
@@ -100,8 +103,8 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
   if (!isLoggedIn) {
     return (
       <div className="text-center py-8 space-y-3">
-        <p className="text-gray-500">打卡するにはログインが必要です</p>
-        <Button onClick={() => router.push('/auth/login')}>ログイン</Button>
+        <p className="text-gray-500">{dict.checkin.loginRequired}</p>
+        <Button onClick={() => router.push('/auth/login')}>{dict.auth.login}</Button>
       </div>
     )
   }
@@ -110,23 +113,23 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
     return (
       <div className="text-center py-8 space-y-4">
         <div className="text-4xl">✅</div>
-        <h2 className="text-xl font-bold">チェックイン完了！</h2>
+        <h2 className="text-xl font-bold">{dict.checkin.complete}</h2>
         {result.xpAwarded > 0 && (
-          <p className="text-blue-600 font-semibold">+{result.xpAwarded} XP 獲得！</p>
+          <p className="text-blue-600 font-semibold">{formatTemplate(dict.checkin.xpEarned, { xp: result.xpAwarded })}</p>
         )}
         {result.newTitle && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-            <p className="text-sm text-yellow-600 font-semibold">🎉 称号獲得！</p>
+            <p className="text-sm text-yellow-600 font-semibold">{dict.checkin.titleEarned}</p>
             <p className="text-lg font-bold text-yellow-800">{result.newTitle.name}</p>
           </div>
         )}
         {result.newBadge && (
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <p className="text-sm text-blue-600 font-semibold">🏅 バッジ獲得！</p>
+            <p className="text-sm text-blue-600 font-semibold">{dict.checkin.badgeEarned}</p>
             <p className="text-lg font-bold text-blue-800">{result.newBadge.name}</p>
           </div>
         )}
-        <Button onClick={() => router.push('/map')}>地図に戻る</Button>
+        <Button onClick={() => onComplete ? onComplete() : router.push('/map')}>{dict.checkin.backToMap}</Button>
       </div>
     )
   }
@@ -136,7 +139,7 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
       <div className="text-center py-8 space-y-4">
         <div className="text-4xl">❌</div>
         <p className="text-red-500">{error}</p>
-        <Button variant="outline" onClick={() => setStep('photo')}>もう一度試す</Button>
+        <Button variant="outline" onClick={() => setStep('photo')}>{dict.checkin.tryAgain}</Button>
       </div>
     )
   }
@@ -145,7 +148,7 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
     <div className="space-y-6">
       {alreadyCheckedIn && (
         <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-700">
-          ✅ 訪問済み（再訪記録として保存されます・XPは加算されません）
+          {dict.checkin.alreadyVisited}
         </div>
       )}
       <PhotoCapture onReady={handlePhotoReady} />
@@ -155,7 +158,7 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn }: Props) {
         onClick={handleSubmit}
         style={{ background: location.categories.color }}
       >
-        {step === 'submitting' ? 'チェックイン中...' : 'チェックイン'}
+        {step === 'submitting' ? dict.checkin.checkingIn : dict.checkin.submit}
       </Button>
     </div>
   )

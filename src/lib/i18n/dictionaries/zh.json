@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "title": "sutamap",
+    "description": "日本各地探索集章遊戲"
+  },
+  "nav": {
+    "map": "地圖",
+    "categories": "主題",
+    "leaderboard": "排行榜",
+    "friends": "好友",
+    "profile": "個人檔案"
+  },
+  "auth": {
+    "login": "登入",
+    "loginTitle": "登入",
+    "loginSubtitle": "歡迎來到 sutamap",
+    "loggingIn": "登入中...",
+    "email": "電子郵件",
+    "password": "密碼",
+    "noAccount": "還沒有帳號？",
+    "signUp": "註冊",
+    "signUpTitle": "註冊",
+    "signUpSubtitle": "建立帳號開始你的集章之旅",
+    "username": "使用者名稱",
+    "signingUp": "註冊中...",
+    "createAccount": "建立帳號",
+    "hasAccount": "已經有帳號了？"
+  },
+  "map": {
+    "revisit": "再次造訪",
+    "checkin": "打卡",
+    "friends": "👥 好友",
+    "loginRequired": "打卡需要",
+    "loginLink": "登入",
+    "loginSuffix": "",
+    "visited": "已造訪",
+    "category": "主題"
+  },
+  "checkin": {
+    "gpsError": "取得位置資訊失敗。請使用含有 GPS 資訊的照片。",
+    "tooFar": "距離太遠（{dist}m / 允許 {radius}m）",
+    "uploadFailed": "照片上傳失敗",
+    "failed": "打卡失敗",
+    "loginRequired": "需要登入才能打卡",
+    "complete": "打卡完成！",
+    "xpEarned": "+{xp} XP 獲得！",
+    "titleEarned": "🎉 獲得稱號！",
+    "badgeEarned": "🏅 獲得徽章！",
+    "backToMap": "返回地圖",
+    "tryAgain": "重試",
+    "alreadyVisited": "✅ 已造訪（將記錄為再訪，不會獲得 XP）",
+    "checkingIn": "打卡中...",
+    "submit": "打卡"
+  },
+  "photo": {
+    "processFailed": "照片處理失敗",
+    "select": "選擇照片",
+    "processing": "處理中...",
+    "change": "更換照片"
+  },
+  "categories": {
+    "title": "主題一覽",
+    "complete": "完成！",
+    "spots": "處",
+    "xpPerSpot": "XP/處",
+    "friendsWorking": "好友也在挑戰中"
+  },
+  "friends": {
+    "title": "好友",
+    "add": "+ 新增",
+    "requests": "好友申請",
+    "noFriends": "還沒有好友",
+    "accept": "接受",
+    "reject": "拒絕",
+    "pending": "申請中",
+    "remove": "刪除",
+    "addFriend": "新增好友",
+    "search": "搜尋",
+    "qrCode": "QR Code",
+    "searchPlaceholder": "使用者名稱或 ID",
+    "sending": "傳送中...",
+    "sendRequest": "送出申請",
+    "requestSent": "已送出好友申請！",
+    "error": "發生錯誤",
+    "qrDescription": "出示你的 QR Code 讓對方掃描",
+    "copyLink": "複製連結"
+  },
+  "leaderboard": {
+    "title": "排行榜",
+    "global": "🌏 全部",
+    "friendsTab": "👥 好友",
+    "checkins": "打卡數",
+    "badges": "徽章",
+    "timesUnit": "次",
+    "countUnit": "個",
+    "loginForFriends": "登入後可查看好友排行榜",
+    "noData": "沒有資料"
+  },
+  "profile": {
+    "badges": "徽章",
+    "titles": "稱號",
+    "active": "使用中",
+    "progress": "進度"
+  },
+  "common": {
+    "unknown": "未知"
+  }
+}

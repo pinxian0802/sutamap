@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "title": "sutamap",
+    "description": "A stamp rally game exploring Japan"
+  },
+  "nav": {
+    "map": "Map",
+    "categories": "Categories",
+    "leaderboard": "Ranking",
+    "friends": "Friends",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": "Login",
+    "loginTitle": "Login",
+    "loginSubtitle": "Welcome to sutamap",
+    "loggingIn": "Logging in...",
+    "email": "Email",
+    "password": "Password",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "signUpTitle": "Sign up",
+    "signUpSubtitle": "Create an account to start your stamp rally",
+    "username": "Username",
+    "signingUp": "Signing up...",
+    "createAccount": "Create account",
+    "hasAccount": "Already have an account?"
+  },
+  "map": {
+    "revisit": "Revisit",
+    "checkin": "Check in",
+    "friends": "👥 Friends",
+    "loginRequired": "To check in,",
+    "loginLink": "login",
+    "loginSuffix": "is required",
+    "visited": "visited",
+    "category": "Category"
+  },
+  "checkin": {
+    "gpsError": "Failed to get location. Please use a photo with GPS data.",
+    "tooFar": "Too far away ({dist}m / allowed {radius}m)",
+    "uploadFailed": "Photo upload failed",
+    "failed": "Check-in failed",
+    "loginRequired": "Login required to check in",
+    "complete": "Check-in complete!",
+    "xpEarned": "+{xp} XP earned!",
+    "titleEarned": "🎉 Title earned!",
+    "badgeEarned": "🏅 Badge earned!",
+    "backToMap": "Back to map",
+    "tryAgain": "Try again",
+    "alreadyVisited": "✅ Already visited (saved as revisit — no XP awarded)",
+    "checkingIn": "Checking in...",
+    "submit": "Check in"
+  },
+  "photo": {
+    "processFailed": "Failed to process photo",
+    "select": "Select photo",
+    "processing": "Processing...",
+    "change": "Change photo"
+  },
+  "categories": {
+    "title": "Categories",
+    "complete": "Complete!",
+    "spots": "spots",
+    "xpPerSpot": "XP/spot",
+    "friendsWorking": "Friends also working on this"
+  },
+  "friends": {
+    "title": "Friends",
+    "add": "+ Add",
+    "requests": "Friend requests",
+    "noFriends": "No friends yet",
+    "accept": "Accept",
+    "reject": "Reject",
+    "pending": "Pending",
+    "remove": "Remove",
+    "addFriend": "Add friend",
+    "search": "Search",
+    "qrCode": "QR Code",
+    "searchPlaceholder": "Username or ID",
+    "sending": "Sending...",
+    "sendRequest": "Send request",
+    "requestSent": "Friend request sent!",
+    "error": "An error occurred",
+    "qrDescription": "Show your QR code for others to scan",
+    "copyLink": "Copy link"
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "global": "🌏 Global",
+    "friendsTab": "👥 Friends",
+    "checkins": "Check-ins",
+    "badges": "Badges",
+    "timesUnit": "times",
+    "countUnit": "count",
+    "loginForFriends": "Login to see friend rankings",
+    "noData": "No data available"
+  },
+  "profile": {
+    "badges": "Badges",
+    "titles": "Titles",
+    "active": "Active",
+    "progress": "Progress"
+  },
+  "common": {
+    "unknown": "Unknown"
+  }
+}

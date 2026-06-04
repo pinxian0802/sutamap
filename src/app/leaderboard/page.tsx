@@ -1,7 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { LeaderboardTabs } from '@/components/leaderboard/LeaderboardTabs'
+import { getDictionary } from '@/lib/i18n/dictionaries'
+import { getLocale } from '@/lib/i18n/server'
 
 export default async function LeaderboardPage() {
+  const dict = await getDictionary(await getLocale())
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -51,7 +54,7 @@ export default async function LeaderboardPage() {
     return userIds
       .map(id => ({
         userId: id,
-        username: profileMap[id]?.username ?? '不明',
+        username: profileMap[id]?.username ?? dict.common.unknown,
         level: profileMap[id]?.level ?? 1,
         value: getValue(id),
         isMe: id === user?.id,

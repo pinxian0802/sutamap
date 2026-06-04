@@ -6,9 +6,11 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useDictionary } from '@/lib/i18n/context'
 
 export function LoginForm() {
   const router = useRouter()
+  const dict = useDictionary()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -35,7 +37,7 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">メールアドレス</Label>
+        <Label htmlFor="email">{dict.auth.email}</Label>
         <Input
           id="email"
           type="email"
@@ -46,7 +48,7 @@ export function LoginForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">パスワード</Label>
+        <Label htmlFor="password">{dict.auth.password}</Label>
         <Input
           id="password"
           type="password"
@@ -58,7 +60,7 @@ export function LoginForm() {
       </div>
       {error && <p className="text-sm text-red-500">{error}</p>}
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? 'ログイン中...' : 'ログイン'}
+        {loading ? dict.auth.loggingIn : dict.auth.login}
       </Button>
     </form>
   )

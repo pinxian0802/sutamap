@@ -26,7 +26,7 @@ export default async function FriendsPage() {
     return {
       friendshipId: f.id,
       userId: friendId,
-      username: profile?.username ?? '不明',
+      username: profile?.username ?? '?',
       level: profile?.level ?? 1,
       status: f.status as 'pending' | 'accepted' | 'rejected',
       isRequester: f.requester_id === user.id,

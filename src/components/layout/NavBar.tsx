@@ -2,22 +2,29 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
-const NAV_ITEMS = [
-  { href: '/map', icon: '🗾', label: '地図' },
-  { href: '/categories', icon: '🎯', label: 'テーマ' },
-  { href: '/leaderboard', icon: '🏆', label: 'ランキング' },
-  { href: '/friends', icon: '👥', label: 'フレンド' },
-  { href: '/profile', icon: '👤', label: 'プロフィール' },
-]
+import { useDictionary } from '@/lib/i18n/context'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 export function NavBar() {
   const pathname = usePathname()
+  const dict = useDictionary()
+
+  const NAV_ITEMS = [
+    { href: '/map', icon: '🗾', label: dict.nav.map },
+    { href: '/categories', icon: '🎯', label: dict.nav.categories },
+    { href: '/leaderboard', icon: '🏆', label: dict.nav.leaderboard },
+    { href: '/friends', icon: '👥', label: dict.nav.friends },
+    { href: '/profile', icon: '👤', label: dict.nav.profile },
+  ]
+
   const isAuthPage = pathname.startsWith('/auth')
   if (isAuthPage) return null
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-[600] bg-white/95 backdrop-blur border-t border-gray-100 safe-area-pb">
+      <div className="absolute -top-9 right-3">
+        <LanguageSwitcher />
+      </div>
       <div className="flex items-center justify-around max-w-lg mx-auto">
         {NAV_ITEMS.map(item => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/')

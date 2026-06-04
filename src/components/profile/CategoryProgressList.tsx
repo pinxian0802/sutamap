@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import { Progress } from '@/components/ui/progress'
+import { useDictionary } from '@/lib/i18n/context'
 
 interface CategoryProgress {
   id: string
@@ -15,9 +18,11 @@ interface Props {
 }
 
 export function CategoryProgressList({ categories }: Props) {
+  const dict = useDictionary()
+
   return (
     <div className="bg-white rounded-2xl shadow-sm p-5">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">進捗</h2>
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{dict.profile.progress}</h2>
       <div className="space-y-4">
         {categories.map(cat => {
           const pct = cat.total > 0 ? Math.round((cat.checked / cat.total) * 100) : 0

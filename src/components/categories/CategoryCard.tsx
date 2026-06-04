@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import { Progress } from '@/components/ui/progress'
+import { useDictionary } from '@/lib/i18n/context'
 
 interface Friend {
   userId: string
@@ -22,6 +25,7 @@ interface Props {
 export function CategoryCard({ id, name, description, color, icon, total, checked, xpPerCheckin, friends }: Props) {
   const pct = total > 0 ? Math.round((checked / total) * 100) : 0
   const isComplete = checked === total && total > 0
+  const dict = useDictionary()
 
   return (
     <div className={`bg-white rounded-2xl shadow-sm overflow-hidden ${isComplete ? 'ring-2 ring-amber-400' : ''}`}>
@@ -35,20 +39,20 @@ export function CategoryCard({ id, name, description, color, icon, total, checke
               {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
             </div>
           </div>
-          {isComplete && <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">完了！</span>}
+          {isComplete && <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">{dict.categories.complete}</span>}
         </div>
 
         <div className="space-y-1">
           <div className="flex justify-between text-xs text-gray-500">
-            <span>{checked} / {total} 箇所</span>
-            <span>{xpPerCheckin} XP/箇所</span>
+            <span>{checked} / {total} {dict.categories.spots}</span>
+            <span>{xpPerCheckin} {dict.categories.xpPerSpot}</span>
           </div>
           <Progress value={pct} className="h-2" />
         </div>
 
         {friends.length > 0 && (
           <div className="border-t pt-2">
-            <p className="text-xs text-gray-400 mb-1.5">フレンドも挑戦中</p>
+            <p className="text-xs text-gray-400 mb-1.5">{dict.categories.friendsWorking}</p>
             <div className="flex gap-2 flex-wrap">
               {friends.map(f => (
                 <Link key={f.userId} href={`/profile/${f.userId}`} className="flex items-center gap-1 text-xs text-gray-600 hover:text-blue-600">
