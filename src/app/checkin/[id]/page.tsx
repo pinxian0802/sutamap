@@ -2,6 +2,21 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { CheckinFlow } from '@/components/checkin/CheckinFlow'
 
+type LocationWithCategory = {
+  id: string
+  name: string
+  prefecture: string | null
+  lat: number
+  lng: number
+  category_id: string
+  categories: {
+    name: string
+    color: string
+    checkin_radius_meters: number
+    xp_per_checkin: number
+  }
+}
+
 export default async function CheckinPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
@@ -11,7 +26,7 @@ export default async function CheckinPage({ params }: { params: Promise<{ id: st
     .from('locations')
     .select('*, categories(*)')
     .eq('id', id)
-    .single()
+    .single() as { data: LocationWithCategory | null; error: unknown }
 
   if (!location) notFound()
 

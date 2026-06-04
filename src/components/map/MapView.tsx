@@ -50,7 +50,9 @@ export function MapView({ locations, categories, userCheckinLocationIds, isLogge
       await import('leaflet/dist/leaflet.css')
       await import('leaflet.markercluster/dist/MarkerCluster.css')
       await import('leaflet.markercluster/dist/MarkerCluster.Default.css')
-      const { MarkerClusterGroup } = await import('leaflet.markercluster')
+      await import('leaflet.markercluster')
+      // leaflet.markercluster extends L in-place
+      const MarkerClusterGroup = (L as any).MarkerClusterGroup
 
       const map = L.map(mapRef.current!, {
         center: [37.5, 136.5],

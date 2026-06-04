@@ -17,7 +17,7 @@ export default async function MapPage() {
       .from('checkins')
       .select('location_id')
       .eq('user_id', user.id)
-      .eq('is_first', true)
+      .eq('is_first', true) as { data: { location_id: string }[] | null; error: unknown }
     userCheckinLocationIds = checkins?.map(c => c.location_id) ?? []
   }
 
