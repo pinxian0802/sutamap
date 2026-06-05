@@ -10,9 +10,9 @@ export default async function LeaderboardPage() {
 
   const { data: xpRanking } = await supabase
     .from('user_profiles')
-    .select('id, username, total_xp, level')
+    .select('id, username, total_xp, level, avatar_url')
     .order('total_xp', { ascending: false })
-    .limit(50) as { data: { id: string; username: string; total_xp: number; level: number }[] | null; error: unknown }
+    .limit(50) as { data: { id: string; username: string; total_xp: number; level: number; avatar_url: string | null }[] | null; error: unknown }
 
   const { data: checkinCounts } = await (supabase as any)
     .from('checkins')
@@ -56,6 +56,7 @@ export default async function LeaderboardPage() {
         userId: id,
         username: profileMap[id]?.username ?? dict.common.unknown,
         level: profileMap[id]?.level ?? 1,
+        avatarUrl: profileMap[id]?.avatar_url ?? null,
         value: getValue(id),
         isMe: id === user?.id,
       }))

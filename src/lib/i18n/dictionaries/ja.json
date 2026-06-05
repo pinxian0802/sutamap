@@ -151,7 +151,15 @@
     "completionRate": "踏破率",
     "checkins": "打卡",
     "badgesStat": "バッジ",
-    "globalRank": "全站順位"
+    "globalRank": "全站順位",
+    "edit": "プロフィールを編集",
+    "changeAvatar": "アバターを変更",
+    "username": "ユーザー名",
+    "save": "保存",
+    "saving": "保存中...",
+    "saveSuccess": "保存しました",
+    "usernameTooLong": "ユーザー名は20文字以内にしてください",
+    "uploadFailed": "アップロードに失敗しました"
   },
   "common": {
     "unknown": "不明"

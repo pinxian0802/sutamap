@@ -2,9 +2,11 @@
 
 import { xpToNextLevel } from '@/lib/xp/calculator'
 import { useDictionary } from '@/lib/i18n/context'
+import { UserAvatar } from './UserAvatar'
 
 interface Props {
   username: string
+  avatarUrl?: string | null
   totalXp: number
   level: number
   activeTitle?: string | null
@@ -14,7 +16,7 @@ interface Props {
   totalSpots?: number
 }
 
-export function ProfileHeader({ username, totalXp, level, activeTitle, totalCheckins = 0, totalBadges = 0, rank, totalSpots = 0 }: Props) {
+export function ProfileHeader({ username, avatarUrl, totalXp, level, activeTitle, totalCheckins = 0, totalBadges = 0, rank, totalSpots = 0 }: Props) {
   const { current, needed } = xpToNextLevel(totalXp)
   const xpPct = Math.round((current / needed) * 100)
   const completionPct = totalSpots > 0 ? Math.round((totalCheckins / totalSpots) * 100) : 0
@@ -24,9 +26,13 @@ export function ProfileHeader({ username, totalXp, level, activeTitle, totalChec
     <div className="sm-card">
       <div className="sm-card-title">{dict.profile.status}</div>
       <div className="flex gap-[14px]">
-        <div className="sm-avatar w-[74px] h-[88px] text-[38px] rounded-[11px]">
-          {username[0]?.toUpperCase() ?? '?'}
-        </div>
+        <UserAvatar
+          username={username}
+          avatarUrl={avatarUrl}
+          size={74}
+          rounded="rounded"
+          className="h-[88px]"
+        />
         <div className="flex-1">
           <div className="flex justify-between text-[13px] py-[2px]">
             <span className="text-sub">{dict.profile.name}</span>

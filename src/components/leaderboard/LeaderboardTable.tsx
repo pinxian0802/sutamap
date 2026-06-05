@@ -1,11 +1,13 @@
 'use client'
 
 import Link from 'next/link'
+import { UserAvatar } from '@/components/profile/UserAvatar'
 
 interface Entry {
   rank: number
   userId: string
   username: string
+  avatarUrl: string | null
   level: number
   value: number
   isMe: boolean
@@ -32,9 +34,12 @@ export function LeaderboardTable({ entries, unit }: Props) {
           <span className="w-7 text-center text-sm font-bold text-gray-400">
             {entry.rank <= 3 ? medals[entry.rank - 1] : entry.rank}
           </span>
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-            {entry.username[0].toUpperCase()}
-          </div>
+          <UserAvatar
+            username={entry.username}
+            avatarUrl={entry.avatarUrl}
+            size={36}
+            rounded="full"
+          />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold truncate">{entry.username}</p>
             <p className="text-xs text-gray-400">Lv {entry.level}</p>

@@ -42,6 +42,7 @@ export interface Database {
           total_xp: number
           level: number
           active_title_id: string | null
+          avatar_url: string | null
           created_at: string
         }
         Insert: Omit<Database['public']['Tables']['user_profiles']['Row'], 'created_at'>

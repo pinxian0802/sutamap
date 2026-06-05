@@ -11,6 +11,7 @@ interface FriendItem {
   userId: string
   username: string
   level: number
+  avatarUrl?: string | null
   status: 'pending' | 'accepted' | 'rejected'
   isRequester: boolean
 }

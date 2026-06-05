@@ -151,7 +151,15 @@
     "completionRate": "踏破率",
     "checkins": "打卡",
     "badgesStat": "徽章",
-    "globalRank": "全站排名"
+    "globalRank": "全站排名",
+    "edit": "編輯個人資料",
+    "changeAvatar": "變更頭像",
+    "username": "使用者名稱",
+    "save": "儲存",
+    "saving": "儲存中...",
+    "saveSuccess": "儲存成功",
+    "usernameTooLong": "使用者名稱不能超過20字",
+    "uploadFailed": "上傳失敗"
   },
   "common": {
     "unknown": "未知"

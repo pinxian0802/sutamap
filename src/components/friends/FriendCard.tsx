@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useDictionary } from '@/lib/i18n/context'
+import { UserAvatar } from '@/components/profile/UserAvatar'
 import { Check, MapPin, Medal, ChevronRight } from 'lucide-react'
 
 interface Props {
@@ -10,12 +11,13 @@ interface Props {
   userId: string
   username: string
   level: number
+  avatarUrl?: string | null
   status: 'pending' | 'accepted' | 'rejected'
   isRequester: boolean
   color?: string
 }
 
-export function FriendCard({ friendshipId, userId, username, level, status, isRequester, color = '#8fa6bd' }: Props) {
+export function FriendCard({ friendshipId, userId, username, level, avatarUrl, status, isRequester, color = '#8fa6bd' }: Props) {
   const router = useRouter()
   const dict = useDictionary()
 
@@ -45,12 +47,7 @@ export function FriendCard({ friendshipId, userId, username, level, status, isRe
   if (status === 'pending') {
     return (
       <div className="sm-card flex items-center gap-3">
-        <span
-          className="w-[46px] h-[46px] rounded-full text-[19px] text-white grid place-items-center font-bold"
-          style={{ background: color }}
-        >
-          {username[0]?.toUpperCase()}
-        </span>
+        <UserAvatar username={username} avatarUrl={avatarUrl} size={46} rounded="full" />
         <div className="flex-1 min-w-0">
           <div className="text-[15px] font-bold">{username}</div>
           <div className="text-[11.5px] text-sub">Lv {level}</div>
@@ -77,12 +74,7 @@ export function FriendCard({ friendshipId, userId, username, level, status, isRe
 
   return (
     <Link href={`/profile/${userId}`} className="sm-card flex items-center gap-[13px] cursor-pointer block">
-      <span
-        className="w-[50px] h-[50px] rounded-[14px] text-[21px] text-white grid place-items-center font-bold"
-        style={{ background: color }}
-      >
-        {username[0]?.toUpperCase()}
-      </span>
+      <UserAvatar username={username} avatarUrl={avatarUrl} size={50} rounded="rounded" />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-[15.5px] font-bold">{username}</span>

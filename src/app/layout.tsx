@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Zen_Kaku_Gothic_New, JetBrains_Mono } from 'next/font/google'
 import { NavBar } from '@/components/layout/NavBar'
+import { Toaster } from '@/components/ui/sonner'
 import { I18nProvider } from '@/lib/i18n/context'
 import { getDictionary } from '@/lib/i18n/dictionaries'
 import { getLocale } from '@/lib/i18n/server'
@@ -50,6 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <I18nProvider dict={dict} lang={lang}>
           {children}
           <NavBar />
+          <Toaster position="top-center" />
         </I18nProvider>
       </body>
     </html>

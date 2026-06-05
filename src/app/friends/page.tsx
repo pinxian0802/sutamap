@@ -17,7 +17,7 @@ export default async function FriendsPage() {
     .map((f: any) => f.requester_id === user.id ? f.addressee_id : f.requester_id)
 
   const { data: profiles } = friendIds.length > 0
-    ? await supabase.from('user_profiles').select('id, username, level').in('id', friendIds) as any
+    ? await supabase.from('user_profiles').select('id, username, level, avatar_url').in('id', friendIds) as any
     : { data: [] }
 
   const enriched = ((friendships ?? []) as any[]).map((f: any) => {
@@ -28,6 +28,7 @@ export default async function FriendsPage() {
       userId: friendId,
       username: profile?.username ?? '?',
       level: profile?.level ?? 1,
+      avatarUrl: profile?.avatar_url ?? null,
       status: f.status as 'pending' | 'accepted' | 'rejected',
       isRequester: f.requester_id === user.id,
     }

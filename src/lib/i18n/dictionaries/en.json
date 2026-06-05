@@ -151,7 +151,15 @@
     "completionRate": "Completion",
     "checkins": "Check-ins",
     "badgesStat": "Badges",
-    "globalRank": "Global Rank"
+    "globalRank": "Global Rank",
+    "edit": "Edit Profile",
+    "changeAvatar": "Change Avatar",
+    "username": "Username",
+    "save": "Save",
+    "saving": "Saving...",
+    "saveSuccess": "Saved successfully",
+    "usernameTooLong": "Username must be 20 characters or less",
+    "uploadFailed": "Upload failed"
   },
   "common": {
     "unknown": "Unknown"
