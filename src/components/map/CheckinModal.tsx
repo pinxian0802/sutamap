@@ -42,41 +42,55 @@ export function CheckinModal({ location, isLoggedIn, alreadyCheckedIn, onClose }
   return (
     <div className="fixed inset-0 z-[700]">
       <div
-        className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
+        style={{ background: 'rgba(36,52,74,.34)', backdropFilter: 'blur(2px)' }}
         onClick={handleClose}
       />
 
       <div
-        className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl transition-transform duration-300 ease-out ${visible ? 'translate-y-0' : 'translate-y-full'}`}
-        style={{ maxHeight: '85vh', boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}
+        className={`absolute bottom-0 left-0 right-0 bg-paper rounded-t-[22px] transition-transform duration-300 ease-out ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+        style={{ maxHeight: '92%', boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}
       >
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-gray-300" />
+        <div className="flex justify-center pt-2 pb-1">
+          <div className="w-[38px] h-1 rounded-[2px]" style={{ background: '#d8d0bf' }} />
         </div>
 
-        <div className="mx-5 h-0.5 rounded-full opacity-60" style={{ background: color }} />
-
-        <div className="px-5 pt-4 pb-2 flex items-start justify-between">
-          <div className="min-w-0 flex-1">
-            <p
-              className="text-[10px] font-bold tracking-[0.15em] uppercase"
-              style={{ color }}
-            >
-              {location.categories.name}
-            </p>
-            <h2 className="text-lg font-bold text-gray-900 mt-0.5 truncate">
-              {location.name}
-            </h2>
-          </div>
-          <button
-            onClick={handleClose}
-            className="ml-3 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors text-lg leading-none"
+        <div className="px-[18px] pt-2 pb-2 flex items-center gap-[13px]">
+          <span
+            className="w-[52px] h-[52px] rounded-[14px] text-white grid place-items-center flex-shrink-0 text-[22px]"
+            style={{ background: color }}
           >
-            ×
+            {location.categories.name.charAt(0)}
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className="text-[19px] font-bold truncate" style={{ fontFamily: 'var(--font-display)' }}>
+              {location.name}
+            </div>
+            <div className="text-[12.5px] text-sub mt-[2px]">
+              {location.categories.name}
+            </div>
+          </div>
+          <button className="sm-iconbtn" onClick={handleClose}>
+            <span className="text-[20px] leading-none text-sub">×</span>
           </button>
         </div>
 
-        <div className="px-5 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(85vh - 100px)' }}>
+        <div className="px-[18px] pb-6 overflow-y-auto" style={{ maxHeight: 'calc(92vh - 100px)' }}>
+          {/* stats */}
+          <div className="flex gap-[10px] mb-4">
+            {[
+              { k: 'XP', v: `+${location.categories.xp_per_checkin}`, highlight: true },
+              { k: '半徑', v: `${location.categories.checkin_radius_meters}m` },
+            ].map((s, i) => (
+              <div key={i} className="flex-1 text-center bg-paper2 rounded-[13px] py-3 px-1">
+                <div className="sm-mono text-[17px] font-bold" style={{ color: s.highlight ? 'var(--green-d)' : 'var(--ink)' }}>
+                  {s.v}
+                </div>
+                <div className="text-[10.5px] text-sub mt-[3px]">{s.k}</div>
+              </div>
+            ))}
+          </div>
+
           <CheckinFlow
             location={location}
             isLoggedIn={isLoggedIn}

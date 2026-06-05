@@ -24,7 +24,12 @@
     "username": "ユーザー名",
     "signingUp": "登録中...",
     "createAccount": "アカウント作成",
-    "hasAccount": "すでにアカウントをお持ちの方は"
+    "hasAccount": "すでにアカウントをお持ちの方は",
+    "heroLine1": "日本を巡って、集めて、踏破する。",
+    "heroLine2": "地図で遊ぶ蒐集ゲーム。",
+    "orDivider": "または",
+    "googleLogin": "Google で続行",
+    "terms": "続行することで利用規約とプライバシーポリシーに同意したものとみなされます"
   },
   "map": {
     "revisit": "再訪する",
@@ -34,7 +39,26 @@
     "loginLink": "ログイン",
     "loginSuffix": "が必要です",
     "visited": "が訪問",
-    "category": "テーマ"
+    "category": "テーマ",
+    "allCategories": "すべてのテーマ",
+    "moreLocations": "+{count} 箇所",
+    "searchPlaceholder": "地点・テーマを検索",
+    "searchInputPlaceholder": "地点名・テーマを入力…",
+    "friendsToggle": "フレンド",
+    "checkinFab": "打卡",
+    "nearbySpots": "近くの地点",
+    "gettingLocation": "位置情報を取得中…",
+    "tooFarLabel": "遠すぎる",
+    "gpsUnavailable": "位置情報を取得できませんでした",
+    "noNearbySpots": "近くに打卡できる地点がありません",
+    "searchByTheme": "テーマから探す",
+    "recentLocations": "最近の地点",
+    "themeSection": "テーマ",
+    "locationSection": "地点",
+    "completed": "完成",
+    "locations": "地点",
+    "notFound": "「{query}」が見つかりません",
+    "tryOtherKeyword": "他のキーワードを試してください"
   },
   "checkin": {
     "gpsError": "位置情報の取得に失敗しました。写真にGPS情報がある写真を使ってください。",
@@ -50,7 +74,12 @@
     "tryAgain": "もう一度試す",
     "alreadyVisited": "✅ 訪問済み（再訪記録として保存されます・XPは加算されません）",
     "checkingIn": "チェックイン中...",
-    "submit": "チェックイン"
+    "submit": "チェックイン",
+    "success": "打卡成功！",
+    "firstCheckin": "初回打卡",
+    "done": "完了",
+    "photoAttached": "PHOTO ATTACHED",
+    "exifGps": "EXIF GPS を読み取り"
   },
   "photo": {
     "processFailed": "写真の処理に失敗しました",
@@ -60,15 +89,17 @@
   },
   "categories": {
     "title": "テーマ一覧",
-    "complete": "完了！",
+    "complete": "★ クリア",
     "spots": "箇所",
     "xpPerSpot": "XP/箇所",
-    "friendsWorking": "フレンドも挑戦中"
+    "friendsWorking": "フレンドも挑戦中",
+    "collectionProgress": "コレクション進捗"
   },
   "friends": {
     "title": "フレンド",
     "add": "+ 追加",
     "requests": "フレンド申請",
+    "requestCount": "申請",
     "noFriends": "まだフレンドがいません",
     "accept": "承認",
     "reject": "拒否",
@@ -83,12 +114,20 @@
     "requestSent": "フレンド申請を送りました！",
     "error": "エラーが発生しました",
     "qrDescription": "自分のQRコードを見せてスキャンしてもらう",
-    "copyLink": "リンクをコピー"
+    "copyLink": "リンクをコピー",
+    "progressCompare": "進度比較",
+    "methodUsername": "ユーザー名",
+    "methodId": "ID",
+    "methodQr": "QR",
+    "methodLink": "リンク",
+    "searchUsername": "ユーザー名を検索",
+    "searchId": "ユーザー ID を入力",
+    "shareLink": "リンクを共有"
   },
   "leaderboard": {
     "title": "ランキング",
-    "global": "🌏 全体",
-    "friendsTab": "👥 フレンド",
+    "global": "全体",
+    "friendsTab": "フレンド",
     "checkins": "打卡数",
     "badges": "バッジ",
     "timesUnit": "回",
@@ -99,8 +138,20 @@
   "profile": {
     "badges": "バッジ",
     "titles": "称号",
+    "titlesLabel": "しょうごう（称号）",
     "active": "表示中",
-    "progress": "進捗"
+    "inactive": "所持",
+    "progress": "進捗",
+    "status": "ステータス",
+    "collection": "コレクション",
+    "collectionLink": "テーマへ",
+    "name": "なまえ",
+    "level": "レベル",
+    "exp": "EXP",
+    "completionRate": "踏破率",
+    "checkins": "打卡",
+    "badgesStat": "バッジ",
+    "globalRank": "全站順位"
   },
   "common": {
     "unknown": "不明"

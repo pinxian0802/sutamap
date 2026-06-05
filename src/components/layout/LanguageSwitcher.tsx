@@ -25,8 +25,8 @@ export function LanguageSwitcher() {
           onClick={() => switchTo(lang)}
           className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
             lang === currentLang
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              ? 'bg-green text-white'
+              : 'bg-paper2 text-sub hover:bg-line2'
           }`}
         >
           {LABELS[lang]}

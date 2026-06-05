@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { FriendCard } from './FriendCard'
 import { AddFriendModal } from './AddFriendModal'
-import { Button } from '@/components/ui/button'
 import { useDictionary } from '@/lib/i18n/context'
+import { Plus } from 'lucide-react'
 
 interface FriendItem {
   friendshipId: string
@@ -20,6 +20,8 @@ interface Props {
   myUserId: string
 }
 
+const FRIEND_COLORS = ['#c0563f', '#4f8db5', '#d8a24a', '#7aa83c', '#9a6bc0']
+
 export function FriendsPageClient({ friendships, myUserId }: Props) {
   const [showModal, setShowModal] = useState(false)
   const dict = useDictionary()
@@ -28,31 +30,38 @@ export function FriendsPageClient({ friendships, myUserId }: Props) {
   const pending = friendships.filter(f => f.status === 'pending')
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">{dict.friends.title}</h1>
-        <Button size="sm" onClick={() => setShowModal(true)}>{dict.friends.add}</Button>
+    <div className="max-w-md mx-auto px-4 pt-2 pb-4 space-y-[13px]">
+      <div className="flex items-center justify-between px-[2px] pt-[6px] pb-[14px]">
+        <h1 className="text-[19px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>{dict.friends.title}</h1>
+        <button
+          onClick={() => setShowModal(true)}
+          className="sm-iconbtn"
+          style={{ background: 'var(--green)', border: 'none', color: '#fff', boxShadow: '0 6px 14px -6px rgba(122,168,60,.8)' }}
+        >
+          <Plus size={20} strokeWidth={2.4} />
+        </button>
       </div>
 
       {pending.length > 0 && (
-        <div className="bg-blue-50 rounded-2xl p-4">
-          <h2 className="text-sm font-semibold text-blue-600 mb-2">{dict.friends.requests} ({pending.length})</h2>
-          <div className="divide-y divide-blue-100">
-            {pending.map(f => <FriendCard key={f.friendshipId} {...f} />)}
-          </div>
-        </div>
+        <>
+          <div className="sm-sectit"><span>{dict.friends.requestCount} {pending.length}</span></div>
+          {pending.map((f, i) => (
+            <FriendCard key={f.friendshipId} {...f} color={FRIEND_COLORS[i % FRIEND_COLORS.length]} />
+          ))}
+        </>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm p-4">
-        <h2 className="text-sm font-semibold text-gray-500 mb-2">{dict.friends.title} ({accepted.length})</h2>
-        {accepted.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-4">{dict.friends.noFriends}</p>
-        ) : (
-          <div className="divide-y">
-            {accepted.map(f => <FriendCard key={f.friendshipId} {...f} />)}
-          </div>
-        )}
+      <div className="sm-sectit">
+        <span>{dict.friends.title} {accepted.length}</span>
+        <span className="normal-case tracking-normal text-faint">{dict.friends.progressCompare}</span>
       </div>
+      {accepted.length === 0 ? (
+        <p className="text-sm text-sub text-center py-4">{dict.friends.noFriends}</p>
+      ) : (
+        accepted.map((f, i) => (
+          <FriendCard key={f.friendshipId} {...f} color={FRIEND_COLORS[i % FRIEND_COLORS.length]} />
+        ))
+      )}
 
       {showModal && <AddFriendModal onClose={() => setShowModal(false)} myUserId={myUserId} />}
     </div>

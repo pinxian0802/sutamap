@@ -6,6 +6,7 @@ create table public.categories (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   name_en text not null,
+  name_zh text not null default '',
   description text,
   color text not null default '#3b82f6',
   icon text not null default '📍',
@@ -20,6 +21,7 @@ create table public.locations (
   category_id uuid not null references public.categories(id) on delete cascade,
   name text not null,
   name_en text,
+  name_zh text,
   prefecture text,
   lat double precision not null,
   lng double precision not null,
@@ -34,6 +36,8 @@ create index locations_latlng_idx on public.locations(lat, lng);
 create table public.titles (
   id uuid primary key default gen_random_uuid(),
   name text not null,
+  name_en text,
+  name_zh text,
   description text,
   category_id uuid references public.categories(id) on delete cascade
 );
@@ -42,6 +46,8 @@ create table public.titles (
 create table public.badges (
   id uuid primary key default gen_random_uuid(),
   name text not null,
+  name_en text,
+  name_zh text,
   description text,
   icon text not null default '🏅',
   category_id uuid references public.categories(id) on delete cascade

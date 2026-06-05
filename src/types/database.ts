@@ -8,6 +8,7 @@ export interface Database {
           id: string
           name: string
           name_en: string
+          name_zh: string
           description: string | null
           color: string
           icon: string
@@ -24,6 +25,7 @@ export interface Database {
           category_id: string
           name: string
           name_en: string | null
+          name_zh: string | null
           prefecture: string | null
           lat: number
           lng: number
@@ -64,6 +66,8 @@ export interface Database {
         Row: {
           id: string
           name: string
+          name_en: string | null
+          name_zh: string | null
           description: string | null
           category_id: string | null
         }
@@ -74,6 +78,8 @@ export interface Database {
         Row: {
           id: string
           name: string
+          name_en: string | null
+          name_zh: string | null
           description: string | null
           icon: string
           category_id: string | null

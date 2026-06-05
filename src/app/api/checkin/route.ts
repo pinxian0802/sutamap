@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { haversineDistance } from '@/lib/geo/distance'
 import { xpToLevel } from '@/lib/xp/calculator'
+import { localizedName } from '@/lib/i18n/localize'
+import type { Locale } from '@/lib/i18n/config'
+import { defaultLocale } from '@/lib/i18n/config'
 
 type LocationRow = {
   id: string
@@ -18,6 +21,7 @@ type LocationRow = {
 }
 
 export async function POST(request: NextRequest) {
+  const locale = (request.headers.get('x-locale') as Locale) ?? defaultLocale
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -124,7 +128,7 @@ export async function POST(request: NextRequest) {
 
       if (badge) {
         await supabase.from('user_badges').upsert({ user_id: user.id, badge_id: badge.id } as any)
-        newBadge = badge
+        newBadge = { ...badge, name: localizedName(badge, locale) }
       }
 
       // Award title
@@ -132,11 +136,11 @@ export async function POST(request: NextRequest) {
         .from('titles')
         .select('*')
         .eq('category_id', location.category_id)
-        .maybeSingle() as { data: { id: string; name: string } | null; error: unknown }
+        .maybeSingle() as { data: { id: string; name: string; name_en?: string; name_zh?: string } | null; error: unknown }
 
       if (title) {
         await supabase.from('user_titles').upsert({ user_id: user.id, title_id: title.id } as any)
-        newTitle = title
+        newTitle = { ...title, name: localizedName(title, locale) }
       }
     }
   }

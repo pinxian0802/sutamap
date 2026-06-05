@@ -38,30 +38,37 @@ export function TitleSelector({ earnedTitles, activeTitleId }: Props) {
   if (earnedTitles.length === 0) return null
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-5">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{dict.profile.titles}</h2>
-      <div className="space-y-2">
-        {earnedTitles.map(title => (
+    <div className="sm-card">
+      <div className="sm-card-title">{dict.profile.titlesLabel}</div>
+      {earnedTitles.map(title => {
+        const on = selected === title.id
+        return (
           <button
             key={title.id}
             onClick={() => handleSelect(title.id)}
             disabled={isPending}
-            className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-colors ${
-              selected === title.id
-                ? 'border-amber-400 bg-amber-50'
-                : 'border-gray-100 bg-gray-50 hover:border-gray-200'
-            }`}
+            className="flex items-center gap-[9px] w-full text-left px-1 py-[9px] rounded-[9px] cursor-pointer transition-colors"
+            style={{ background: on ? 'var(--tint)' : 'transparent' }}
           >
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-sm">{title.name}</span>
-              {selected === title.id && <span className="text-xs text-amber-600">{dict.profile.active}</span>}
-            </div>
+            <span className="w-[14px] text-green" style={{ opacity: on ? 1 : 0 }}>▶</span>
+            <span className="flex-1 text-[14px]" style={{ fontWeight: on ? 700 : 400, color: on ? 'var(--ink)' : 'var(--sub)' }}>
+              {title.name}
+            </span>
             {title.description && (
-              <p className="text-xs text-gray-500 mt-0.5">{title.description}</p>
+              <span className="text-[10.5px] text-sub">{title.description}</span>
             )}
+            <span
+              className="text-[11px] font-bold px-[9px] py-[2px] rounded-[7px]"
+              style={{
+                color: on ? 'var(--green-d)' : 'var(--faint)',
+                background: on ? 'var(--tint2)' : 'var(--paper2)',
+              }}
+            >
+              {on ? dict.profile.active : dict.profile.inactive}
+            </span>
           </button>
-        ))}
-      </div>
+        )
+      })}
     </div>
   )
 }

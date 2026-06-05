@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PhotoCapture } from './PhotoCapture'
 import { haversineDistance } from '@/lib/geo/distance'
-import { Button } from '@/components/ui/button'
 import { useDictionary, formatTemplate } from '@/lib/i18n/context'
+import { Check, Zap } from 'lucide-react'
 
 interface Location {
   id: string
@@ -103,33 +103,47 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
   if (!isLoggedIn) {
     return (
       <div className="text-center py-8 space-y-3">
-        <p className="text-gray-500">{dict.checkin.loginRequired}</p>
-        <Button onClick={() => router.push('/auth/login')}>{dict.auth.login}</Button>
+        <p className="text-sub">{dict.checkin.loginRequired}</p>
+        <button className="sm-btn sm-btn-primary" onClick={() => router.push('/auth/login')}>
+          {dict.auth.login}
+        </button>
       </div>
     )
   }
 
   if (step === 'success' && result) {
     return (
-      <div className="text-center py-8 space-y-4">
-        <div className="text-4xl">✅</div>
-        <h2 className="text-xl font-bold">{dict.checkin.complete}</h2>
+      <div className="text-center py-4 space-y-4">
+        <div className="text-[46px]">{location.categories.name.charAt(0)}</div>
+        <div className="text-[22px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>
+          {dict.checkin.success}
+        </div>
+        <div className="text-[13.5px] text-sub">{location.name} ・ {dict.checkin.firstCheckin}</div>
+
         {result.xpAwarded > 0 && (
-          <p className="text-blue-600 font-semibold">{formatTemplate(dict.checkin.xpEarned, { xp: result.xpAwarded })}</p>
+          <div className="inline-flex items-center gap-2 mx-auto px-5 py-[10px] rounded-[14px] bg-tint text-green-d font-bold text-[18px]" style={{ fontFamily: 'var(--font-display)' }}>
+            <Zap size={20} strokeWidth={2} />
+            +{result.xpAwarded} XP
+          </div>
         )}
+
         {result.newTitle && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-            <p className="text-sm text-yellow-600 font-semibold">{dict.checkin.titleEarned}</p>
-            <p className="text-lg font-bold text-yellow-800">{result.newTitle.name}</p>
+          <div className="bg-tint border border-green/30 rounded-[13px] p-4">
+            <p className="text-sm text-green-d font-bold">{dict.checkin.titleEarned}</p>
+            <p className="text-lg font-bold">{result.newTitle.name}</p>
           </div>
         )}
+
         {result.newBadge && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <p className="text-sm text-blue-600 font-semibold">{dict.checkin.badgeEarned}</p>
-            <p className="text-lg font-bold text-blue-800">{result.newBadge.name}</p>
+          <div className="bg-tint border border-green/30 rounded-[13px] p-4">
+            <p className="text-sm text-green-d font-bold">{dict.checkin.badgeEarned}</p>
+            <p className="text-lg font-bold">{result.newBadge.name}</p>
           </div>
         )}
-        <Button onClick={() => onComplete ? onComplete() : router.push('/map')}>{dict.checkin.backToMap}</Button>
+
+        <button className="sm-btn sm-btn-primary" onClick={() => onComplete ? onComplete() : router.push('/map')}>
+          {dict.checkin.done}
+        </button>
       </div>
     )
   }
@@ -137,29 +151,31 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
   if (step === 'error') {
     return (
       <div className="text-center py-8 space-y-4">
-        <div className="text-4xl">❌</div>
-        <p className="text-red-500">{error}</p>
-        <Button variant="outline" onClick={() => setStep('photo')}>{dict.checkin.tryAgain}</Button>
+        <p className="text-terra">{error}</p>
+        <button className="sm-btn sm-btn-ghost" onClick={() => setStep('photo')}>{dict.checkin.tryAgain}</button>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {alreadyCheckedIn && (
-        <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-700">
-          {dict.checkin.alreadyVisited}
+        <div className="flex items-center gap-[9px] p-[11px_13px] rounded-[12px] bg-tint">
+          <Check size={16} strokeWidth={2.6} className="text-green-d" />
+          <span className="flex-1 text-[12.5px] text-green-d font-semibold">
+            {dict.checkin.alreadyVisited}
+          </span>
         </div>
       )}
       <PhotoCapture onReady={handlePhotoReady} />
-      <Button
-        className="w-full"
+      <button
+        className="sm-btn sm-btn-primary"
         disabled={!photo || step === 'submitting'}
         onClick={handleSubmit}
-        style={{ background: location.categories.color }}
+        style={!photo ? { opacity: 0.45 } : undefined}
       >
         {step === 'submitting' ? dict.checkin.checkingIn : dict.checkin.submit}
-      </Button>
+      </button>
     </div>
   )
 }

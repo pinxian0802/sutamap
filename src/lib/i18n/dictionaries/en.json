@@ -24,7 +24,12 @@
     "username": "Username",
     "signingUp": "Signing up...",
     "createAccount": "Create account",
-    "hasAccount": "Already have an account?"
+    "hasAccount": "Already have an account?",
+    "heroLine1": "Explore Japan, collect stamps, conquer maps.",
+    "heroLine2": "A collection game on the map.",
+    "orDivider": "or",
+    "googleLogin": "Continue with Google",
+    "terms": "By continuing, you agree to the Terms of Service and Privacy Policy"
   },
   "map": {
     "revisit": "Revisit",
@@ -34,7 +39,26 @@
     "loginLink": "login",
     "loginSuffix": "is required",
     "visited": "visited",
-    "category": "Category"
+    "category": "Category",
+    "allCategories": "All categories",
+    "moreLocations": "+{count} more",
+    "searchPlaceholder": "Search locations & categories",
+    "searchInputPlaceholder": "Enter location or category name…",
+    "friendsToggle": "Friends",
+    "checkinFab": "Check in",
+    "nearbySpots": "Nearby spots",
+    "gettingLocation": "Getting location…",
+    "tooFarLabel": "Too far",
+    "gpsUnavailable": "Could not get your location",
+    "noNearbySpots": "No check-in spots nearby",
+    "searchByTheme": "Browse by category",
+    "recentLocations": "Recent locations",
+    "themeSection": "Categories",
+    "locationSection": "Locations",
+    "completed": "completed",
+    "locations": "locations",
+    "notFound": "No results for \"{query}\"",
+    "tryOtherKeyword": "Try a different keyword"
   },
   "checkin": {
     "gpsError": "Failed to get location. Please use a photo with GPS data.",
@@ -50,7 +74,12 @@
     "tryAgain": "Try again",
     "alreadyVisited": "✅ Already visited (saved as revisit — no XP awarded)",
     "checkingIn": "Checking in...",
-    "submit": "Check in"
+    "submit": "Check in",
+    "success": "Check-in successful!",
+    "firstCheckin": "First check-in",
+    "done": "Done",
+    "photoAttached": "PHOTO ATTACHED",
+    "exifGps": "Read EXIF GPS"
   },
   "photo": {
     "processFailed": "Failed to process photo",
@@ -60,15 +89,17 @@
   },
   "categories": {
     "title": "Categories",
-    "complete": "Complete!",
+    "complete": "★ Complete",
     "spots": "spots",
     "xpPerSpot": "XP/spot",
-    "friendsWorking": "Friends also working on this"
+    "friendsWorking": "Friends also working on this",
+    "collectionProgress": "Collection progress"
   },
   "friends": {
     "title": "Friends",
     "add": "+ Add",
     "requests": "Friend requests",
+    "requestCount": "Requests",
     "noFriends": "No friends yet",
     "accept": "Accept",
     "reject": "Reject",
@@ -83,12 +114,20 @@
     "requestSent": "Friend request sent!",
     "error": "An error occurred",
     "qrDescription": "Show your QR code for others to scan",
-    "copyLink": "Copy link"
+    "copyLink": "Copy link",
+    "progressCompare": "Compare progress",
+    "methodUsername": "Username",
+    "methodId": "ID",
+    "methodQr": "QR",
+    "methodLink": "Link",
+    "searchUsername": "Search by username",
+    "searchId": "Enter user ID",
+    "shareLink": "Share link"
   },
   "leaderboard": {
     "title": "Ranking",
-    "global": "🌏 Global",
-    "friendsTab": "👥 Friends",
+    "global": "Global",
+    "friendsTab": "Friends",
     "checkins": "Check-ins",
     "badges": "Badges",
     "timesUnit": "times",
@@ -99,8 +138,20 @@
   "profile": {
     "badges": "Badges",
     "titles": "Titles",
+    "titlesLabel": "Titles",
     "active": "Active",
-    "progress": "Progress"
+    "inactive": "Owned",
+    "progress": "Progress",
+    "status": "Status",
+    "collection": "Collection",
+    "collectionLink": "View all",
+    "name": "Name",
+    "level": "Level",
+    "exp": "EXP",
+    "completionRate": "Completion",
+    "checkins": "Check-ins",
+    "badgesStat": "Badges",
+    "globalRank": "Global Rank"
   },
   "common": {
     "unknown": "Unknown"

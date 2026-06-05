@@ -1,10 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { MapView } from '@/components/map/MapView'
+import { getLocale } from '@/lib/i18n/server'
+import { localizedName } from '@/lib/i18n/localize'
 
 const FRIEND_COLORS = ['#f97316', '#a855f7', '#ec4899', '#14b8a6', '#f59e0b', '#6366f1']
 
 export default async function MapPage() {
   const supabase = await createClient()
+  const locale = await getLocale()
 
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -59,10 +62,21 @@ export default async function MapPage() {
     }
   }
 
+  const localizedLocations = (locations ?? []).map((loc: any) => ({
+    ...loc,
+    name: localizedName(loc, locale),
+    categories: { ...loc.categories, name: localizedName(loc.categories, locale) },
+  }))
+
+  const localizedCategories = (categories ?? []).map((cat: any) => ({
+    ...cat,
+    name: localizedName(cat, locale),
+  }))
+
   return (
     <MapView
-      locations={locations ?? []}
-      categories={categories ?? []}
+      locations={localizedLocations}
+      categories={localizedCategories}
       userCheckinLocationIds={userCheckinLocationIds}
       friendCheckins={friendCheckins}
       isLoggedIn={!!user}

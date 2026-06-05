@@ -1,14 +1,14 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { ProfileHeader } from '@/components/profile/ProfileHeader'
-import { BadgeWall } from '@/components/profile/BadgeWall'
-import { TitleSelector } from '@/components/profile/TitleSelector'
-import { CategoryProgressList } from '@/components/profile/CategoryProgressList'
+import { ProfilePageClient } from '@/components/profile/ProfilePageClient'
+import { getLocale } from '@/lib/i18n/server'
+import { localizedName } from '@/lib/i18n/localize'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
+  const locale = await getLocale()
 
   const [
     { data: profile },
@@ -17,7 +17,7 @@ export default async function ProfilePage() {
     { data: userTitles },
     { data: categories },
   ] = await Promise.all([
-    supabase.from('user_profiles').select('*, titles(name)').eq('id', user.id).single() as any,
+    supabase.from('user_profiles').select('*, titles(name, name_en, name_zh)').eq('id', user.id).single() as any,
     supabase.from('badges').select('*') as any,
     supabase.from('user_badges').select('badges(*)').eq('user_id', user.id) as any,
     supabase.from('user_titles').select('titles(*)').eq('user_id', user.id) as any,
@@ -48,30 +48,37 @@ export default async function ProfilePage() {
 
   const categoryProgress = (categories ?? []).map((cat: any) => ({
     id: cat.id,
-    name: cat.name,
+    name: localizedName(cat, locale),
     color: cat.color,
     icon: cat.icon,
     total: totalPerCategory[cat.id] ?? 0,
     checked: checkedPerCategory[cat.id] ?? 0,
   }))
 
-  const earnedBadges = userBadges?.map((ub: any) => ub.badges).filter(Boolean) ?? []
-  const earnedTitles = userTitles?.map((ut: any) => ut.titles).filter(Boolean) ?? []
+  const earnedBadges = (userBadges?.map((ub: any) => ub.badges).filter(Boolean) ?? [])
+    .map((b: any) => ({ ...b, name: localizedName(b, locale) }))
+  const earnedTitles = (userTitles?.map((ut: any) => ut.titles).filter(Boolean) ?? [])
+    .map((t: any) => ({ ...t, name: localizedName(t, locale) }))
+
+  const totalSpots = Object.values(totalPerCategory).reduce((a, b) => a + b, 0)
+  const totalCheckins = Object.values(checkedPerCategory).reduce((a, b) => a + b, 0)
+
+  const localizedProfile = profile ? {
+    ...profile,
+    titles: profile.titles ? { ...profile.titles, name: localizedName(profile.titles, locale) } : null,
+  } : profile
+
+  const localizedAllBadges = (allBadges ?? []).map((b: any) => ({ ...b, name: localizedName(b, locale) }))
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-4">
-      <ProfileHeader
-        username={profile?.username ?? ''}
-        totalXp={profile?.total_xp ?? 0}
-        level={profile?.level ?? 1}
-        activeTitle={profile?.titles?.name}
-      />
-      <TitleSelector
-        earnedTitles={earnedTitles}
-        activeTitleId={profile?.active_title_id ?? null}
-      />
-      <BadgeWall earnedBadges={earnedBadges} allBadges={allBadges ?? []} />
-      <CategoryProgressList categories={categoryProgress} />
-    </div>
+    <ProfilePageClient
+      profile={localizedProfile}
+      earnedBadges={earnedBadges}
+      allBadges={localizedAllBadges}
+      earnedTitles={earnedTitles}
+      categoryProgress={categoryProgress}
+      totalCheckins={totalCheckins}
+      totalSpots={totalSpots}
+    />
   )
 }

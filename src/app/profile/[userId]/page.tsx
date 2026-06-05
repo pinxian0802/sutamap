@@ -3,10 +3,13 @@ import { createClient } from '@/lib/supabase/server'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { BadgeWall } from '@/components/profile/BadgeWall'
 import { CategoryProgressList } from '@/components/profile/CategoryProgressList'
+import { getLocale } from '@/lib/i18n/server'
+import { localizedName } from '@/lib/i18n/localize'
 
 export default async function PublicProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const { userId } = await params
   const supabase = await createClient()
+  const locale = await getLocale()
 
   const [
     { data: profile },
@@ -14,7 +17,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
     { data: userBadges },
     { data: categories },
   ] = await Promise.all([
-    supabase.from('user_profiles').select('*, titles(name)').eq('id', userId).single() as any,
+    supabase.from('user_profiles').select('*, titles(name, name_en, name_zh)').eq('id', userId).single() as any,
     supabase.from('badges').select('*') as any,
     supabase.from('user_badges').select('badges(*)').eq('user_id', userId) as any,
     supabase.from('categories').select('*') as any,
@@ -43,12 +46,15 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   })
 
   const categoryProgress = (categories ?? []).map((cat: any) => ({
-    id: cat.id, name: cat.name, color: cat.color, icon: cat.icon,
+    id: cat.id, name: localizedName(cat, locale), color: cat.color, icon: cat.icon,
     total: totalPerCategory[cat.id] ?? 0,
     checked: checkedPerCategory[cat.id] ?? 0,
   }))
 
-  const earnedBadges = userBadges?.map((ub: any) => ub.badges).filter(Boolean) ?? []
+  const earnedBadges = (userBadges?.map((ub: any) => ub.badges).filter(Boolean) ?? [])
+    .map((b: any) => ({ ...b, name: localizedName(b, locale) }))
+
+  const localizedAllBadges = (allBadges ?? []).map((b: any) => ({ ...b, name: localizedName(b, locale) }))
 
   return (
     <div className="max-w-md mx-auto p-4 space-y-4">
@@ -56,9 +62,9 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         username={profile.username}
         totalXp={profile.total_xp}
         level={profile.level}
-        activeTitle={profile.titles?.name}
+        activeTitle={profile.titles ? localizedName(profile.titles, locale) : null}
       />
-      <BadgeWall earnedBadges={earnedBadges} allBadges={allBadges ?? []} />
+      <BadgeWall earnedBadges={earnedBadges} allBadges={localizedAllBadges} />
       <CategoryProgressList categories={categoryProgress} />
     </div>
   )

@@ -24,7 +24,12 @@
     "username": "使用者名稱",
     "signingUp": "註冊中...",
     "createAccount": "建立帳號",
-    "hasAccount": "已經有帳號了？"
+    "hasAccount": "已經有帳號了？",
+    "heroLine1": "走遍日本、蒐集印章、踏破地圖。",
+    "heroLine2": "用地圖玩的蒐集遊戲。",
+    "orDivider": "或",
+    "googleLogin": "使用 Google 繼續",
+    "terms": "繼續即表示你同意使用條款與隱私權政策"
   },
   "map": {
     "revisit": "再次造訪",
@@ -34,7 +39,26 @@
     "loginLink": "登入",
     "loginSuffix": "",
     "visited": "已造訪",
-    "category": "主題"
+    "category": "主題",
+    "allCategories": "所有主題",
+    "moreLocations": "+{count} 處",
+    "searchPlaceholder": "搜尋地點・主題",
+    "searchInputPlaceholder": "輸入地點或主題名稱…",
+    "friendsToggle": "好友",
+    "checkinFab": "打卡",
+    "nearbySpots": "附近的地點",
+    "gettingLocation": "取得位置中…",
+    "tooFarLabel": "太遠",
+    "gpsUnavailable": "無法取得你的位置",
+    "noNearbySpots": "附近沒有可打卡的地點",
+    "searchByTheme": "依主題瀏覽",
+    "recentLocations": "最近的地點",
+    "themeSection": "主題",
+    "locationSection": "地點",
+    "completed": "完成",
+    "locations": "地點",
+    "notFound": "找不到「{query}」",
+    "tryOtherKeyword": "請嘗試其他關鍵字"
   },
   "checkin": {
     "gpsError": "取得位置資訊失敗。請使用含有 GPS 資訊的照片。",
@@ -50,7 +74,12 @@
     "tryAgain": "重試",
     "alreadyVisited": "✅ 已造訪（將記錄為再訪，不會獲得 XP）",
     "checkingIn": "打卡中...",
-    "submit": "打卡"
+    "submit": "打卡",
+    "success": "打卡成功！",
+    "firstCheckin": "首次打卡",
+    "done": "完成",
+    "photoAttached": "照片已附加",
+    "exifGps": "讀取 EXIF GPS"
   },
   "photo": {
     "processFailed": "照片處理失敗",
@@ -60,15 +89,17 @@
   },
   "categories": {
     "title": "主題一覽",
-    "complete": "完成！",
+    "complete": "★ 完成",
     "spots": "處",
     "xpPerSpot": "XP/處",
-    "friendsWorking": "好友也在挑戰中"
+    "friendsWorking": "好友也在挑戰中",
+    "collectionProgress": "蒐集進度"
   },
   "friends": {
     "title": "好友",
     "add": "+ 新增",
     "requests": "好友申請",
+    "requestCount": "申請",
     "noFriends": "還沒有好友",
     "accept": "接受",
     "reject": "拒絕",
@@ -83,12 +114,20 @@
     "requestSent": "已送出好友申請！",
     "error": "發生錯誤",
     "qrDescription": "出示你的 QR Code 讓對方掃描",
-    "copyLink": "複製連結"
+    "copyLink": "複製連結",
+    "progressCompare": "進度比較",
+    "methodUsername": "使用者名稱",
+    "methodId": "ID",
+    "methodQr": "QR",
+    "methodLink": "連結",
+    "searchUsername": "搜尋使用者名稱",
+    "searchId": "輸入使用者 ID",
+    "shareLink": "分享連結"
   },
   "leaderboard": {
     "title": "排行榜",
-    "global": "🌏 全部",
-    "friendsTab": "👥 好友",
+    "global": "全部",
+    "friendsTab": "好友",
     "checkins": "打卡數",
     "badges": "徽章",
     "timesUnit": "次",
@@ -99,8 +138,20 @@
   "profile": {
     "badges": "徽章",
     "titles": "稱號",
+    "titlesLabel": "稱號",
     "active": "使用中",
-    "progress": "進度"
+    "inactive": "已擁有",
+    "progress": "進度",
+    "status": "狀態",
+    "collection": "蒐集",
+    "collectionLink": "查看主題",
+    "name": "名稱",
+    "level": "等級",
+    "exp": "EXP",
+    "completionRate": "踏破率",
+    "checkins": "打卡",
+    "badgesStat": "徽章",
+    "globalRank": "全站排名"
   },
   "common": {
     "unknown": "未知"

@@ -1,41 +1,77 @@
-import { Progress } from '@/components/ui/progress'
+'use client'
+
 import { xpToNextLevel } from '@/lib/xp/calculator'
+import { useDictionary } from '@/lib/i18n/context'
 
 interface Props {
   username: string
   totalXp: number
   level: number
   activeTitle?: string | null
+  totalCheckins?: number
+  totalBadges?: number
+  rank?: number
+  totalSpots?: number
 }
 
-export function ProfileHeader({ username, totalXp, level, activeTitle }: Props) {
+export function ProfileHeader({ username, totalXp, level, activeTitle, totalCheckins = 0, totalBadges = 0, rank, totalSpots = 0 }: Props) {
   const { current, needed } = xpToNextLevel(totalXp)
-  const pct = Math.round((current / needed) * 100)
+  const xpPct = Math.round((current / needed) * 100)
+  const completionPct = totalSpots > 0 ? Math.round((totalCheckins / totalSpots) * 100) : 0
+  const dict = useDictionary()
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-5 space-y-4">
-      <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold">
+    <div className="sm-card">
+      <div className="sm-card-title">{dict.profile.status}</div>
+      <div className="flex gap-[14px]">
+        <div className="sm-avatar w-[74px] h-[88px] text-[38px] rounded-[11px]">
           {username[0]?.toUpperCase() ?? '?'}
         </div>
-        <div>
-          <h1 className="text-xl font-bold">{username}</h1>
-          {activeTitle && (
-            <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
-              {activeTitle}
-            </span>
-          )}
+        <div className="flex-1">
+          <div className="flex justify-between text-[13px] py-[2px]">
+            <span className="text-sub">{dict.profile.name}</span>
+            <span>{username}</span>
+          </div>
+          <div className="flex justify-between text-[13px] py-[2px]">
+            <span className="text-sub">{dict.profile.level}</span>
+            <span className="sm-mono">{level}</span>
+          </div>
+          <div className="mt-[9px]">
+            <div className="flex justify-between text-[11px] mb-[5px]">
+              <span className="text-amber font-bold">{dict.profile.exp}</span>
+              <span className="sm-mono text-sub">{current} / {needed}</span>
+            </div>
+            <div className="sm-pbar" style={{ height: 7 }}>
+              <div className="sm-pfill" style={{ width: `${xpPct}%`, background: 'var(--amber)' }} />
+            </div>
+            <div className="flex justify-between text-[11px] mt-[9px] mb-[5px]">
+              <span className="text-green-d font-bold">{dict.profile.completionRate}</span>
+              <span className="sm-mono text-sub">{totalCheckins} / {totalSpots}</span>
+            </div>
+            <div className="sm-pbar" style={{ height: 7 }}>
+              <div className="sm-pfill" style={{ width: `${completionPct}%` }} />
+            </div>
+          </div>
         </div>
       </div>
+      <div className="flex mt-[15px] pt-[13px] border-t border-line2">
+        <StatTile v={totalCheckins} k={dict.profile.checkins} />
+        <div className="w-px bg-line2" />
+        <StatTile v={totalBadges} k={dict.profile.badgesStat} color="var(--terra)" />
+        <div className="w-px bg-line2" />
+        <StatTile v={rank ? `#${rank}` : '—'} k={dict.profile.globalRank} color="var(--green-d)" />
+      </div>
+    </div>
+  )
+}
 
-      <div className="space-y-1.5">
-        <div className="flex justify-between text-sm">
-          <span className="font-semibold text-gray-700">Lv {level}</span>
-          <span className="text-gray-400 text-xs">{current} / {needed} XP</span>
-        </div>
-        <Progress value={pct} className="h-2" />
-        <p className="text-xs text-gray-400 text-right">Total: {totalXp} XP</p>
+function StatTile({ v, k, color }: { v: number | string; k: string; color?: string }) {
+  return (
+    <div className="flex-1 text-center">
+      <div className="text-[23px] font-bold" style={{ fontFamily: 'var(--font-display)', color: color || 'var(--ink)' }}>
+        {v}
       </div>
+      <div className="text-[10.5px] text-sub mt-[3px] font-bold tracking-[0.06em]">{k}</div>
     </div>
   )
 }
