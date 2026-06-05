@@ -288,6 +288,23 @@
   justify-content: space-between;
 }
 
+/* Admin input */
+.adm-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  transition: 0.15s;
+}
+.adm-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(122, 168, 60, 0.15);
+}
+
 /* Scrollbar hide */
 .sm-noscroll::-webkit-scrollbar {
   width: 0;

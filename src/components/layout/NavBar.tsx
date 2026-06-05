@@ -21,7 +21,8 @@ export function NavBar() {
   ]
 
   const isAuthPage = pathname.startsWith('/auth')
-  if (isAuthPage) return null
+  const isAdminPage = pathname.startsWith('/admin')
+  if (isAuthPage || isAdminPage) return null
 
   return (
     <nav className="sm-nav">
