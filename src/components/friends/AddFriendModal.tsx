@@ -5,6 +5,15 @@ import { useRouter } from 'next/navigation'
 import { QRCodeSVG } from 'qrcode.react'
 import { useDictionary } from '@/lib/i18n/context'
 import { Search, Share2 } from 'lucide-react'
+import { UserAvatar } from '@/components/profile/UserAvatar'
+
+interface SearchUser {
+  id: string
+  username: string
+  user_code: string
+  avatar_url: string | null
+  level: number
+}
 
 interface Props {
   onClose: () => void
@@ -14,7 +23,10 @@ interface Props {
 export function AddFriendModal({ onClose, myUserId }: Props) {
   const [query, setQuery] = useState('')
   const [tab, setTab] = useState<'search' | 'qr' | 'link'>('search')
-  const [loading, setLoading] = useState(false)
+  const [searching, setSearching] = useState(false)
+  const [results, setResults] = useState<SearchUser[] | null>(null)
+  const [sending, setSending] = useState<string | null>(null)
+  const [sentIds, setSentIds] = useState<Set<string>>(new Set())
   const [message, setMessage] = useState<string | null>(null)
   const router = useRouter()
   const dict = useDictionary()
@@ -23,20 +35,32 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
     ? `${window.location.origin}/profile/${myUserId}`
     : ''
 
-  async function handleSend() {
+  async function handleSearch() {
     if (!query.trim()) return
-    setLoading(true)
+    setSearching(true)
+    setResults(null)
+    setMessage(null)
+    const res = await fetch(`/api/users/search?q=${encodeURIComponent(query.trim())}`)
+    const data = await res.json()
+    setSearching(false)
+    setResults(data.users ?? [])
+  }
+
+  async function handleSend(targetId: string) {
+    setSending(targetId)
     setMessage(null)
     const res = await fetch('/api/friends', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ targetUsername: query.trim() }),
+      body: JSON.stringify({ targetId }),
     })
     const data = await res.json()
-    setLoading(false)
+    setSending(null)
     if (res.ok) {
-      setMessage(dict.friends.requestSent)
+      setSentIds(prev => new Set(prev).add(targetId))
       router.refresh()
+    } else if (res.status === 409) {
+      setMessage(dict.friends.alreadyExists)
     } else {
       setMessage(data.error ?? dict.friends.error)
     }
@@ -80,21 +104,48 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
                 type="text"
                 className="flex-1 border-none outline-none text-[14px] bg-transparent text-ink placeholder:text-sub"
                 style={{ fontFamily: 'var(--font-sans)' }}
-                placeholder={tab === 'search' ? dict.friends.searchUsername : dict.friends.searchId}
+                placeholder={dict.friends.searchPlaceholder}
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSend()}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
               />
             </div>
-            {message && <p className="text-sm text-center text-sub mb-3">{message}</p>}
             <button
-              className="sm-btn sm-btn-primary"
-              onClick={handleSend}
-              disabled={loading || !query.trim()}
+              className="sm-btn sm-btn-primary mb-[14px]"
+              onClick={handleSearch}
+              disabled={searching || !query.trim()}
               style={!query.trim() ? { opacity: 0.45 } : undefined}
             >
-              {loading ? dict.friends.sending : dict.friends.sendRequest}
+              {searching ? dict.friends.sending : dict.friends.search}
             </button>
+
+            {message && <p className="text-sm text-center text-sub mb-3">{message}</p>}
+
+            {results !== null && results.length === 0 && (
+              <p className="text-sm text-center text-sub py-4">{dict.friends.noFriends}</p>
+            )}
+
+            {results && results.length > 0 && (
+              <div className="space-y-[9px]">
+                {results.map(u => (
+                  <div key={u.id} className="sm-card flex items-center gap-3">
+                    <UserAvatar username={u.username} avatarUrl={u.avatar_url} size={42} rounded="full" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[14.5px] font-bold truncate">{u.username}</div>
+                      <div className="sm-mono text-[11px] text-sub">#{u.user_code} · Lv {u.level}</div>
+                    </div>
+                    <button
+                      className="sm-btn sm-btn-primary"
+                      style={{ padding: '6px 14px', fontSize: 13, opacity: sentIds.has(u.id) ? 0.45 : 1 }}
+                      disabled={sending === u.id || sentIds.has(u.id)}
+                      onClick={() => handleSend(u.id)}
+                    >
+                      {sentIds.has(u.id) ? '✓' : sending === u.id ? '...' : dict.friends.sendRequest}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         )}
 
