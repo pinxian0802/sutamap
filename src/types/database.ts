@@ -39,6 +39,7 @@ export interface Database {
         Row: {
           id: string
           username: string
+          user_code: string
           total_xp: number
           level: number
           active_title_id: string | null
