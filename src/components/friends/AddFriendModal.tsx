@@ -136,7 +136,7 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
                     </div>
                     <button
                       className="sm-btn sm-btn-primary"
-                      style={{ padding: '6px 14px', fontSize: 13, opacity: sentIds.has(u.id) ? 0.45 : 1 }}
+                      style={{ width: 'auto', padding: '6px 14px', fontSize: 13, flexShrink: 0, opacity: sentIds.has(u.id) ? 0.45 : 1 }}
                       disabled={sending === u.id || sentIds.has(u.id)}
                       onClick={() => handleSend(u.id)}
                     >
