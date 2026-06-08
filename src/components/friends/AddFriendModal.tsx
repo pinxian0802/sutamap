@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { QRCodeSVG } from 'qrcode.react'
 import { useDictionary } from '@/lib/i18n/context'
@@ -28,8 +28,15 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
   const [sending, setSending] = useState<string | null>(null)
   const [sentIds, setSentIds] = useState<Set<string>>(new Set())
   const [message, setMessage] = useState<string | null>(null)
+  const [visible, setVisible] = useState(false)
   const router = useRouter()
   const dict = useDictionary()
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true))
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
 
   const profileUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/profile/${myUserId}`
@@ -75,15 +82,18 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
   return (
     <div className="fixed inset-0 z-[700]">
       <div
-        className="absolute inset-0"
+        className={`absolute inset-0 transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
         style={{ background: 'rgba(36,52,74,.34)', backdropFilter: 'blur(2px)' }}
         onClick={onClose}
       />
       <div
-        className="sm-sheet absolute bottom-0 left-0 right-0 max-w-md mx-auto"
-        style={{ minHeight: '60vh', maxHeight: '92vh' }}
+        className={`absolute bottom-0 left-0 right-0 max-w-md mx-auto bg-paper rounded-t-[22px] transition-transform duration-300 ease-out ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+        style={{ minHeight: '60vh', maxHeight: '92vh', boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}
       >
-        <div className="w-[38px] h-1 rounded-[2px] bg-[#d8d0bf] mx-auto mt-1 mb-[14px]" />
+        <div className="flex justify-center pt-2 pb-1">
+          <div className="w-[38px] h-1 rounded-[2px]" style={{ background: '#d8d0bf' }} />
+        </div>
+        <div className="px-[18px] pt-2 pb-6 overflow-y-auto" style={{ maxHeight: 'calc(92vh - 60px)' }}>
         <div className="flex items-center justify-between mb-[14px]">
           <h3 className="text-[18px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>{dict.friends.addFriend}</h3>
           <button className="sm-iconbtn" onClick={onClose}>
@@ -183,6 +193,7 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
             </button>
           </>
         )}
+        </div>
       </div>
     </div>
   )
