@@ -48,7 +48,7 @@ export function CheckinModal({ location, isLoggedIn, alreadyCheckedIn, onClose }
       />
 
       <div
-        className={`absolute bottom-0 left-0 right-0 bg-paper rounded-t-[22px] transition-transform duration-300 ease-out ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`absolute bottom-0 left-0 right-0 max-w-md mx-auto bg-paper rounded-t-[22px] transition-transform duration-300 ease-out ${visible ? 'translate-y-0' : 'translate-y-full'}`}
         style={{ maxHeight: '92%', boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}
       >
         <div className="flex justify-center pt-2 pb-1">
