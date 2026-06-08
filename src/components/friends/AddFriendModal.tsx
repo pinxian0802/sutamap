@@ -74,7 +74,7 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
 
   return (
     <div className="sm-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="sm-sheet">
+      <div className="sm-sheet" style={{ minHeight: '60vh', maxHeight: '92vh' }}>
         <div className="w-[38px] h-1 rounded-[2px] bg-[#d8d0bf] mx-auto mt-1 mb-[14px]" />
         <div className="flex items-center justify-between mb-[14px]">
           <h3 className="text-[18px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>{dict.friends.addFriend}</h3>
