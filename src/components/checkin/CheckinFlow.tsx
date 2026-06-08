@@ -98,6 +98,7 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
 
     setResult(data)
     setStep('success')
+    router.refresh()
   }
 
   if (!isLoggedIn) {

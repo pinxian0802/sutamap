@@ -19,7 +19,8 @@ interface Props {
 
 export function ProfileHeader({ username, userCode, avatarUrl, totalXp, level, activeTitle, totalCheckins = 0, totalTitles = 0, rank, totalSpots = 0 }: Props) {
   const { current, needed } = xpToNextLevel(totalXp)
-  const xpPct = Math.round((current / needed) * 100)
+  const nextLevelXp = totalXp - current + needed
+  const xpPct = nextLevelXp > 0 ? Math.round((totalXp / nextLevelXp) * 100) : 100
   const completionPct = totalSpots > 0 ? Math.round((totalCheckins / totalSpots) * 100) : 0
   const dict = useDictionary()
 
@@ -52,7 +53,7 @@ export function ProfileHeader({ username, userCode, avatarUrl, totalXp, level, a
           <div className="mt-[9px]">
             <div className="flex justify-between text-[11px] mb-[5px]">
               <span className="text-amber font-bold">{dict.profile.exp}</span>
-              <span className="sm-mono text-sub">{current} / {needed}</span>
+              <span className="sm-mono text-sub">{totalXp} / {totalXp - current + needed}</span>
             </div>
             <div className="sm-pbar" style={{ height: 7 }}>
               <div className="sm-pfill" style={{ width: `${xpPct}%`, background: 'var(--amber)' }} />
