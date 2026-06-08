@@ -4,14 +4,15 @@ import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 
 interface Props {
-  title: string
+  title?: string
+  header?: (handleClose: () => void) => React.ReactNode
   onClose: () => void
   children: React.ReactNode
   minHeight?: string
   maxHeight?: string
 }
 
-export function Modal({ title, onClose, children, minHeight, maxHeight }: Props) {
+export function Modal({ title, header, onClose, children, minHeight, maxHeight }: Props) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -41,14 +42,16 @@ export function Modal({ title, onClose, children, minHeight, maxHeight }: Props)
           <div className="w-[38px] h-1 rounded-[2px]" style={{ background: '#d8d0bf' }} />
         </div>
 
-        <div className="flex items-center justify-between px-[18px] pt-2 pb-4">
-          <h2 className="text-[17px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>
-            {title}
-          </h2>
-          <button className="sm-iconbtn" onClick={handleClose}>
-            <X size={18} className="text-sub" />
-          </button>
-        </div>
+        {header ? header(handleClose) : (
+          <div className="flex items-center justify-between px-[18px] pt-2 pb-4">
+            <h2 className="text-[17px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>
+              {title}
+            </h2>
+            <button className="sm-iconbtn" onClick={handleClose}>
+              <X size={18} className="text-sub" />
+            </button>
+          </div>
+        )}
 
         {children}
       </div>
