@@ -209,22 +209,7 @@
   z-index: 600;
 }
 
-/* Overlay / Sheet */
-.sm-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(36, 52, 74, 0.34);
-  backdrop-filter: blur(2px);
-  z-index: 700;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  animation: sm-ovin 0.2s ease;
-}
-@keyframes sm-ovin {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* Sheet */
 .sm-sheet {
   width: 100%;
   max-width: 28rem;
