@@ -116,11 +116,9 @@
     "copyLink": "Copy link",
     "progressCompare": "Compare progress",
     "methodUsername": "Username",
-    "methodId": "ID",
     "methodQr": "QR",
     "methodLink": "Link",
     "searchUsername": "Search by username",
-    "searchId": "Enter user ID",
     "shareLink": "Share link"
   },
   "leaderboard": {

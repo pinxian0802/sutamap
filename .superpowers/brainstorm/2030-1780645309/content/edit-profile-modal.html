@@ -1,0 +1,61 @@
+<h2>編輯個人資料 Modal 設計</h2>
+<p class="subtitle">點選偏好的版面配置</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1a1a1a;border-radius:12px;padding:24px;font-family:system-ui;color:#e0e0e0;max-width:360px;margin:auto;">
+        <!-- Modal header -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <span style="font-size:17px;font-weight:700;color:#fff;">編輯個人資料</span>
+          <span style="color:#888;font-size:20px;cursor:pointer;">✕</span>
+        </div>
+        <!-- Avatar -->
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:80px;height:80px;border-radius:50%;background:#3a5a1a;margin:0 auto 8px;display:grid;place-items:center;font-size:28px;font-weight:700;color:#fff;">P</div>
+          <span style="color:#7ab648;font-size:13px;cursor:pointer;">變更頭像</span>
+        </div>
+        <!-- Username field -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px;color:#888;margin-bottom:6px;">使用者名稱</div>
+          <div style="background:#2a2a2a;border:1px solid #444;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;">Panda</div>
+        </div>
+        <!-- Save button -->
+        <div style="background:#7ab648;color:#fff;text-align:center;padding:12px;border-radius:10px;font-weight:600;font-size:15px;margin-top:8px;">儲存</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 置中排版</h3>
+      <p>頭像置中、下方放「變更頭像」連結、再下方是使用者名稱輸入框</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1a1a1a;border-radius:12px;padding:24px;font-family:system-ui;color:#e0e0e0;max-width:360px;margin:auto;">
+        <!-- Modal header -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <span style="font-size:17px;font-weight:700;color:#fff;">編輯個人資料</span>
+          <span style="color:#888;font-size:20px;cursor:pointer;">✕</span>
+        </div>
+        <!-- Avatar + Username row -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <div style="position:relative;flex-shrink:0;">
+            <div style="width:72px;height:72px;border-radius:50%;background:#3a5a1a;display:grid;place-items:center;font-size:26px;font-weight:700;color:#fff;">P</div>
+            <div style="position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;border-radius:50%;background:#7ab648;display:grid;place-items:center;font-size:12px;">📷</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:12px;color:#888;margin-bottom:6px;">使用者名稱</div>
+            <div style="background:#2a2a2a;border:1px solid #444;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;">Panda</div>
+          </div>
+        </div>
+        <!-- Save button -->
+        <div style="background:#7ab648;color:#fff;text-align:center;padding:12px;border-radius:10px;font-weight:600;font-size:15px;">儲存</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 橫向排版</h3>
+      <p>頭像和名稱同一行，頭像右下角有相機圖示按鈕，更緊湊</p>
+    </div>
+  </div>
+</div>

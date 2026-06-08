@@ -13,7 +13,7 @@ export default async function FriendsPage() {
     .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
 
   const friendIds = ((friendships ?? []) as any[])
-    .filter((f: any) => f.status === 'accepted')
+    .filter((f: any) => f.status !== 'rejected')
     .map((f: any) => f.requester_id === user.id ? f.addressee_id : f.requester_id)
 
   const { data: profiles } = friendIds.length > 0

@@ -73,25 +73,30 @@ export function FriendCard({ friendshipId, userId, username, level, avatarUrl, s
   }
 
   return (
-    <Link href={`/profile/${userId}`} className="sm-card flex items-center gap-[13px] cursor-pointer block">
-      <UserAvatar username={username} avatarUrl={avatarUrl} size={50} rounded="rounded" />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-[15.5px] font-bold">{username}</span>
-          <span className="sm-mono text-[11px] text-white px-2 py-[1px] rounded-[7px] bg-ink2">
-            Lv {level}
-          </span>
+    <div className="sm-card flex items-center gap-[13px]">
+      <Link href={`/profile/${userId}`} className="flex items-center gap-[13px] flex-1 min-w-0">
+        <UserAvatar username={username} avatarUrl={avatarUrl} size={50} rounded="rounded" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-[15.5px] font-bold">{username}</span>
+            <span className="sm-mono text-[11px] text-white px-2 py-[1px] rounded-[7px] bg-ink2">
+              Lv {level}
+            </span>
+          </div>
+          <div className="text-[11.5px] text-sub mt-1 flex gap-3">
+            <span className="sm-mono inline-flex items-center gap-0.5">
+              <MapPin size={12} strokeWidth={2} className="text-sub" />—
+            </span>
+            <span className="sm-mono inline-flex items-center gap-0.5">
+              <Medal size={12} strokeWidth={2} className="text-sub" />—
+            </span>
+          </div>
         </div>
-        <div className="text-[11.5px] text-sub mt-1 flex gap-3">
-          <span className="sm-mono inline-flex items-center gap-0.5">
-            <MapPin size={12} strokeWidth={2} className="text-sub" />—
-          </span>
-          <span className="sm-mono inline-flex items-center gap-0.5">
-            <Medal size={12} strokeWidth={2} className="text-sub" />—
-          </span>
-        </div>
-      </div>
-      <ChevronRight size={18} className="text-faint" />
-    </Link>
+        <ChevronRight size={18} className="text-faint" />
+      </Link>
+      <button onClick={handleRemove} className="sm-iconbtn" style={{ width: 38, height: 38 }}>
+        <span className="text-[20px] leading-none text-sub">×</span>
+      </button>
+    </div>
   )
 }

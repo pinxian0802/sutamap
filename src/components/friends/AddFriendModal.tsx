@@ -13,7 +13,7 @@ interface Props {
 
 export function AddFriendModal({ onClose, myUserId }: Props) {
   const [query, setQuery] = useState('')
-  const [tab, setTab] = useState<'search' | 'id' | 'qr' | 'link'>('search')
+  const [tab, setTab] = useState<'search' | 'qr' | 'link'>('search')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const router = useRouter()
@@ -44,7 +44,6 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
 
   const methods = [
     { id: 'search' as const, label: dict.friends.methodUsername },
-    { id: 'id' as const, label: dict.friends.methodId },
     { id: 'qr' as const, label: dict.friends.methodQr },
     { id: 'link' as const, label: dict.friends.methodLink },
   ]
@@ -73,7 +72,7 @@ export function AddFriendModal({ onClose, myUserId }: Props) {
           ))}
         </div>
 
-        {(tab === 'search' || tab === 'id') && (
+        {tab === 'search' && (
           <>
             <div className="flex items-center gap-[9px] bg-paper2 border border-line rounded-[13px] py-3 px-[14px] mb-[14px]">
               <Search size={18} className="text-sub" />

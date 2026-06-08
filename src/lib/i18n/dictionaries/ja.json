@@ -116,11 +116,9 @@
     "copyLink": "リンクをコピー",
     "progressCompare": "進度比較",
     "methodUsername": "ユーザー名",
-    "methodId": "ID",
     "methodQr": "QR",
     "methodLink": "リンク",
     "searchUsername": "ユーザー名を検索",
-    "searchId": "ユーザー ID を入力",
     "shareLink": "リンクを共有"
   },
   "leaderboard": {

@@ -116,11 +116,9 @@
     "copyLink": "複製連結",
     "progressCompare": "進度比較",
     "methodUsername": "使用者名稱",
-    "methodId": "ID",
     "methodQr": "QR",
     "methodLink": "連結",
     "searchUsername": "搜尋使用者名稱",
-    "searchId": "輸入使用者 ID",
     "shareLink": "分享連結"
   },
   "leaderboard": {
