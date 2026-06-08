@@ -52,7 +52,7 @@ export function FriendCard({ friendshipId, userId, username, level, avatarUrl, s
 
   return (
     <div className="sm-card flex items-center gap-[13px]">
-      <Link href={`/profile/${userId}`} className="flex items-center gap-[13px] flex-1 min-w-0">
+      <Link href={`/profile/${userId}?from=friends`} className="flex items-center gap-[13px] flex-1 min-w-0">
         <UserAvatar username={username} avatarUrl={avatarUrl} size={50} rounded="rounded" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">

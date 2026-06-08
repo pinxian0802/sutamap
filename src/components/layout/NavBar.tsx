@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { useDictionary } from '@/lib/i18n/context'
 import { Map, Target, Trophy, Users, User } from 'lucide-react'
 import { LanguageSwitcher } from './LanguageSwitcher'
@@ -10,6 +10,8 @@ const ICON_MAP = { map: Map, categories: Target, leaderboard: Trophy, friends: U
 
 export function NavBar() {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const fromFriends = pathname.startsWith('/profile/') && searchParams.get('from') === 'friends'
   const dict = useDictionary()
 
   const NAV_ITEMS = [
@@ -30,7 +32,9 @@ export function NavBar() {
         <LanguageSwitcher />
       </div>
       {NAV_ITEMS.map(item => {
-        const isActive = pathname === item.href || (item.key !== 'profile' && pathname.startsWith(item.href + '/'))
+        const isActive =
+          (item.key === 'friends' && fromFriends) ||
+          (item.key !== 'friends' && (pathname === item.href || (item.key !== 'profile' && pathname.startsWith(item.href + '/'))))
         const Icon = ICON_MAP[item.key]
         return (
           <Link
