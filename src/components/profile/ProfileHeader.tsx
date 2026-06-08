@@ -6,6 +6,7 @@ import { UserAvatar } from './UserAvatar'
 
 interface Props {
   username: string
+  userCode?: string
   avatarUrl?: string | null
   totalXp: number
   level: number
@@ -16,7 +17,7 @@ interface Props {
   totalSpots?: number
 }
 
-export function ProfileHeader({ username, avatarUrl, totalXp, level, activeTitle, totalCheckins = 0, totalTitles = 0, rank, totalSpots = 0 }: Props) {
+export function ProfileHeader({ username, userCode, avatarUrl, totalXp, level, activeTitle, totalCheckins = 0, totalTitles = 0, rank, totalSpots = 0 }: Props) {
   const { current, needed } = xpToNextLevel(totalXp)
   const xpPct = Math.round((current / needed) * 100)
   const completionPct = totalSpots > 0 ? Math.round((totalCheckins / totalSpots) * 100) : 0
@@ -38,6 +39,12 @@ export function ProfileHeader({ username, avatarUrl, totalXp, level, activeTitle
             <span className="text-sub">{dict.profile.name}</span>
             <span>{username}</span>
           </div>
+          {userCode && (
+            <div className="flex justify-between text-[13px] py-[2px]">
+              <span className="text-sub">{dict.profile.userCode}</span>
+              <span className="sm-mono text-sub">#{userCode}</span>
+            </div>
+          )}
           <div className="flex justify-between text-[13px] py-[2px]">
             <span className="text-sub">{dict.profile.level}</span>
             <span className="sm-mono">{level}</span>
