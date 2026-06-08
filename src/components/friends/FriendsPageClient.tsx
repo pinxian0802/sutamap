@@ -32,26 +32,30 @@ export function FriendsPageClient({ friendships, myUserId }: Props) {
   const pending = items.filter(f => f.status === 'pending')
 
   function handleAccept(friendshipId: string) {
-    setItems(prev => prev.map(f => f.friendshipId === friendshipId ? { ...f, status: 'accepted' as const } : f))
+    const prev = items
+    setItems(items.map(f => f.friendshipId === friendshipId ? { ...f, status: 'accepted' as const } : f))
     fetch(`/api/friends/${friendshipId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'accepted' }),
-    })
+    }).then(r => { if (!r.ok) setItems(prev) })
   }
 
   function handleReject(friendshipId: string) {
-    setItems(prev => prev.filter(f => f.friendshipId !== friendshipId))
+    const prev = items
+    setItems(items.filter(f => f.friendshipId !== friendshipId))
     fetch(`/api/friends/${friendshipId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'rejected' }),
-    })
+    }).then(r => { if (!r.ok) setItems(prev) })
   }
 
   function handleRemove(friendshipId: string) {
-    setItems(prev => prev.filter(f => f.friendshipId !== friendshipId))
+    const prev = items
+    setItems(items.filter(f => f.friendshipId !== friendshipId))
     fetch(`/api/friends/${friendshipId}`, { method: 'DELETE' })
+      .then(r => { if (!r.ok) setItems(prev) })
   }
 
   return (
