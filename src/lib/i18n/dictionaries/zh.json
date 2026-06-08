@@ -153,7 +153,8 @@
     "saving": "儲存中...",
     "saveSuccess": "儲存成功",
     "usernameTooLong": "使用者名稱不能超過20字",
-    "uploadFailed": "上傳失敗"
+    "uploadFailed": "上傳失敗",
+    "language": "語言"
   },
   "common": {
     "unknown": "未知"
