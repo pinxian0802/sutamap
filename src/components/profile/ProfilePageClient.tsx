@@ -5,20 +5,9 @@ import { ProfileHeader } from './ProfileHeader'
 import { TitleSelector } from './TitleSelector'
 import { CategoryProgressList } from './CategoryProgressList'
 import { EditProfileModal } from './EditProfileModal'
-import { useDictionary, useLocale } from '@/lib/i18n/context'
-import { locales, type Locale } from '@/lib/i18n/config'
+import { useDictionary } from '@/lib/i18n/context'
 import { Settings } from 'lucide-react'
-
-const LANG_LABELS: Record<Locale, string> = {
-  ja: '日本語',
-  en: 'EN',
-  zh: '中文',
-}
-
-function switchLocale(lang: Locale) {
-  document.cookie = `NEXT_LOCALE=${lang};path=/;max-age=31536000`
-  window.location.reload()
-}
+import { LanguageModal } from './LanguageModal'
 
 interface Props {
   profile: any
@@ -30,8 +19,8 @@ interface Props {
 
 export function ProfilePageClient({ profile, earnedTitles, categoryProgress, totalCheckins, totalSpots }: Props) {
   const dict = useDictionary()
-  const currentLocale = useLocale()
   const [showEdit, setShowEdit] = useState(false)
+  const [showLanguage, setShowLanguage] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -61,25 +50,12 @@ export function ProfilePageClient({ profile, earnedTitles, categoryProgress, tot
               >
                 {dict.profile.edit}
               </button>
-              <div className="h-px bg-line mx-3 my-1" />
-              <div className="px-4 py-2">
-                <p className="text-[11px] text-sub mb-2">{dict.profile.language}</p>
-                <div className="flex gap-1">
-                  {locales.map(lang => (
-                    <button
-                      key={lang}
-                      onClick={() => switchLocale(lang)}
-                      className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                        lang === currentLocale
-                          ? 'bg-green text-white'
-                          : 'bg-paper2 text-sub hover:bg-line'
-                      }`}
-                    >
-                      {LANG_LABELS[lang]}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <button
+                className="w-full text-left px-4 py-2 text-sm hover:bg-paper2 transition-colors rounded-[10px]"
+                onClick={() => { setShowDropdown(false); setShowLanguage(true) }}
+              >
+                {dict.profile.language}
+              </button>
             </div>
           )}
         </div>
@@ -107,6 +83,9 @@ export function ProfilePageClient({ profile, earnedTitles, categoryProgress, tot
           currentAvatarUrl={profile?.avatar_url ?? null}
           onClose={() => setShowEdit(false)}
         />
+      )}
+      {showLanguage && (
+        <LanguageModal onClose={() => setShowLanguage(false)} />
       )}
     </div>
   )
