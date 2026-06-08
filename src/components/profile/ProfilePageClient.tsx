@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { ProfileHeader } from './ProfileHeader'
-import { BadgeWall } from './BadgeWall'
 import { TitleSelector } from './TitleSelector'
 import { CategoryProgressList } from './CategoryProgressList'
 import { EditProfileModal } from './EditProfileModal'
@@ -11,15 +10,13 @@ import { Pencil } from 'lucide-react'
 
 interface Props {
   profile: any
-  earnedBadges: any[]
-  allBadges: any[]
   earnedTitles: any[]
   categoryProgress: any[]
   totalCheckins: number
   totalSpots: number
 }
 
-export function ProfilePageClient({ profile, earnedBadges, allBadges, earnedTitles, categoryProgress, totalCheckins, totalSpots }: Props) {
+export function ProfilePageClient({ profile, earnedTitles, categoryProgress, totalCheckins, totalSpots }: Props) {
   const dict = useDictionary()
   const [showEdit, setShowEdit] = useState(false)
 
@@ -38,7 +35,7 @@ export function ProfilePageClient({ profile, earnedBadges, allBadges, earnedTitl
         level={profile?.level ?? 1}
         activeTitle={profile?.titles?.name}
         totalCheckins={totalCheckins}
-        totalBadges={earnedBadges.length}
+        totalTitles={earnedTitles.length}
         totalSpots={totalSpots}
       />
       <TitleSelector
@@ -46,7 +43,6 @@ export function ProfilePageClient({ profile, earnedBadges, allBadges, earnedTitl
         activeTitleId={profile?.active_title_id ?? null}
       />
       <CategoryProgressList categories={categoryProgress} />
-      <BadgeWall earnedBadges={earnedBadges} allBadges={allBadges} />
       {showEdit && (
         <EditProfileModal
           userId={profile?.id}

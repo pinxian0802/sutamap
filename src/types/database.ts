@@ -75,19 +75,6 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['titles']['Row'], 'id'>
         Update: Partial<Database['public']['Tables']['titles']['Insert']>
       }
-      badges: {
-        Row: {
-          id: string
-          name: string
-          name_en: string | null
-          name_zh: string | null
-          description: string | null
-          icon: string
-          category_id: string | null
-        }
-        Insert: Omit<Database['public']['Tables']['badges']['Row'], 'id'>
-        Update: Partial<Database['public']['Tables']['badges']['Insert']>
-      }
       user_titles: {
         Row: {
           id: string
@@ -96,16 +83,6 @@ export interface Database {
           earned_at: string
         }
         Insert: Omit<Database['public']['Tables']['user_titles']['Row'], 'id' | 'earned_at'>
-        Update: never
-      }
-      user_badges: {
-        Row: {
-          id: string
-          user_id: string
-          badge_id: string
-          earned_at: string
-        }
-        Insert: Omit<Database['public']['Tables']['user_badges']['Row'], 'id' | 'earned_at'>
         Update: never
       }
       friendships: {

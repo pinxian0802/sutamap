@@ -31,7 +31,7 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
   const [photo, setPhoto] = useState<Blob | null>(null)
   const [photoGps, setPhotoGps] = useState<{ lat: number; lng: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [result, setResult] = useState<{ xpAwarded: number; newBadge: any; newTitle: any } | null>(null)
+  const [result, setResult] = useState<{ xpAwarded: number; newTitle: any } | null>(null)
 
   function handlePhotoReady(blob: Blob, gps: { lat: number; lng: number } | null) {
     setPhoto(blob)
@@ -131,13 +131,6 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
           <div className="bg-tint border border-green/30 rounded-[13px] p-4">
             <p className="text-sm text-green-d font-bold">{dict.checkin.titleEarned}</p>
             <p className="text-lg font-bold">{result.newTitle.name}</p>
-          </div>
-        )}
-
-        {result.newBadge && (
-          <div className="bg-tint border border-green/30 rounded-[13px] p-4">
-            <p className="text-sm text-green-d font-bold">{dict.checkin.badgeEarned}</p>
-            <p className="text-lg font-bold">{result.newBadge.name}</p>
           </div>
         )}
 

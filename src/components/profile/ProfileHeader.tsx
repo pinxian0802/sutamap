@@ -11,12 +11,12 @@ interface Props {
   level: number
   activeTitle?: string | null
   totalCheckins?: number
-  totalBadges?: number
+  totalTitles?: number
   rank?: number
   totalSpots?: number
 }
 
-export function ProfileHeader({ username, avatarUrl, totalXp, level, activeTitle, totalCheckins = 0, totalBadges = 0, rank, totalSpots = 0 }: Props) {
+export function ProfileHeader({ username, avatarUrl, totalXp, level, activeTitle, totalCheckins = 0, totalTitles = 0, rank, totalSpots = 0 }: Props) {
   const { current, needed } = xpToNextLevel(totalXp)
   const xpPct = Math.round((current / needed) * 100)
   const completionPct = totalSpots > 0 ? Math.round((totalCheckins / totalSpots) * 100) : 0
@@ -63,7 +63,7 @@ export function ProfileHeader({ username, avatarUrl, totalXp, level, activeTitle
       <div className="flex mt-[15px] pt-[13px] border-t border-line2">
         <StatTile v={totalCheckins} k={dict.profile.checkins} />
         <div className="w-px bg-line2" />
-        <StatTile v={totalBadges} k={dict.profile.badgesStat} color="var(--terra)" />
+        <StatTile v={totalTitles} k={dict.profile.titles} color="var(--terra)" />
         <div className="w-px bg-line2" />
         <StatTile v={rank ? `#${rank}` : '—'} k={dict.profile.globalRank} color="var(--green-d)" />
       </div>

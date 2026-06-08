@@ -24,15 +24,6 @@ export default async function LeaderboardPage() {
     checkinCountMap[c.user_id] = (checkinCountMap[c.user_id] ?? 0) + 1
   })
 
-  const { data: badgeCounts } = await (supabase as any)
-    .from('user_badges')
-    .select('user_id')
-
-  const badgeCountMap: Record<string, number> = {}
-  ;((badgeCounts ?? []) as any[]).forEach((b: any) => {
-    badgeCountMap[b.user_id] = (badgeCountMap[b.user_id] ?? 0) + 1
-  })
-
   let friendIds: string[] = []
   if (user) {
     const { data: friendships } = await (supabase as any)
@@ -68,20 +59,16 @@ export default async function LeaderboardPage() {
 
   const globalXp = buildRanking(allIds, id => profileMap[id]?.total_xp ?? 0)
   const globalCheckins = buildRanking(allIds, id => checkinCountMap[id] ?? 0)
-  const globalBadges = buildRanking(allIds, id => badgeCountMap[id] ?? 0)
 
   const friendsXp = buildRanking(friendIds, id => profileMap[id]?.total_xp ?? 0)
   const friendsCheckins = buildRanking(friendIds, id => checkinCountMap[id] ?? 0)
-  const friendsBadges = buildRanking(friendIds, id => badgeCountMap[id] ?? 0)
 
   return (
     <LeaderboardTabs
       globalXp={globalXp}
       globalCheckins={globalCheckins}
-      globalBadges={globalBadges}
       friendsXp={friendsXp}
       friendsCheckins={friendsCheckins}
-      friendsBadges={friendsBadges}
       isLoggedIn={!!user}
     />
   )

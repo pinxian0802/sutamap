@@ -15,14 +15,12 @@ interface Entry {
 interface Props {
   globalXp: Entry[]
   globalCheckins: Entry[]
-  globalBadges: Entry[]
   friendsXp: Entry[]
   friendsCheckins: Entry[]
-  friendsBadges: Entry[]
   isLoggedIn: boolean
 }
 
-type MetricTab = 'xp' | 'checkins' | 'badges'
+type MetricTab = 'xp' | 'checkins'
 type ScopeTab = 'global' | 'friends'
 
 const AVATAR_COLORS = ['#d8a24a', '#c0563f', '#8fa6bd', '#4f8db5', '#7aa83c', '#9a6bc0']
@@ -36,12 +34,11 @@ export function LeaderboardTabs(props: Props) {
   const METRICS: { key: MetricTab; label: string; unit: string }[] = [
     { key: 'xp', label: 'XP', unit: 'XP' },
     { key: 'checkins', label: dict.leaderboard.checkins, unit: dict.leaderboard.timesUnit },
-    { key: 'badges', label: dict.leaderboard.badges, unit: dict.leaderboard.countUnit },
   ]
 
   const dataMap: Record<ScopeTab, Record<MetricTab, Entry[]>> = {
-    global: { xp: props.globalXp, checkins: props.globalCheckins, badges: props.globalBadges },
-    friends: { xp: props.friendsXp, checkins: props.friendsCheckins, badges: props.friendsBadges },
+    global: { xp: props.globalXp, checkins: props.globalCheckins },
+    friends: { xp: props.friendsXp, checkins: props.friendsCheckins },
   }
 
   const currentData = dataMap[scope][metric]

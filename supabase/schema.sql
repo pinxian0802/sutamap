@@ -42,21 +42,11 @@ create table public.titles (
   category_id uuid references public.categories(id) on delete cascade
 );
 
--- Badges (徽章定義)
-create table public.badges (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  name_en text,
-  name_zh text,
-  description text,
-  icon text not null default '🏅',
-  category_id uuid references public.categories(id) on delete cascade
-);
-
 -- User Profiles
 create table public.user_profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   username text unique not null,
+  avatar_url text,
   total_xp int not null default 0,
   level int not null default 1,
   active_title_id uuid references public.titles(id),
@@ -89,15 +79,6 @@ create table public.user_titles (
   unique(user_id, title_id)
 );
 
--- User Badges
-create table public.user_badges (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
-  badge_id uuid not null references public.badges(id) on delete cascade,
-  earned_at timestamptz not null default now(),
-  unique(user_id, badge_id)
-);
-
 -- Friendships
 create table public.friendships (
   id uuid primary key default gen_random_uuid(),
@@ -116,16 +97,21 @@ alter table public.locations enable row level security;
 alter table public.user_profiles enable row level security;
 alter table public.checkins enable row level security;
 alter table public.user_titles enable row level security;
-alter table public.user_badges enable row level security;
 alter table public.friendships enable row level security;
 alter table public.titles enable row level security;
-alter table public.badges enable row level security;
 
--- Public read access for categories, locations, titles, badges
+-- Public read access for categories, locations, titles
 create policy "categories are public" on public.categories for select using (true);
 create policy "locations are public" on public.locations for select using (true);
 create policy "titles are public" on public.titles for select using (true);
-create policy "badges are public" on public.badges for select using (true);
+
+-- Admin write access for categories and locations
+create policy "authenticated users can insert categories" on public.categories for insert with check (auth.role() = 'authenticated');
+create policy "authenticated users can update categories" on public.categories for update using (auth.role() = 'authenticated');
+create policy "authenticated users can delete categories" on public.categories for delete using (auth.role() = 'authenticated');
+create policy "authenticated users can insert locations" on public.locations for insert with check (auth.role() = 'authenticated');
+create policy "authenticated users can update locations" on public.locations for update using (auth.role() = 'authenticated');
+create policy "authenticated users can delete locations" on public.locations for delete using (auth.role() = 'authenticated');
 
 -- User profiles: public read, own write
 create policy "profiles are public" on public.user_profiles for select using (true);
@@ -136,9 +122,8 @@ create policy "users can update own profile" on public.user_profiles for update 
 create policy "checkins are public" on public.checkins for select using (true);
 create policy "authenticated users can insert checkins" on public.checkins for insert with check (auth.uid() = user_id);
 
--- User titles/badges: public read, system insert (via service role)
+-- User titles: public read, system insert (via service role)
 create policy "user titles are public" on public.user_titles for select using (true);
-create policy "user badges are public" on public.user_badges for select using (true);
 
 -- Friendships: users see their own
 create policy "users see own friendships" on public.friendships for select using (auth.uid() = requester_id or auth.uid() = addressee_id);

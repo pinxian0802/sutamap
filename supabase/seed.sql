@@ -24,10 +24,6 @@ values
 insert into public.titles (name, name_en, name_zh, description, category_id)
 values ('四極探訪者', 'Four Extremes Explorer', '四極探訪者', '日本本土の四極点を全て訪れた', '00000000-0000-0000-0000-000000000001');
 
--- Insert badge for 四極点
-insert into public.badges (name, name_en, name_zh, description, icon, category_id)
-values ('四極点コンプリート', 'Four Extremes Complete', '四極點全制霸', '日本本土四極点を全て制覇', '🧭', '00000000-0000-0000-0000-000000000001');
-
 -- ============================================================
 -- 稚内極北生活圏（極北一日遊）
 -- ============================================================
@@ -52,9 +48,6 @@ values
 
 insert into public.titles (name, name_en, name_zh, description, category_id)
 values ('北緯45度生活者', '45°N Dweller', '北緯45度生活者', '稚内極北生活圏を全て制覇した', '00000000-0000-0000-0000-000000000002');
-
-insert into public.badges (name, name_en, name_zh, description, icon, category_id)
-values ('極北生活圏コンプリート', 'Arctic Life Complete', '極北生活圈全制霸', '稚内極北生活圏の全スポットを制覇', '❄️', '00000000-0000-0000-0000-000000000002');
 
 -- ============================================================
 -- 全国制覇（47都道府県）
@@ -128,26 +121,8 @@ values
   ('00000000-0000-0000-0000-000000000003', '鹿児島県', 'Kagoshima', '鹿兒島縣', '鹿児島県', 31.56028, 130.55806),
   ('00000000-0000-0000-0000-000000000003', '沖縄県', 'Okinawa', '沖繩縣', '沖縄県', 26.21222, 127.68083);
 
-insert into public.titles (id, name, name_en, name_zh, description, category_id)
-values (
-  '00000000-0000-0000-0000-100000000003',
-  '全国制覇',
-  'National Conquest',
-  '全國制霸',
-  '47都道府県すべてを踏破した証',
-  '00000000-0000-0000-0000-000000000003'
-);
-
-insert into public.badges (id, name, name_en, name_zh, description, icon, category_id)
-values (
-  '00000000-0000-0000-0000-200000000003',
-  '全国制覇',
-  'National Conquest',
-  '全國制霸',
-  '47都道府県すべてに打卡',
-  '🗾',
-  '00000000-0000-0000-0000-000000000003'
-);
+insert into public.titles (name, name_en, name_zh, description, category_id)
+values ('全国制覇', 'National Conquest', '全國制霸', '47都道府県すべてを踏破した証', '00000000-0000-0000-0000-000000000003');
 
 -- ============================================================
 -- 日本百名城
@@ -268,23 +243,6 @@ values
   ('00000000-0000-0000-0000-000000000004', '中城城', 'Nakagusuku Castle', '中城城', '沖縄県中頭郡中城村', 26.2839, 127.8011),
   ('00000000-0000-0000-0000-000000000004', '首里城', 'Shuri Castle', '首里城', '沖縄県那覇市', 26.2172, 127.7183);
 
-insert into public.titles (id, name, name_en, name_zh, description, category_id)
-values (
-  '00000000-0000-0000-0000-100000000004',
-  '天下統一',
-  'Unifier of the Realm',
-  '天下統一',
-  '日本百名城を全て制覇した',
-  '00000000-0000-0000-0000-000000000004'
-);
+insert into public.titles (name, name_en, name_zh, description, category_id)
+values ('天下統一', 'Unifier of the Realm', '天下統一', '日本百名城を全て制覇した', '00000000-0000-0000-0000-000000000004');
 
-insert into public.badges (id, name, name_en, name_zh, description, icon, category_id)
-values (
-  '00000000-0000-0000-0000-200000000004',
-  '百名城コンプリート',
-  '100 Castles Complete',
-  '百大名城全制霸',
-  '日本百名城を全て制覇した証',
-  '🏯',
-  '00000000-0000-0000-0000-000000000004'
-);

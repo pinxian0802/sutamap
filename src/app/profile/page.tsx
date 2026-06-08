@@ -12,14 +12,10 @@ export default async function ProfilePage() {
 
   const [
     { data: profile },
-    { data: allBadges },
-    { data: userBadges },
     { data: userTitles },
     { data: categories },
   ] = await Promise.all([
     supabase.from('user_profiles').select('*, titles(name, name_en, name_zh)').eq('id', user.id).single() as any,
-    supabase.from('badges').select('*') as any,
-    supabase.from('user_badges').select('badges(*)').eq('user_id', user.id) as any,
     supabase.from('user_titles').select('titles(*)').eq('user_id', user.id) as any,
     supabase.from('categories').select('*') as any,
   ])
@@ -55,8 +51,6 @@ export default async function ProfilePage() {
     checked: checkedPerCategory[cat.id] ?? 0,
   }))
 
-  const earnedBadges = (userBadges?.map((ub: any) => ub.badges).filter(Boolean) ?? [])
-    .map((b: any) => ({ ...b, name: localizedName(b, locale) }))
   const earnedTitles = (userTitles?.map((ut: any) => ut.titles).filter(Boolean) ?? [])
     .map((t: any) => ({ ...t, name: localizedName(t, locale) }))
 
@@ -68,13 +62,9 @@ export default async function ProfilePage() {
     titles: profile.titles ? { ...profile.titles, name: localizedName(profile.titles, locale) } : null,
   } : profile
 
-  const localizedAllBadges = (allBadges ?? []).map((b: any) => ({ ...b, name: localizedName(b, locale) }))
-
   return (
     <ProfilePageClient
       profile={localizedProfile}
-      earnedBadges={earnedBadges}
-      allBadges={localizedAllBadges}
       earnedTitles={earnedTitles}
       categoryProgress={categoryProgress}
       totalCheckins={totalCheckins}

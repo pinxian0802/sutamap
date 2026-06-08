@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
-import { BadgeWall } from '@/components/profile/BadgeWall'
 import { CategoryProgressList } from '@/components/profile/CategoryProgressList'
 import { getLocale } from '@/lib/i18n/server'
 import { localizedName } from '@/lib/i18n/localize'
@@ -13,13 +12,9 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   const [
     { data: profile },
-    { data: allBadges },
-    { data: userBadges },
     { data: categories },
   ] = await Promise.all([
     supabase.from('user_profiles').select('*, titles(name, name_en, name_zh)').eq('id', userId).single() as any,
-    supabase.from('badges').select('*') as any,
-    supabase.from('user_badges').select('badges(*)').eq('user_id', userId) as any,
     supabase.from('categories').select('*') as any,
   ])
 
@@ -51,11 +46,6 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
     checked: checkedPerCategory[cat.id] ?? 0,
   }))
 
-  const earnedBadges = (userBadges?.map((ub: any) => ub.badges).filter(Boolean) ?? [])
-    .map((b: any) => ({ ...b, name: localizedName(b, locale) }))
-
-  const localizedAllBadges = (allBadges ?? []).map((b: any) => ({ ...b, name: localizedName(b, locale) }))
-
   return (
     <div className="max-w-md mx-auto p-4 space-y-4">
       <ProfileHeader
@@ -65,7 +55,6 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         level={profile.level}
         activeTitle={profile.titles ? localizedName(profile.titles, locale) : null}
       />
-      <BadgeWall earnedBadges={earnedBadges} allBadges={localizedAllBadges} />
       <CategoryProgressList categories={categoryProgress} />
     </div>
   )

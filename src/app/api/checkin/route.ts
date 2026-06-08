@@ -73,7 +73,6 @@ export async function POST(request: NextRequest) {
   if (checkinError) return NextResponse.json({ error: (checkinError as any).message }, { status: 500 })
 
   let xpAwarded = 0
-  let newBadge = null
   let newTitle = null
 
   if (isFirst) {
@@ -119,18 +118,6 @@ export async function POST(request: NextRequest) {
       .in('location_id', locationIds)
 
     if (totalLocations === userCheckins) {
-      // Award badge
-      const { data: badge } = await supabase
-        .from('badges')
-        .select('*')
-        .eq('category_id', location.category_id)
-        .maybeSingle() as { data: { id: string; name: string; icon: string } | null; error: unknown }
-
-      if (badge) {
-        await supabase.from('user_badges').upsert({ user_id: user.id, badge_id: badge.id } as any)
-        newBadge = { ...badge, name: localizedName(badge, locale) }
-      }
-
       // Award title
       const { data: title } = await supabase
         .from('titles')
@@ -145,5 +132,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ success: true, isFirst, xpAwarded, newBadge, newTitle, distance })
+  return NextResponse.json({ success: true, isFirst, xpAwarded, newTitle, distance })
 }
