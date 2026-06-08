@@ -43,15 +43,15 @@ export function ProfilePageClient({ profile, earnedTitles, categoryProgress, tot
             <Settings size={16} className="text-sub" />
           </button>
           {showDropdown && (
-            <div className="absolute right-0 top-full mt-1 bg-paper border border-line rounded-[11px] shadow-md py-1 min-w-[200px] z-50">
+            <div className="absolute right-0 top-full mt-1 bg-paper border border-line rounded-[11px] shadow-md py-1 min-w-[200px] z-50 overflow-hidden">
               <button
-                className="w-full text-left px-4 py-2 text-sm hover:bg-paper2 transition-colors rounded-[10px]"
+                className="w-full text-left px-4 py-2 text-sm hover:bg-paper2 transition-colors"
                 onClick={() => { setShowDropdown(false); setShowEdit(true) }}
               >
                 {dict.profile.edit}
               </button>
               <button
-                className="w-full text-left px-4 py-2 text-sm hover:bg-paper2 transition-colors rounded-[10px]"
+                className="w-full text-left px-4 py-2 text-sm hover:bg-paper2 transition-colors"
                 onClick={() => { setShowDropdown(false); setShowLanguage(true) }}
               >
                 {dict.profile.language}
