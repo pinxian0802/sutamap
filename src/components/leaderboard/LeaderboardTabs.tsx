@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useDictionary } from '@/lib/i18n/context'
+import { SegmentedControl } from '@/components/ui/SegmentedControl'
 
 interface Entry {
   rank: number
@@ -51,22 +52,15 @@ export function LeaderboardTabs(props: Props) {
       </div>
 
       {/* scope segmented */}
-      <div className="flex bg-paper2 rounded-xl p-1 mb-[11px]">
-        {([['global', dict.leaderboard.global], ['friends', dict.leaderboard.friendsTab]] as const).map(([id, lab]) => (
-          <button
-            key={id}
-            onClick={() => setScope(id as ScopeTab)}
-            className="flex-1 py-[9px] rounded-[9px] border-none cursor-pointer text-[13.5px] font-bold"
-            style={{
-              fontFamily: 'var(--font-display)',
-              background: scope === id ? 'var(--paper)' : 'transparent',
-              color: scope === id ? 'var(--ink)' : 'var(--sub)',
-              boxShadow: scope === id ? '0 2px 8px -3px rgba(45,74,107,.4)' : 'none',
-            }}
-          >
-            {lab}
-          </button>
-        ))}
+      <div className="mb-[11px]">
+        <SegmentedControl
+          options={[
+            { id: 'global', label: dict.leaderboard.global },
+            { id: 'friends', label: dict.leaderboard.friendsTab },
+          ]}
+          value={scope}
+          onChange={(v) => setScope(v as ScopeTab)}
+        />
       </div>
 
       {/* metric chips */}

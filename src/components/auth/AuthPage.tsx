@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { MapPin, User, Lock } from 'lucide-react'
 import { useDictionary } from '@/lib/i18n/context'
+import { SegmentedControl } from '@/components/ui/SegmentedControl'
 
 interface Props {
   initialMode: 'login' | 'signup'
@@ -64,25 +65,15 @@ export function AuthPage({ initialMode }: Props) {
           </div>
         </div>
 
-        <div className="flex bg-paper2 rounded-[13px] p-1 mb-[18px]">
-          {[
-            { id: 'login' as const, label: dict.auth.login },
-            { id: 'signup' as const, label: dict.auth.signUp },
-          ].map(opt => (
-            <button
-              key={opt.id}
-              onClick={() => setMode(opt.id)}
-              className="flex-1 py-[11px] rounded-[10px] border-none cursor-pointer text-[14px] font-bold"
-              style={{
-                fontFamily: 'var(--font-display)',
-                background: mode === opt.id ? 'var(--paper)' : 'transparent',
-                color: mode === opt.id ? 'var(--ink)' : 'var(--sub)',
-                boxShadow: mode === opt.id ? '0 2px 8px -3px rgba(45,74,107,.4)' : 'none',
-              }}
-            >
-              {opt.label}
-            </button>
-          ))}
+        <div className="mb-[18px]">
+          <SegmentedControl
+            options={[
+              { id: 'login', label: dict.auth.login },
+              { id: 'signup', label: dict.auth.signUp },
+            ]}
+            value={mode}
+            onChange={(v) => setMode(v as 'login' | 'signup')}
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-[11px] mb-[18px]">
