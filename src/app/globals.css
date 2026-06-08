@@ -231,7 +231,8 @@
   background: var(--paper);
   border-radius: 22px 22px 0 0;
   padding: 8px 18px 24px;
-  max-height: 92%;
+  min-height: 60vh;
+  max-height: 92vh;
   overflow-y: auto;
   animation: sm-shup 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
