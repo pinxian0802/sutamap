@@ -25,10 +25,34 @@ const FRIEND_COLORS = ['#c0563f', '#4f8db5', '#d8a24a', '#7aa83c', '#9a6bc0']
 
 export function FriendsPageClient({ friendships, myUserId }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const [items, setItems] = useState(friendships)
   const dict = useDictionary()
 
-  const accepted = friendships.filter(f => f.status === 'accepted')
-  const pending = friendships.filter(f => f.status === 'pending')
+  const accepted = items.filter(f => f.status === 'accepted')
+  const pending = items.filter(f => f.status === 'pending')
+
+  function handleAccept(friendshipId: string) {
+    setItems(prev => prev.map(f => f.friendshipId === friendshipId ? { ...f, status: 'accepted' as const } : f))
+    fetch(`/api/friends/${friendshipId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'accepted' }),
+    })
+  }
+
+  function handleReject(friendshipId: string) {
+    setItems(prev => prev.filter(f => f.friendshipId !== friendshipId))
+    fetch(`/api/friends/${friendshipId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'rejected' }),
+    })
+  }
+
+  function handleRemove(friendshipId: string) {
+    setItems(prev => prev.filter(f => f.friendshipId !== friendshipId))
+    fetch(`/api/friends/${friendshipId}`, { method: 'DELETE' })
+  }
 
   return (
     <div className="max-w-md mx-auto px-4 pt-2 pb-4 space-y-[13px]">
@@ -47,7 +71,14 @@ export function FriendsPageClient({ friendships, myUserId }: Props) {
         <>
           <div className="sm-sectit"><span>{dict.friends.requestCount} {pending.length}</span></div>
           {pending.map((f, i) => (
-            <FriendCard key={f.friendshipId} {...f} color={FRIEND_COLORS[i % FRIEND_COLORS.length]} />
+            <FriendCard
+              key={f.friendshipId}
+              {...f}
+              color={FRIEND_COLORS[i % FRIEND_COLORS.length]}
+              onAccept={handleAccept}
+              onReject={handleReject}
+              onRemove={handleRemove}
+            />
           ))}
         </>
       )}
@@ -60,7 +91,14 @@ export function FriendsPageClient({ friendships, myUserId }: Props) {
         <p className="text-sm text-sub text-center py-4">{dict.friends.noFriends}</p>
       ) : (
         accepted.map((f, i) => (
-          <FriendCard key={f.friendshipId} {...f} color={FRIEND_COLORS[i % FRIEND_COLORS.length]} />
+          <FriendCard
+            key={f.friendshipId}
+            {...f}
+            color={FRIEND_COLORS[i % FRIEND_COLORS.length]}
+            onAccept={handleAccept}
+            onReject={handleReject}
+            onRemove={handleRemove}
+          />
         ))
       )}
 

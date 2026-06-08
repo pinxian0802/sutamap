@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useDictionary } from '@/lib/i18n/context'
 import { UserAvatar } from '@/components/profile/UserAvatar'
 import { Check, MapPin, Medal, ChevronRight } from 'lucide-react'
@@ -15,34 +14,13 @@ interface Props {
   status: 'pending' | 'accepted' | 'rejected'
   isRequester: boolean
   color?: string
+  onAccept: (id: string) => void
+  onReject: (id: string) => void
+  onRemove: (id: string) => void
 }
 
-export function FriendCard({ friendshipId, userId, username, level, avatarUrl, status, isRequester, color = '#8fa6bd' }: Props) {
-  const router = useRouter()
+export function FriendCard({ friendshipId, userId, username, level, avatarUrl, status, isRequester, color = '#8fa6bd', onAccept, onReject, onRemove }: Props) {
   const dict = useDictionary()
-
-  async function handleAccept() {
-    await fetch(`/api/friends/${friendshipId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: 'accepted' }),
-    })
-    router.refresh()
-  }
-
-  async function handleReject() {
-    await fetch(`/api/friends/${friendshipId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: 'rejected' }),
-    })
-    router.refresh()
-  }
-
-  async function handleRemove() {
-    await fetch(`/api/friends/${friendshipId}`, { method: 'DELETE' })
-    router.refresh()
-  }
 
   if (status === 'pending') {
     return (
@@ -55,13 +33,13 @@ export function FriendCard({ friendshipId, userId, username, level, avatarUrl, s
         {!isRequester ? (
           <>
             <button
-              onClick={handleAccept}
+              onClick={() => onAccept(friendshipId)}
               className="sm-iconbtn"
               style={{ width: 38, height: 38, background: 'var(--green)', border: 'none', color: '#fff' }}
             >
               <Check size={18} strokeWidth={2.6} />
             </button>
-            <button onClick={handleReject} className="sm-iconbtn" style={{ width: 38, height: 38 }}>
+            <button onClick={() => onReject(friendshipId)} className="sm-iconbtn" style={{ width: 38, height: 38 }}>
               <span className="text-[20px] leading-none text-sub">×</span>
             </button>
           </>
@@ -94,7 +72,7 @@ export function FriendCard({ friendshipId, userId, username, level, avatarUrl, s
         </div>
         <ChevronRight size={18} className="text-faint" />
       </Link>
-      <button onClick={handleRemove} className="sm-iconbtn" style={{ width: 38, height: 38 }}>
+      <button onClick={() => onRemove(friendshipId)} className="sm-iconbtn" style={{ width: 38, height: 38 }}>
         <span className="text-[20px] leading-none text-sub">×</span>
       </button>
     </div>
