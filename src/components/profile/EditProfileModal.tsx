@@ -106,7 +106,7 @@ export function EditProfileModal({ userId, currentUsername, currentAvatarUrl, on
 
       <div
         className={`absolute bottom-0 left-0 right-0 max-w-md mx-auto bg-paper rounded-t-[22px] transition-transform duration-300 ease-out ${visible ? 'translate-y-0' : 'translate-y-full'}`}
-        style={{ minHeight: '60vh', maxHeight: '92vh', boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}
+        style={{ minHeight: '80vh', maxHeight: '92vh', boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}
       >
         <div className="flex justify-center pt-2 pb-1">
           <div className="w-[38px] h-1 rounded-[2px]" style={{ background: '#d8d0bf' }} />
