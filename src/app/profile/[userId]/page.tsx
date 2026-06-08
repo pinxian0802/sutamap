@@ -50,6 +50,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
     <div className="max-w-md mx-auto p-4 space-y-4">
       <ProfileHeader
         username={profile.username}
+        userCode={profile.user_code ?? undefined}
         avatarUrl={profile.avatar_url}
         totalXp={profile.total_xp}
         level={profile.level}

@@ -30,6 +30,7 @@ export function ProfilePageClient({ profile, earnedTitles, categoryProgress, tot
       </div>
       <ProfileHeader
         username={profile?.username ?? ''}
+        userCode={profile?.user_code ?? undefined}
         avatarUrl={profile?.avatar_url ?? null}
         totalXp={profile?.total_xp ?? 0}
         level={profile?.level ?? 1}
