@@ -72,9 +72,9 @@ export function FriendCard({ friendshipId, userId, username, level, avatarUrl, s
         </div>
         <ChevronRight size={18} className="text-faint" />
       </Link>
-      <button onClick={() => onRemove(friendshipId)} className="sm-iconbtn" style={{ width: 38, height: 38 }}>
+      {/* <button onClick={() => onRemove(friendshipId)} className="sm-iconbtn" style={{ width: 38, height: 38 }}>
         <span className="text-[20px] leading-none text-sub">×</span>
-      </button>
+      </button> */}
     </div>
   )
 }
