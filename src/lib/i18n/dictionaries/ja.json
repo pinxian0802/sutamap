@@ -92,7 +92,9 @@
     "spots": "箇所",
     "xpPerSpot": "XP/箇所",
     "friendsWorking": "フレンドも挑戦中",
-    "collectionProgress": "コレクション進捗"
+    "collectionProgress": "コレクション進捗",
+    "locationsList": "スポット一覧",
+    "emptyLocations": "このテーマにはまだスポットがありません"
   },
   "friends": {
     "title": "フレンド",
