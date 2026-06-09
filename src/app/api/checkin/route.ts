@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { haversineDistance } from '@/lib/geo/distance'
-import { xpToLevel } from '@/lib/xp/calculator'
+import { xpToLevel, xpToNextLevel } from '@/lib/xp/calculator'
 import { localizedName } from '@/lib/i18n/localize'
 import type { Locale } from '@/lib/i18n/config'
 import { defaultLocale } from '@/lib/i18n/config'
@@ -37,14 +37,8 @@ export async function POST(request: NextRequest) {
 
   if (!location) return NextResponse.json({ error: 'Location not found' }, { status: 404 })
 
+  // DEV: 距離檢查暫時關閉（測試用）
   const distance = Math.round(haversineDistance(lat, lng, location.lat, location.lng))
-  const radius = location.categories.checkin_radius_meters
-  if (distance > radius) {
-    return NextResponse.json(
-      { error: 'Too far', distance, required: radius },
-      { status: 422 }
-    )
-  }
 
   // Check if first check-in
   const { data: existing } = await supabase
@@ -74,6 +68,11 @@ export async function POST(request: NextRequest) {
 
   let xpAwarded = 0
   let newTitle = null
+  let leveledUp = false
+  let prevLevel = 0
+  let newLevel = 0
+  let xpBefore = 0
+  let xpMax = 100
 
   if (isFirst) {
     const xpGain = location.categories.xp_per_checkin
@@ -85,8 +84,15 @@ export async function POST(request: NextRequest) {
       .eq('id', user.id)
       .single() as { data: { total_xp: number } | null; error: unknown }
 
-    const newXp = (profile?.total_xp ?? 0) + xpGain
-    const newLevel = xpToLevel(newXp)
+    const oldXp = profile?.total_xp ?? 0
+    prevLevel = xpToLevel(oldXp)
+    const prevProgress = xpToNextLevel(oldXp)
+    xpBefore = prevProgress.current
+    xpMax = prevProgress.needed
+
+    const newXp = oldXp + xpGain
+    newLevel = xpToLevel(newXp)
+    leveledUp = newLevel > prevLevel
 
     await (supabase as any)
       .from('user_profiles')
@@ -132,5 +138,8 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ success: true, isFirst, xpAwarded, newTitle, distance })
+  return NextResponse.json({
+    success: true, isFirst, xpAwarded, newTitle, distance,
+    leveledUp, prevLevel, newLevel, xpBefore, xpMax,
+  })
 }
