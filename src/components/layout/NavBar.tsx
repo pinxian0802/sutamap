@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useDictionary } from '@/lib/i18n/context'
 import { Map, Target, Trophy, Users, User } from 'lucide-react'
-import { LanguageSwitcher } from './LanguageSwitcher'
 
 const ICON_MAP = { map: Map, categories: Target, leaderboard: Trophy, friends: Users, profile: User }
 
@@ -28,9 +27,6 @@ export function NavBar() {
 
   return (
     <nav className="sm-nav">
-      <div className="absolute -top-9 right-3">
-        <LanguageSwitcher />
-      </div>
       {NAV_ITEMS.map(item => {
         const isActive =
           (item.key === 'friends' && fromFriends) ||
