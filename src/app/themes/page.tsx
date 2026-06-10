@@ -78,10 +78,10 @@ export default async function ThemesPage() {
     description: theme.description,
     color: theme.color,
     icon: theme.icon,
-    total: totalPerTheme[theme.uuid] ?? 0,
-    checked: checkedPerTheme[theme.uuid] ?? 0,
+    total: totalPerTheme[theme.theme_id] ?? 0,
+    checked: checkedPerTheme[theme.theme_id] ?? 0,
     xpPerCheckin: theme.xp_per_checkin,
-    friends: friendsPerTheme[theme.uuid] ?? [],
+    friends: friendsPerTheme[theme.theme_id] ?? [],
   }))
 
   return <ThemesPageClient themes={themeData} />

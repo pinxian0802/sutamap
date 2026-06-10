@@ -113,7 +113,7 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
         <div className="w-full" style={{ height: 280 }}>
           <MapView
             locations={locations}
-            themes={[{ uuid: theme.uuid, name: theme.name, color: theme.color, icon: theme.icon }]}
+            themes={[{ uuid: theme.uuid, theme_id: theme.theme_id, name: theme.name, color: theme.color, icon: theme.icon }]}
             userCheckinLocationIds={locations.filter(l => l.checked).map(l => l.id)}
             friendCheckins={[]}
             isLoggedIn={isLoggedIn}

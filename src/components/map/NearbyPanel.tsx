@@ -11,7 +11,7 @@ interface Location {
   lat: number
   lng: number
   theme_id: string
-  themes: { id: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
+  themes: { name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
 }
 
 interface Props {
