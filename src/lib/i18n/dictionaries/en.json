@@ -92,7 +92,9 @@
     "spots": "spots",
     "xpPerSpot": "XP/spot",
     "friendsWorking": "Friends also working on this",
-    "collectionProgress": "Collection progress"
+    "collectionProgress": "Collection progress",
+    "locationsList": "Locations",
+    "emptyLocations": "No spots in this theme yet"
   },
   "friends": {
     "title": "Friends",

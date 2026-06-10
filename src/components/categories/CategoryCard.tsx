@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useDictionary } from '@/lib/i18n/context'
 
 interface Friend {
@@ -25,9 +26,17 @@ export function CategoryCard({ id, name, color, icon, total, checked, xpPerCheck
   const pct = total > 0 ? Math.round((checked / total) * 100) : 0
   const isComplete = checked === total && total > 0
   const dict = useDictionary()
+  const router = useRouter()
 
   return (
-    <div className="py-[9px]" style={{ borderTop: '1px solid var(--line2)' }}>
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => router.push(`/categories/${id}`)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(`/categories/${id}`) } }}
+      className="py-[9px] cursor-pointer"
+      style={{ borderTop: '1px solid var(--line2)' }}
+    >
       <div className="flex items-center gap-[9px]">
         <span
           className="w-[26px] h-[26px] rounded-lg text-white grid place-items-center flex-shrink-0 text-[15px]"
@@ -55,6 +64,7 @@ export function CategoryCard({ id, name, color, icon, total, checked, xpPerCheck
               <Link
                 key={f.userId}
                 href={`/profile/${f.userId}`}
+                onClick={(e) => e.stopPropagation()}
                 className="w-5 h-5 rounded-full bg-ink2 text-white text-[9px] font-bold grid place-items-center border border-paper"
               >
                 {f.username[0]?.toUpperCase()}

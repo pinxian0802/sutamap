@@ -92,7 +92,9 @@
     "spots": "處",
     "xpPerSpot": "XP/處",
     "friendsWorking": "好友也在挑戰中",
-    "collectionProgress": "蒐集進度"
+    "collectionProgress": "蒐集進度",
+    "locationsList": "地點清單",
+    "emptyLocations": "這個主題還沒有地點"
   },
   "friends": {
     "title": "好友",
