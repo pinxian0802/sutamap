@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ProfileHeader } from './ProfileHeader'
 import { TitleSelector } from './TitleSelector'
-import { CategoryProgressList } from './CategoryProgressList'
+import { ThemeProgressList } from './ThemeProgressList'
 import { EditProfileModal } from './EditProfileModal'
 import { LanguageModal } from './LanguageModal'
 import { useDictionary } from '@/lib/i18n/context'
@@ -13,12 +13,12 @@ import { Settings } from 'lucide-react'
 interface Props {
   profile: any
   earnedTitles: any[]
-  categoryProgress: any[]
+  themeProgress: any[]
   totalCheckins: number
   totalSpots: number
 }
 
-export function ProfilePageClient({ profile, earnedTitles, categoryProgress, totalCheckins, totalSpots }: Props) {
+export function ProfilePageClient({ profile, earnedTitles, themeProgress, totalCheckins, totalSpots }: Props) {
   const dict = useDictionary()
   const [showEdit, setShowEdit] = useState(false)
   const [showLanguage, setShowLanguage] = useState(false)
@@ -47,7 +47,7 @@ export function ProfilePageClient({ profile, earnedTitles, categoryProgress, tot
         earnedTitles={earnedTitles}
         activeTitleId={profile?.active_title_id ?? null}
       />
-      <CategoryProgressList categories={categoryProgress} />
+      <ThemeProgressList themes={themeProgress} />
       {showEdit && (
         <EditProfileModal
           userId={profile?.id}

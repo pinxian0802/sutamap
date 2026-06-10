@@ -1,11 +1,12 @@
 'use client'
 
-import { CategoryCard } from './CategoryCard'
+import { ThemeCard } from './ThemeCard'
 import { useDictionary } from '@/lib/i18n/context'
 import { Target } from 'lucide-react'
 
-interface CatData {
+interface ThemeData {
   id: string
+  theme_id: string
   name: string
   description: string | null
   color: string
@@ -17,25 +18,25 @@ interface CatData {
 }
 
 interface Props {
-  categories: CatData[]
+  themes: ThemeData[]
 }
 
-export function CategoriesPageClient({ categories }: Props) {
+export function ThemesPageClient({ themes }: Props) {
   const dict = useDictionary()
 
   return (
     <div className="max-w-md mx-auto px-4 pt-2 pb-4">
       <div className="flex items-center justify-between px-[2px] pt-[6px] pb-[14px]">
-        <h1 className="text-[19px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>{dict.categories.title}</h1>
+        <h1 className="text-[19px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>{dict.themes.title}</h1>
         <button className="sm-iconbtn">
           <Target size={18} className="text-sub" />
         </button>
       </div>
       <div className="sm-card">
-        <div className="sm-card-title">{dict.categories.collectionProgress}</div>
-        {categories.map((cat, i) => (
-          <div key={cat.id} style={i === 0 ? { borderTop: 'none' } : undefined}>
-            <CategoryCard {...cat} />
+        <div className="sm-card-title">{dict.themes.collectionProgress}</div>
+        {themes.map((theme, i) => (
+          <div key={theme.id} style={i === 0 ? { borderTop: 'none' } : undefined}>
+            <ThemeCard {...theme} />
           </div>
         ))}
       </div>

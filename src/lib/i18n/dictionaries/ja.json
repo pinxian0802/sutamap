@@ -5,7 +5,7 @@
   },
   "nav": {
     "map": "地図",
-    "categories": "テーマ",
+    "themes": "テーマ",
     "leaderboard": "ランキング",
     "friends": "フレンド",
     "profile": "プロフィール"
@@ -39,8 +39,8 @@
     "loginLink": "ログイン",
     "loginSuffix": "が必要です",
     "visited": "が訪問",
-    "category": "テーマ",
-    "allCategories": "すべてのテーマ",
+    "theme": "テーマ",
+    "allThemes": "すべてのテーマ",
     "moreLocations": "+{count} 箇所",
     "searchPlaceholder": "地点・テーマを検索",
     "searchInputPlaceholder": "地点名・テーマを入力…",
@@ -86,7 +86,7 @@
     "processing": "処理中...",
     "change": "写真を変更"
   },
-  "categories": {
+  "themes": {
     "title": "テーマ一覧",
     "complete": "★ クリア",
     "spots": "箇所",
@@ -163,16 +163,17 @@
   },
   "admin": {
     "title": "管理画面",
-    "categories": "テーマ管理",
-    "addCategory": "テーマを追加",
-    "editCategory": "テーマを編集",
-    "deleteCategory": "テーマを削除",
+    "themes": "テーマ管理",
+    "addTheme": "テーマを追加",
+    "editTheme": "テーマを編集",
+    "deleteTheme": "テーマを削除",
     "deleteConfirm": "このテーマを削除しますか？関連する地点・称号も削除されます。",
     "nameJa": "名前（日本語）",
     "nameEn": "名前（英語）",
     "nameZh": "名前（中国語）",
     "description": "説明",
     "color": "カラー",
+    "themeSlug": "短縮コード（slug）",
     "icon": "アイコン（絵文字）",
     "checkinRadius": "打卡半径（m）",
     "xpPerCheckin": "打卡XP",
@@ -194,7 +195,7 @@
     "lat": "緯度",
     "lng": "経度",
     "active": "有効",
-    "noCategories": "テーマがありません",
+    "noThemes": "テーマがありません",
     "noLocations": "地点がありません",
     "locationCount": "{count} 箇所"
   }

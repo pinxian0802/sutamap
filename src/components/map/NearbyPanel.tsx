@@ -10,8 +10,8 @@ interface Location {
   name: string
   lat: number
   lng: number
-  category_id: string
-  categories: { id: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
+  theme_id: string
+  themes: { id: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
 }
 
 interface Props {
@@ -53,7 +53,7 @@ export function NearbyPanel({ locations, checkedSet, onSelect, onClose }: Props)
           return {
             location: loc,
             distance,
-            inRange: distance <= loc.categories.checkin_radius_meters,
+            inRange: distance <= loc.themes.checkin_radius_meters,
           }
         })
         withDist.sort((a, b) => a.distance - b.distance)
@@ -128,16 +128,16 @@ export function NearbyPanel({ locations, checkedSet, onSelect, onClose }: Props)
               >
                 <span
                   className="w-[40px] h-[40px] rounded-[11px] grid place-items-center text-white text-[18px] flex-shrink-0"
-                  style={{ background: inRange ? loc.categories.color : '#aab2bf' }}
+                  style={{ background: inRange ? loc.themes.color : '#aab2bf' }}
                 >
-                  {loc.categories.icon}
+                  {loc.themes.icon}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-[6px]">
                     <span className="text-[14.5px] font-bold truncate">{loc.name}</span>
                     {checked && <span className="text-green text-[12px]">✓</span>}
                   </div>
-                  <div className="text-[11.5px] text-sub mt-[2px]">{loc.categories.name}</div>
+                  <div className="text-[11.5px] text-sub mt-[2px]">{loc.themes.name}</div>
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <div className="sm-mono text-[13px] font-bold" style={{ color: inRange ? 'var(--green-d)' : 'var(--sub)' }}>

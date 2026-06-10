@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { useDictionary } from '@/lib/i18n/context'
 import { Map, Target, Trophy, Users, User } from 'lucide-react'
 
-const ICON_MAP = { map: Map, categories: Target, leaderboard: Trophy, friends: Users, profile: User }
+const ICON_MAP = { map: Map, themes: Target, leaderboard: Trophy, friends: Users, profile: User }
 
 export function NavBar() {
   const pathname = usePathname()
@@ -15,7 +15,7 @@ export function NavBar() {
 
   const NAV_ITEMS = [
     { href: '/map', key: 'map' as const, label: dict.nav.map },
-    { href: '/categories', key: 'categories' as const, label: dict.nav.categories },
+    { href: '/themes', key: 'themes' as const, label: dict.nav.themes },
     { href: '/leaderboard', key: 'leaderboard' as const, label: dict.nav.leaderboard },
     { href: '/friends', key: 'friends' as const, label: dict.nav.friends },
     { href: '/profile', key: 'profile' as const, label: dict.nav.profile },

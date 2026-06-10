@@ -13,49 +13,49 @@ export default async function ProfilePage() {
   const [
     { data: profile },
     { data: userTitles },
-    { data: categories },
+    { data: themes },
   ] = await Promise.all([
     supabase.from('user_profiles').select('*, titles(name, name_en, name_zh)').eq('id', user.id).single() as any,
     supabase.from('user_titles').select('titles(*)').eq('user_id', user.id) as any,
-    supabase.from('categories').select('*') as any,
+    supabase.from('themes').select('*') as any,
   ])
 
   const { data: firstCheckins } = await supabase
     .from('checkins')
-    .select('location_id, locations(category_id)')
+    .select('location_id, locations(theme_id)')
     .eq('user_id', user.id)
     .eq('is_first', true) as any
 
   const { data: locationCounts } = await supabase
     .from('locations')
-    .select('category_id')
+    .select('theme_id')
     .eq('is_active', true) as any
 
-  const totalPerCategory: Record<string, number> = {}
+  const totalPerTheme: Record<string, number> = {}
   locationCounts?.forEach((l: any) => {
-    totalPerCategory[l.category_id] = (totalPerCategory[l.category_id] ?? 0) + 1
+    totalPerTheme[l.theme_id] = (totalPerTheme[l.theme_id] ?? 0) + 1
   })
 
-  const checkedPerCategory: Record<string, number> = {}
+  const checkedPerTheme: Record<string, number> = {}
   firstCheckins?.forEach((c: any) => {
-    const catId = c.locations?.category_id
-    if (catId) checkedPerCategory[catId] = (checkedPerCategory[catId] ?? 0) + 1
+    const themeId = c.locations?.theme_id
+    if (themeId) checkedPerTheme[themeId] = (checkedPerTheme[themeId] ?? 0) + 1
   })
 
-  const categoryProgress = (categories ?? []).map((cat: any) => ({
-    id: cat.id,
-    name: localizedName(cat, locale),
-    color: cat.color,
-    icon: cat.icon,
-    total: totalPerCategory[cat.id] ?? 0,
-    checked: checkedPerCategory[cat.id] ?? 0,
+  const themeProgress = (themes ?? []).map((theme: any) => ({
+    id: theme.uuid,
+    name: localizedName(theme, locale),
+    color: theme.color,
+    icon: theme.icon,
+    total: totalPerTheme[theme.uuid] ?? 0,
+    checked: checkedPerTheme[theme.uuid] ?? 0,
   }))
 
   const earnedTitles = (userTitles?.map((ut: any) => ut.titles).filter(Boolean) ?? [])
     .map((t: any) => ({ ...t, name: localizedName(t, locale) }))
 
-  const totalSpots = Object.values(totalPerCategory).reduce((a, b) => a + b, 0)
-  const totalCheckins = Object.values(checkedPerCategory).reduce((a, b) => a + b, 0)
+  const totalSpots = Object.values(totalPerTheme).reduce((a, b) => a + b, 0)
+  const totalCheckins = Object.values(checkedPerTheme).reduce((a, b) => a + b, 0)
 
   const localizedProfile = profile ? {
     ...profile,
@@ -66,7 +66,7 @@ export default async function ProfilePage() {
     <ProfilePageClient
       profile={localizedProfile}
       earnedTitles={earnedTitles}
-      categoryProgress={categoryProgress}
+      themeProgress={themeProgress}
       totalCheckins={totalCheckins}
       totalSpots={totalSpots}
     />

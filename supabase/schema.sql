@@ -1,9 +1,10 @@
 -- Enable UUID extension
 create extension if not exists "uuid-ossp";
 
--- Categories (主題)
-create table public.categories (
-  id uuid primary key default gen_random_uuid(),
+-- Themes (主題)
+create table public.themes (
+  uuid uuid primary key default gen_random_uuid(),
+  theme_id text unique not null,
   name text not null,
   name_en text not null,
   name_zh text not null default '',
@@ -18,7 +19,7 @@ create table public.categories (
 -- Locations (地點)
 create table public.locations (
   id uuid primary key default gen_random_uuid(),
-  category_id uuid not null references public.categories(id) on delete cascade,
+  theme_id text not null references public.themes(theme_id) on delete cascade,
   name text not null,
   name_en text,
   name_zh text,
@@ -29,7 +30,7 @@ create table public.locations (
   created_at timestamptz not null default now()
 );
 
-create index locations_category_id_idx on public.locations(category_id);
+create index locations_theme_id_idx on public.locations(theme_id);
 create index locations_latlng_idx on public.locations(lat, lng);
 
 -- Titles (稱號定義)
@@ -39,7 +40,7 @@ create table public.titles (
   name_en text,
   name_zh text,
   description text,
-  category_id uuid references public.categories(id) on delete cascade
+  theme_id text references public.themes(theme_id) on delete cascade
 );
 
 -- User Profiles
@@ -92,7 +93,7 @@ create table public.friendships (
 create index friendships_addressee_idx on public.friendships(addressee_id);
 
 -- RLS Policies
-alter table public.categories enable row level security;
+alter table public.themes enable row level security;
 alter table public.locations enable row level security;
 alter table public.user_profiles enable row level security;
 alter table public.checkins enable row level security;
@@ -100,15 +101,15 @@ alter table public.user_titles enable row level security;
 alter table public.friendships enable row level security;
 alter table public.titles enable row level security;
 
--- Public read access for categories, locations, titles
-create policy "categories are public" on public.categories for select using (true);
+-- Public read access for themes, locations, titles
+create policy "themes are public" on public.themes for select using (true);
 create policy "locations are public" on public.locations for select using (true);
 create policy "titles are public" on public.titles for select using (true);
 
--- Admin write access for categories and locations
-create policy "authenticated users can insert categories" on public.categories for insert with check (auth.role() = 'authenticated');
-create policy "authenticated users can update categories" on public.categories for update using (auth.role() = 'authenticated');
-create policy "authenticated users can delete categories" on public.categories for delete using (auth.role() = 'authenticated');
+-- Admin write access for themes and locations
+create policy "authenticated users can insert themes" on public.themes for insert with check (auth.role() = 'authenticated');
+create policy "authenticated users can update themes" on public.themes for update using (auth.role() = 'authenticated');
+create policy "authenticated users can delete themes" on public.themes for delete using (auth.role() = 'authenticated');
 create policy "authenticated users can insert locations" on public.locations for insert with check (auth.role() = 'authenticated');
 create policy "authenticated users can update locations" on public.locations for update using (auth.role() = 'authenticated');
 create policy "authenticated users can delete locations" on public.locations for delete using (auth.role() = 'authenticated');

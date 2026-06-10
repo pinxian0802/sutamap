@@ -2,14 +2,14 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { CheckinFlow } from '@/components/checkin/CheckinFlow'
 
-type LocationWithCategory = {
+type LocationWithTheme = {
   id: string
   name: string
   prefecture: string | null
   lat: number
   lng: number
-  category_id: string
-  categories: {
+  theme_id: string
+  themes: {
     name: string
     color: string
     checkin_radius_meters: number
@@ -24,9 +24,9 @@ export default async function CheckinPage({ params }: { params: Promise<{ id: st
 
   const { data: location } = await supabase
     .from('locations')
-    .select('*, categories(*)')
+    .select('*, themes(*)')
     .eq('id', id)
-    .single() as { data: LocationWithCategory | null; error: unknown }
+    .single() as { data: LocationWithTheme | null; error: unknown }
 
   if (!location) notFound()
 
@@ -46,8 +46,8 @@ export default async function CheckinPage({ params }: { params: Promise<{ id: st
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-md mx-auto p-4 space-y-6">
         <div className="space-y-1">
-          <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: location.categories.color }}>
-            {location.categories.name}
+          <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: location.themes.color }}>
+            {location.themes.name}
           </p>
           <h1 className="text-2xl font-bold">{location.name}</h1>
           {location.prefecture && <p className="text-sm text-gray-500">{location.prefecture}</p>}

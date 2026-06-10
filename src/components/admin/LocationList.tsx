@@ -8,13 +8,13 @@ import type { Database } from '@/types/database'
 type Location = Database['public']['Tables']['locations']['Row']
 
 interface Props {
-  categoryId: string
+  themeId: string
   locations: Location[]
   onSaved: (loc: Location, isNew: boolean) => void
   onDeleted: (id: string) => void
 }
 
-export function LocationList({ categoryId, locations, onSaved, onDeleted }: Props) {
+export function LocationList({ themeId, locations, onSaved, onDeleted }: Props) {
   const dict = useDictionary()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showAdd, setShowAdd] = useState(false)
@@ -34,7 +34,7 @@ export function LocationList({ categoryId, locations, onSaved, onDeleted }: Prop
           {editingId === loc.id ? (
             <div className="p-2.5">
               <LocationForm
-                categoryId={categoryId}
+                themeId={themeId}
                 location={loc}
                 onSaved={l => { onSaved(l, false); setEditingId(null) }}
                 onCancel={() => setEditingId(null)}
@@ -62,7 +62,7 @@ export function LocationList({ categoryId, locations, onSaved, onDeleted }: Prop
       {showAdd ? (
         <div className="rounded-lg border border-line2 p-2.5">
           <LocationForm
-            categoryId={categoryId}
+            themeId={themeId}
             onSaved={l => { onSaved(l, true); setShowAdd(false) }}
             onCancel={() => setShowAdd(false)}
           />
@@ -81,13 +81,13 @@ export function LocationList({ categoryId, locations, onSaved, onDeleted }: Prop
 }
 
 function LocationForm({
-  categoryId,
+  themeId,
   location,
   onSaved,
   onCancel,
   onDeleted,
 }: {
-  categoryId: string
+  themeId: string
   location?: Location
   onSaved: (loc: Location) => void
   onCancel: () => void
@@ -111,7 +111,7 @@ function LocationForm({
     setSaving(true)
 
     const payload = {
-      category_id: categoryId,
+      theme_id: themeId,
       name,
       name_en: nameEn,
       name_zh: nameZh,

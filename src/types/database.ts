@@ -3,9 +3,10 @@ export type Json = string | number | boolean | null | { [key: string]: Json } | 
 export interface Database {
   public: {
     Tables: {
-      categories: {
+      themes: {
         Row: {
-          id: string
+          uuid: string
+          theme_id: string | null
           name: string
           name_en: string
           name_zh: string
@@ -16,13 +17,13 @@ export interface Database {
           xp_per_checkin: number
           created_at: string
         }
-        Insert: Omit<Database['public']['Tables']['categories']['Row'], 'id' | 'created_at'>
-        Update: Partial<Database['public']['Tables']['categories']['Insert']>
+        Insert: Omit<Database['public']['Tables']['themes']['Row'], 'uuid' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['themes']['Insert']>
       }
       locations: {
         Row: {
           id: string
-          category_id: string
+          theme_id: string
           name: string
           name_en: string | null
           name_zh: string | null
@@ -71,7 +72,7 @@ export interface Database {
           name_en: string | null
           name_zh: string | null
           description: string | null
-          category_id: string | null
+          theme_id: string | null
         }
         Insert: Omit<Database['public']['Tables']['titles']['Row'], 'id'>
         Update: Partial<Database['public']['Tables']['titles']['Insert']>

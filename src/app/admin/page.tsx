@@ -8,14 +8,14 @@ export default async function AdminPage() {
 
   if (!user) redirect('/auth/login')
 
-  const [{ data: categories }, { data: locations }] = await Promise.all([
-    supabase.from('categories').select('*').order('created_at', { ascending: true }) as any,
+  const [{ data: themes }, { data: locations }] = await Promise.all([
+    supabase.from('themes').select('*').order('created_at', { ascending: true }) as any,
     supabase.from('locations').select('*').order('created_at', { ascending: true }) as any,
   ])
 
   return (
     <AdminPageClient
-      initialCategories={categories ?? []}
+      initialThemes={themes ?? []}
       initialLocations={locations ?? []}
     />
   )

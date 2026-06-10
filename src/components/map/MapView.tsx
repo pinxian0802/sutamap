@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { CategoryFilter } from './CategoryFilter'
+import { ThemeFilter } from './ThemeFilter'
 import { CheckinModal } from './CheckinModal'
 import { NearbyPanel } from './NearbyPanel'
 import { useDictionary } from '@/lib/i18n/context'
@@ -12,12 +12,13 @@ interface Location {
   name: string
   lat: number
   lng: number
-  category_id: string
-  categories: { id: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
+  theme_id: string
+  themes: { name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
 }
 
-interface Category {
-  id: string
+interface Theme {
+  uuid: string
+  theme_id: string
   name: string
   color: string
   icon: string
@@ -32,33 +33,33 @@ interface FriendCheckin {
 
 interface Props {
   locations: Location[]
-  categories: Category[]
+  themes: Theme[]
   userCheckinLocationIds: string[]
   friendCheckins: FriendCheckin[]
   isLoggedIn: boolean
-  lockedCategoryId?: string
+  lockedThemeId?: string
   focusLocationId?: string | null
   embedded?: boolean
 }
 
-export function MapView({ locations, categories, userCheckinLocationIds, friendCheckins, isLoggedIn, lockedCategoryId, focusLocationId, embedded = false }: Props) {
+export function MapView({ locations, themes, userCheckinLocationIds, friendCheckins, isLoggedIn, lockedThemeId, focusLocationId, embedded = false }: Props) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
   const leafletRef = useRef<any>(null)
   const clusterRef = useRef<any>(null)
   const plainGroupRef = useRef<any>(null)
-  const markersRef = useRef<Map<string, { marker: any; categoryId: string }>>(new Map())
+  const markersRef = useRef<Map<string, { marker: any; themeId: string }>>(new Map())
   const friendLayerRef = useRef<any[]>([])
   const checkedSet = new Set(userCheckinLocationIds)
-  const locked = lockedCategoryId != null
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(lockedCategoryId ?? null)
+  const locked = lockedThemeId != null
+  const [selectedThemeId, setSelectedThemeId] = useState<string | null>(lockedThemeId ?? null)
   const [friendModeOn, setFriendModeOn] = useState(false)
   const [checkinLocationId, setCheckinLocationId] = useState<string | null>(null)
   const [nearbyOpen, setNearbyOpen] = useState(false)
   const dict = useDictionary()
 
-  const selectCategory = useCallback((id: string | null) => {
-    setSelectedCategoryId(id)
+  const selectTheme = useCallback((id: string | null) => {
+    setSelectedThemeId(id)
   }, [])
 
 
@@ -102,15 +103,15 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
       const lockedBounds: [number, number][] = []
 
       locations.forEach(loc => {
-        if (locked && loc.category_id !== lockedCategoryId) return
+        if (locked && loc.theme_id !== lockedThemeId) return
 
         const isChecked = checkedSet.has(loc.id)
-        const color = loc.categories.color
+        const color = loc.themes.color
 
         const icon = L.divIcon({
           html: `<div style="position:relative">
             <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid #fff;background:${isChecked ? color : '#aab2bf'};display:grid;place-items:center;box-shadow:0 4px 8px -2px rgba(45,74,107,.5)">
-              <span style="transform:rotate(45deg);font-size:13px">${loc.categories.icon}</span>
+              <span style="transform:rotate(45deg);font-size:13px">${loc.themes.icon}</span>
             </div>
             ${isChecked ? `<span style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--green,#7aa83c);border:2px solid #fff;display:grid;place-items:center;z-index:2">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
@@ -128,13 +129,13 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
         const popupHtml = locked
           ? `
             <div style="padding:12px 16px;min-width:160px;font-family:var(--font-sans,'Zen Kaku Gothic New',sans-serif)">
-              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:4px">${loc.categories.name}</div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:4px">${loc.themes.name}</div>
               <div style="font-size:15px;font-weight:700;color:#2d4a6b">${loc.name}</div>
             </div>
           `
           : `
             <div style="padding:12px 16px;min-width:160px;font-family:var(--font-sans,'Zen Kaku Gothic New',sans-serif)">
-              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:4px">${loc.categories.name}</div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:4px">${loc.themes.name}</div>
               <div style="font-size:15px;font-weight:700;color:#2d4a6b;margin-bottom:8px">${loc.name}</div>
               <button
                 onclick="document.dispatchEvent(new CustomEvent('open-checkin',{detail:{id:'${loc.id}'}}))"
@@ -145,7 +146,7 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
 
         marker.bindPopup(popupHtml, { closeButton: false })
 
-        markersRef.current.set(loc.id, { marker, categoryId: loc.category_id })
+        markersRef.current.set(loc.id, { marker, themeId: loc.theme_id })
 
         if (locked) {
           plainGroup.addLayer(marker)
@@ -184,7 +185,7 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     }
   }, [])
 
-  // Filter markers + fly to bounds when selectedCategoryId changes
+  // Filter markers + fly to bounds when selectedThemeId changes
   useEffect(() => {
     const cluster = clusterRef.current
     const plain = plainGroupRef.current
@@ -192,13 +193,13 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     if (!cluster || !plain) return
 
     // All themes → cluster. Single theme → no clustering.
-    const useCluster = selectedCategoryId === null
+    const useCluster = selectedThemeId === null
 
     cluster.clearLayers()
     plain.clearLayers()
     const bounds: [number, number][] = []
-    markersRef.current.forEach(({ marker, categoryId }) => {
-      if (selectedCategoryId === null || categoryId === selectedCategoryId) {
+    markersRef.current.forEach(({ marker, themeId }) => {
+      if (selectedThemeId === null || themeId === selectedThemeId) {
         if (useCluster) {
           cluster.addLayer(marker)
         } else {
@@ -212,7 +213,7 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     if (map && leafletRef.current && bounds.length > 0) {
       map.fitBounds(leafletRef.current.latLngBounds(bounds), { padding: [60, 60], maxZoom: 12, duration: 0.8 })
     }
-  }, [selectedCategoryId])
+  }, [selectedThemeId])
 
   // Friend overlay
   useEffect(() => {
@@ -238,7 +239,7 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
       Object.entries(friendCheckinMap).forEach(([locId, info]) => {
         const loc = locations.find(l => l.id === locId)
         if (!loc) return
-        if (selectedCategoryId !== null && loc.category_id !== selectedCategoryId) return
+        if (selectedThemeId !== null && loc.theme_id !== selectedThemeId) return
         const friendIcon = L.divIcon({
           html: `<div style="width:13px;height:13px;border-radius:50%;background:${info.color};border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>`,
           iconSize: [13, 13],
@@ -256,7 +257,7 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     }
 
     doToggle()
-  }, [friendModeOn, friendCheckins, locations, selectedCategoryId])
+  }, [friendModeOn, friendCheckins, locations, selectedThemeId])
 
   // Fly to a specific location (used by the detail page location list)
   useEffect(() => {
@@ -273,13 +274,13 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
     <div className={embedded ? 'relative w-full h-full' : 'relative w-full h-screen -mb-[56px]'}>
       <div ref={mapRef} className="w-full h-full" />
 
-      {/* category selector with search */}
+      {/* theme selector with search */}
       {!locked && (
-        <CategoryFilter
-          categories={categories}
+        <ThemeFilter
+          themes={themes}
           locations={locations}
-          selectedId={selectedCategoryId}
-          onSelect={selectCategory}
+          selectedId={selectedThemeId}
+          onSelect={selectTheme}
         />
       )}
 
@@ -329,11 +330,11 @@ export function MapView({ locations, categories, userCheckinLocationIds, friendC
               name: loc.name,
               lat: loc.lat,
               lng: loc.lng,
-              categories: {
-                name: loc.categories.name,
-                color: loc.categories.color,
-                checkin_radius_meters: loc.categories.checkin_radius_meters,
-                xp_per_checkin: loc.categories.xp_per_checkin,
+              themes: {
+                name: loc.themes.name,
+                color: loc.themes.color,
+                checkin_radius_meters: loc.themes.checkin_radius_meters,
+                xp_per_checkin: loc.themes.xp_per_checkin,
               },
             }}
             isLoggedIn={isLoggedIn}

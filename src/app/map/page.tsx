@@ -11,9 +11,9 @@ export default async function MapPage() {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const [{ data: locations }, { data: categories }] = await Promise.all([
-    supabase.from('locations').select('*, categories(id, name, color, icon, checkin_radius_meters, xp_per_checkin)').eq('is_active', true),
-    supabase.from('categories').select('*'),
+  const [{ data: locations }, { data: themes }] = await Promise.all([
+    supabase.from('locations').select('*, themes(name, color, icon, checkin_radius_meters, xp_per_checkin)').eq('is_active', true),
+    supabase.from('themes').select('*'),
   ])
 
   let userCheckinLocationIds: string[] = []
@@ -65,18 +65,18 @@ export default async function MapPage() {
   const localizedLocations = (locations ?? []).map((loc: any) => ({
     ...loc,
     name: localizedName(loc, locale),
-    categories: { ...loc.categories, name: localizedName(loc.categories, locale) },
+    themes: { ...loc.themes, name: localizedName(loc.themes, locale) },
   }))
 
-  const localizedCategories = (categories ?? []).map((cat: any) => ({
-    ...cat,
-    name: localizedName(cat, locale),
+  const localizedThemes = (themes ?? []).map((theme: any) => ({
+    ...theme,
+    name: localizedName(theme, locale),
   }))
 
   return (
     <MapView
       locations={localizedLocations}
-      categories={localizedCategories}
+      themes={localizedThemes}
       userCheckinLocationIds={userCheckinLocationIds}
       friendCheckins={friendCheckins}
       isLoggedIn={!!user}

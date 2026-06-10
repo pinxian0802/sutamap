@@ -6,14 +6,14 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: categories, error } = await supabase
-    .from('categories')
+  const { data: themes, error } = await supabase
+    .from('themes')
     .select('*')
     .order('created_at', { ascending: true }) as any
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  return NextResponse.json(categories)
+  return NextResponse.json(themes)
 }
 
 export async function POST(request: NextRequest) {
@@ -23,8 +23,9 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json()
   const { data, error } = await supabase
-    .from('categories')
+    .from('themes')
     .insert({
+      theme_id: body.theme_id,
       name: body.name,
       name_en: body.name_en,
       name_zh: body.name_zh,

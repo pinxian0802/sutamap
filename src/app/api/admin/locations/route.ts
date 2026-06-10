@@ -6,11 +6,11 @@ export async function GET(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const categoryId = request.nextUrl.searchParams.get('category_id')
+  const themeId = request.nextUrl.searchParams.get('theme_id')
 
   let query = supabase.from('locations').select('*').order('created_at', { ascending: true })
-  if (categoryId) {
-    query = query.eq('category_id', categoryId)
+  if (themeId) {
+    query = query.eq('theme_id', themeId)
   }
 
   const { data, error } = await query as any
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase
     .from('locations')
     .insert({
-      category_id: body.category_id,
+      theme_id: body.theme_id,
       name: body.name,
       name_en: body.name_en || null,
       name_zh: body.name_zh || null,

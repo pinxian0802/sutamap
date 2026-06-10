@@ -14,7 +14,7 @@ interface Location {
   name: string
   lat: number
   lng: number
-  categories: { name: string; color: string; checkin_radius_meters: number; xp_per_checkin: number }
+  themes: { name: string; color: string; checkin_radius_meters: number; xp_per_checkin: number }
 }
 
 interface Props {
@@ -77,10 +77,10 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
 
     // DEV: 距離檢查暫時關閉（測試用）
     // const dist = haversineDistance(lat, lng, location.lat, location.lng)
-    // if (dist > location.categories.checkin_radius_meters) {
+    // if (dist > location.themes.checkin_radius_meters) {
     //   setError(formatTemplate(dict.checkin.tooFar, {
     //     dist: Math.round(dist),
-    //     radius: location.categories.checkin_radius_meters,
+    //     radius: location.themes.checkin_radius_meters,
     //   }))
     //   setStep('error')
     //   return

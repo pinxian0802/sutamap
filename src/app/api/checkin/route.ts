@@ -8,11 +8,11 @@ import { defaultLocale } from '@/lib/i18n/config'
 
 type LocationRow = {
   id: string
-  category_id: string
+  theme_id: string
   name: string
   lat: number
   lng: number
-  categories: {
+  themes: {
     name: string
     color: string
     checkin_radius_meters: number
@@ -28,10 +28,10 @@ export async function POST(request: NextRequest) {
 
   const { locationId, photoUrl, lat, lng } = await request.json()
 
-  // Fetch location + category
+  // Fetch location + theme
   const { data: location } = await supabase
     .from('locations')
-    .select('*, categories(*)')
+    .select('*, themes(*)')
     .eq('id', locationId)
     .single() as { data: LocationRow | null; error: unknown }
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
   let xpMax = 100
 
   if (isFirst) {
-    const xpGain = location.categories.xp_per_checkin
+    const xpGain = location.themes.xp_per_checkin
 
     // Update user XP
     const { data: profile } = await supabase
@@ -101,19 +101,19 @@ export async function POST(request: NextRequest) {
 
     xpAwarded = xpGain
 
-    // Fetch all active locations in category
-    const { data: categoryLocations } = await supabase
+    // Fetch all active locations in theme
+    const { data: themeLocations } = await supabase
       .from('locations')
       .select('id')
-      .eq('category_id', location.category_id)
+      .eq('theme_id', location.theme_id)
       .eq('is_active', true) as { data: { id: string }[] | null; error: unknown }
 
-    const locationIds = categoryLocations?.map(l => l.id) ?? []
+    const locationIds = themeLocations?.map(l => l.id) ?? []
 
     const { count: totalLocations } = await supabase
       .from('locations')
       .select('id', { count: 'exact', head: true })
-      .eq('category_id', location.category_id)
+      .eq('theme_id', location.theme_id)
       .eq('is_active', true)
 
     const { count: userCheckins } = await supabase
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
       const { data: title } = await supabase
         .from('titles')
         .select('*')
-        .eq('category_id', location.category_id)
+        .eq('theme_id', location.theme_id)
         .maybeSingle() as { data: { id: string; name: string; name_en?: string; name_zh?: string } | null; error: unknown }
 
       if (title) {

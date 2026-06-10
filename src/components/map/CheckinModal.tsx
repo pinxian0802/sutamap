@@ -8,7 +8,7 @@ interface CheckinLocation {
   name: string
   lat: number
   lng: number
-  categories: {
+  themes: {
     name: string
     color: string
     checkin_radius_meters: number
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export function CheckinModal({ location, isLoggedIn, alreadyCheckedIn, onClose }: Props) {
-  const color = location.categories.color
+  const color = location.themes.color
 
   return (
     <Modal
@@ -37,14 +37,14 @@ export function CheckinModal({ location, isLoggedIn, alreadyCheckedIn, onClose }
             className="w-[52px] h-[52px] rounded-[14px] text-white grid place-items-center flex-shrink-0 text-[22px]"
             style={{ background: color }}
           >
-            {location.categories.name.charAt(0)}
+            {location.themes.name.charAt(0)}
           </span>
           <div className="flex-1 min-w-0">
             <div className="text-[19px] font-bold truncate" style={{ fontFamily: 'var(--font-display)' }}>
               {location.name}
             </div>
             <div className="text-[12.5px] text-sub mt-[2px]">
-              {location.categories.name}
+              {location.themes.name}
             </div>
           </div>
           <button className="sm-iconbtn" onClick={handleClose}>
@@ -56,8 +56,8 @@ export function CheckinModal({ location, isLoggedIn, alreadyCheckedIn, onClose }
       <div className="px-[18px] pb-6 overflow-hidden" style={{ maxHeight: 'calc(92vh - 100px)' }}>
         <div className="flex gap-[10px] mb-4">
           {[
-            { k: 'XP', v: `+${location.categories.xp_per_checkin}`, highlight: true },
-            { k: '半徑', v: `${location.categories.checkin_radius_meters}m` },
+            { k: 'XP', v: `+${location.themes.xp_per_checkin}`, highlight: true },
+            { k: '半徑', v: `${location.themes.checkin_radius_meters}m` },
           ].map((s, i) => (
             <div key={i} className="flex-1 text-center bg-paper2 rounded-[13px] py-3 px-1">
               <div className="sm-mono text-[17px] font-bold" style={{ color: s.highlight ? 'var(--green-d)' : 'var(--ink)' }}>

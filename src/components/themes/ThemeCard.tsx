@@ -12,6 +12,7 @@ interface Friend {
 
 interface Props {
   id: string
+  theme_id: string
   name: string
   description: string | null
   color: string
@@ -22,7 +23,7 @@ interface Props {
   friends: Friend[]
 }
 
-export function CategoryCard({ id, name, color, icon, total, checked, xpPerCheckin, friends }: Props) {
+export function ThemeCard({ theme_id, name, color, icon, total, checked, xpPerCheckin, friends }: Props) {
   const pct = total > 0 ? Math.round((checked / total) * 100) : 0
   const isComplete = checked === total && total > 0
   const dict = useDictionary()
@@ -32,8 +33,8 @@ export function CategoryCard({ id, name, color, icon, total, checked, xpPerCheck
     <div
       role="button"
       tabIndex={0}
-      onClick={() => router.push(`/categories/${id}`)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(`/categories/${id}`) } }}
+      onClick={() => router.push(`/themes/${theme_id}`)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(`/themes/${theme_id}`) } }}
       className="py-[9px] cursor-pointer"
       style={{ borderTop: '1px solid var(--line2)' }}
     >
@@ -49,7 +50,7 @@ export function CategoryCard({ id, name, color, icon, total, checked, xpPerCheck
           className="sm-mono text-[12px] font-bold"
           style={{ color: isComplete ? 'var(--green-d)' : 'var(--sub)' }}
         >
-          {isComplete ? dict.categories.complete : `${checked}/${total}`}
+          {isComplete ? dict.themes.complete : `${checked}/${total}`}
         </span>
       </div>
       <div className="mt-2">
@@ -71,7 +72,7 @@ export function CategoryCard({ id, name, color, icon, total, checked, xpPerCheck
               </Link>
             ))}
           </div>
-          <span className="text-[10.5px] text-sub">{dict.categories.friendsWorking}</span>
+          <span className="text-[10.5px] text-sub">{dict.themes.friendsWorking}</span>
         </div>
       )}
     </div>

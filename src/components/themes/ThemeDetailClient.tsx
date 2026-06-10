@@ -12,8 +12,8 @@ export interface DetailLocation {
   prefecture: string | null
   lat: number
   lng: number
-  category_id: string
-  categories: { id: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
+  theme_id: string
+  themes: { uuid: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
   checked: boolean
 }
 
@@ -23,8 +23,9 @@ export interface DetailFriend {
   checked: number
 }
 
-export interface DetailCategory {
-  id: string
+export interface DetailTheme {
+  uuid: string
+  theme_id: string
   name: string
   description: string | null
   color: string
@@ -33,14 +34,14 @@ export interface DetailCategory {
 }
 
 interface Props {
-  category: DetailCategory
+  theme: DetailTheme
   locations: DetailLocation[]
   checkedCount: number
   friends: DetailFriend[]
   isLoggedIn: boolean
 }
 
-export function CategoryDetailClient({ category, locations, checkedCount, friends, isLoggedIn }: Props) {
+export function ThemeDetailClient({ theme, locations, checkedCount, friends, isLoggedIn }: Props) {
   const dict = useDictionary()
   const router = useRouter()
   const mapWrapRef = useRef<HTMLDivElement>(null)
@@ -65,44 +66,44 @@ export function CategoryDetailClient({ category, locations, checkedCount, friend
         <div className="flex items-center gap-[9px] min-w-0">
           <span
             className="w-[26px] h-[26px] rounded-lg text-white grid place-items-center flex-shrink-0 text-[15px]"
-            style={{ background: category.color }}
+            style={{ background: theme.color }}
           >
-            {category.icon}
+            {theme.icon}
           </span>
-          <h1 className="text-[19px] font-bold truncate" style={{ fontFamily: 'var(--font-display)' }}>{category.name}</h1>
+          <h1 className="text-[19px] font-bold truncate" style={{ fontFamily: 'var(--font-display)' }}>{theme.name}</h1>
         </div>
       </div>
 
       {/* intro + stats */}
       <div className="sm-card">
-        {category.description && (
-          <p className="text-[13px] text-sub leading-[1.7] mb-[12px]">{category.description}</p>
+        {theme.description && (
+          <p className="text-[13px] text-sub leading-[1.7] mb-[12px]">{theme.description}</p>
         )}
         <div className="flex items-stretch gap-[8px]">
           <div className="flex-1 text-center py-[8px] rounded-[10px]" style={{ background: 'var(--paper2)' }}>
             <div className="sm-mono text-[17px] font-bold">{total}</div>
-            <div className="text-[10.5px] text-sub mt-[2px]">{dict.categories.spots}</div>
+            <div className="text-[10.5px] text-sub mt-[2px]">{dict.themes.spots}</div>
           </div>
           <div className="flex-1 text-center py-[8px] rounded-[10px]" style={{ background: 'var(--paper2)' }}>
             <div className="sm-mono text-[17px] font-bold" style={{ color: 'var(--green-d)' }}>{checkedCount}</div>
             <div className="text-[10.5px] text-sub mt-[2px]">{dict.map.visited}</div>
           </div>
           <div className="flex-1 text-center py-[8px] rounded-[10px]" style={{ background: 'var(--paper2)' }}>
-            <div className="sm-mono text-[17px] font-bold">{category.xp_per_checkin}</div>
-            <div className="text-[10.5px] text-sub mt-[2px]">{dict.categories.xpPerSpot}</div>
+            <div className="sm-mono text-[17px] font-bold">{theme.xp_per_checkin}</div>
+            <div className="text-[10.5px] text-sub mt-[2px]">{dict.themes.xpPerSpot}</div>
           </div>
         </div>
 
         {/* progress bar */}
         <div className="mt-[12px]">
           <div className="flex items-center justify-between mb-[5px]">
-            <span className="text-[11.5px] text-sub">{dict.categories.collectionProgress}</span>
+            <span className="text-[11.5px] text-sub">{dict.themes.collectionProgress}</span>
             <span className="sm-mono text-[12px] font-bold" style={{ color: isComplete ? 'var(--green-d)' : 'var(--sub)' }}>
-              {isComplete ? dict.categories.complete : `${checkedCount}/${total}`}
+              {isComplete ? dict.themes.complete : `${checkedCount}/${total}`}
             </span>
           </div>
           <div className="sm-pbar" style={{ height: 6 }}>
-            <div className="sm-pfill" style={{ width: `${pct}%`, background: category.color }} />
+            <div className="sm-pfill" style={{ width: `${pct}%`, background: theme.color }} />
           </div>
         </div>
       </div>
@@ -112,11 +113,11 @@ export function CategoryDetailClient({ category, locations, checkedCount, friend
         <div className="w-full" style={{ height: 280 }}>
           <MapView
             locations={locations}
-            categories={[{ id: category.id, name: category.name, color: category.color, icon: category.icon }]}
+            themes={[{ uuid: theme.uuid, name: theme.name, color: theme.color, icon: theme.icon }]}
             userCheckinLocationIds={locations.filter(l => l.checked).map(l => l.id)}
             friendCheckins={[]}
             isLoggedIn={isLoggedIn}
-            lockedCategoryId={category.id}
+            lockedThemeId={theme.theme_id}
             focusLocationId={focusLocationId}
             embedded
           />
@@ -125,9 +126,9 @@ export function CategoryDetailClient({ category, locations, checkedCount, friend
 
       {/* location list */}
       <div className="sm-card">
-        <div className="sm-card-title">{dict.categories.locationsList}</div>
+        <div className="sm-card-title">{dict.themes.locationsList}</div>
         {total === 0 ? (
-          <div className="py-[18px] text-center text-[13px] text-sub">{dict.categories.emptyLocations}</div>
+          <div className="py-[18px] text-center text-[13px] text-sub">{dict.themes.emptyLocations}</div>
         ) : (
           locations.map((loc, i) => (
             <button
@@ -165,7 +166,7 @@ export function CategoryDetailClient({ category, locations, checkedCount, friend
                 </span>
               ))}
             </div>
-            <span className="text-[11.5px] text-sub">{dict.categories.friendsWorking}</span>
+            <span className="text-[11.5px] text-sub">{dict.themes.friendsWorking}</span>
           </div>
         </div>
       )}

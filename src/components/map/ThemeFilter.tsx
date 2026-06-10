@@ -4,8 +4,9 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { ChevronDown, Search, X } from 'lucide-react'
 import { useDictionary, formatTemplate } from '@/lib/i18n/context'
 
-interface Category {
-  id: string
+interface Theme {
+  uuid: string
+  theme_id: string
   name: string
   color: string
   icon: string
@@ -14,11 +15,11 @@ interface Category {
 interface Location {
   id: string
   name: string
-  category_id: string
+  theme_id: string
 }
 
 interface Props {
-  categories: Category[]
+  themes: Theme[]
   locations: Location[]
   selectedId: string | null
   onSelect: (id: string | null) => void
@@ -26,7 +27,7 @@ interface Props {
 
 const MAX_LOCATIONS = 3
 
-export function CategoryFilter({ categories, locations, selectedId, onSelect }: Props) {
+export function ThemeFilter({ themes, locations, selectedId, onSelect }: Props) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const ref = useRef<HTMLDivElement>(null)
@@ -49,26 +50,26 @@ export function CategoryFilter({ categories, locations, selectedId, onSelect }: 
     if (open) inputRef.current?.focus()
   }, [open])
 
-  const locationsByCategory = useMemo(() => {
+  const locationsByTheme = useMemo(() => {
     const map: Record<string, Location[]> = {}
     for (const loc of locations) {
-      if (!map[loc.category_id]) map[loc.category_id] = []
-      map[loc.category_id].push(loc)
+      if (!map[loc.theme_id]) map[loc.theme_id] = []
+      map[loc.theme_id].push(loc)
     }
     return map
   }, [locations])
 
-  const selected = categories.find(c => c.id === selectedId)
+  const selected = themes.find(t => t.theme_id === selectedId)
   const q = query.trim().toLowerCase()
 
   const filtered = useMemo(() => {
-    if (!q) return categories
-    return categories.filter(cat => {
-      if (cat.name.toLowerCase().includes(q)) return true
-      const locs = locationsByCategory[cat.id] ?? []
+    if (!q) return themes
+    return themes.filter(theme => {
+      if (theme.name.toLowerCase().includes(q)) return true
+      const locs = locationsByTheme[theme.theme_id] ?? []
       return locs.some(loc => loc.name.toLowerCase().includes(q))
     })
-  }, [q, categories, locationsByCategory])
+  }, [q, themes, locationsByTheme])
 
   function handleSelect(id: string | null) {
     onSelect(id)
@@ -76,8 +77,8 @@ export function CategoryFilter({ categories, locations, selectedId, onSelect }: 
     setQuery('')
   }
 
-  function renderLocations(catId: string) {
-    const locs = locationsByCategory[catId] ?? []
+  function renderLocations(themeId: string) {
+    const locs = locationsByTheme[themeId] ?? []
     if (locs.length === 0) return null
 
     const shown = locs.slice(0, MAX_LOCATIONS)
@@ -135,7 +136,7 @@ export function CategoryFilter({ categories, locations, selectedId, onSelect }: 
             <span className="text-[14px] font-bold truncate">{selected.name}</span>
           </div>
         ) : (
-          <span className="flex-1 text-[14px] text-sub">{dict.map.allCategories}</span>
+          <span className="flex-1 text-[14px] text-sub">{dict.map.allThemes}</span>
         )}
 
         {open && query ? (
@@ -181,30 +182,30 @@ export function CategoryFilter({ categories, locations, selectedId, onSelect }: 
                 ◉
               </span>
               <div className="flex-1 min-w-0">
-                <span className="text-[14px] font-bold">{dict.map.allCategories}</span>
+                <span className="text-[14px] font-bold">{dict.map.allThemes}</span>
               </div>
               {selectedId === null && <span className="text-green text-[14px] flex-shrink-0">✓</span>}
             </button>
           )}
 
-          {filtered.map(cat => {
-            const isActive = selectedId === cat.id
+          {filtered.map(theme => {
+            const isActive = selectedId === theme.theme_id
             return (
               <button
-                key={cat.id}
+                key={theme.uuid}
                 className="cf-item flex items-start gap-[10px] w-full text-left py-[12px] px-[14px] cursor-pointer border-b border-line2 last:border-b-0"
                 style={{ background: isActive ? 'var(--tint)' : 'transparent' }}
-                onClick={() => handleSelect(isActive ? null : cat.id)}
+                onClick={() => handleSelect(isActive ? null : theme.theme_id)}
               >
                 <span
                   className="w-[30px] h-[30px] rounded-[9px] grid place-items-center text-white text-[16px] flex-shrink-0 mt-[1px]"
-                  style={{ background: cat.color }}
+                  style={{ background: theme.color }}
                 >
-                  {cat.icon}
+                  {theme.icon}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[14px] font-bold">{cat.name}</span>
-                  {renderLocations(cat.id)}
+                  <span className="text-[14px] font-bold">{theme.name}</span>
+                  {renderLocations(theme.theme_id)}
                 </div>
                 {isActive && <span className="text-green text-[14px] flex-shrink-0 mt-[1px]">✓</span>}
               </button>

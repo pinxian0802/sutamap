@@ -1,21 +1,20 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { CategoryDetailClient, type DetailLocation, type DetailFriend } from '@/components/categories/CategoryDetailClient'
+import { ThemeDetailClient, type DetailLocation, type DetailFriend } from '@/components/themes/ThemeDetailClient'
 import { getLocale } from '@/lib/i18n/server'
 import { localizedName } from '@/lib/i18n/localize'
 
-export default async function CategoryDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ThemeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
   const locale = await getLocale()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const [{ data: category }, { data: locations }] = await Promise.all([
-    supabase.from('categories').select('*').eq('id', id).single() as any,
-    supabase.from('locations').select('*').eq('category_id', id).eq('is_active', true) as any,
-  ])
+  const { data: theme } = await supabase.from('themes').select('*').eq('theme_id', id).single() as any
 
-  if (!category) notFound()
+  if (!theme) notFound()
+
+  const { data: locations } = await supabase.from('locations').select('*').eq('theme_id', theme.theme_id).eq('is_active', true) as any
 
   const locationIds: string[] = (locations ?? []).map((l: any) => l.id)
 
@@ -67,13 +66,14 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
     }
   }
 
-  const localizedCategory = {
-    id: category.id,
-    name: localizedName(category, locale),
-    description: category.description,
-    color: category.color,
-    icon: category.icon,
-    xp_per_checkin: category.xp_per_checkin,
+  const localizedTheme = {
+    uuid: theme.uuid,
+    theme_id: theme.theme_id,
+    name: localizedName(theme, locale),
+    description: theme.description,
+    color: theme.color,
+    icon: theme.icon,
+    xp_per_checkin: theme.xp_per_checkin,
   }
 
   const detailLocations: DetailLocation[] = (locations ?? []).map((loc: any) => ({
@@ -82,21 +82,21 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
     prefecture: loc.prefecture,
     lat: loc.lat,
     lng: loc.lng,
-    category_id: loc.category_id,
-    categories: {
-      id: category.id,
-      name: localizedCategory.name,
-      color: category.color,
-      icon: category.icon,
-      checkin_radius_meters: category.checkin_radius_meters,
-      xp_per_checkin: category.xp_per_checkin,
+    theme_id: loc.theme_id,
+    themes: {
+      uuid: theme.uuid,
+      name: localizedTheme.name,
+      color: theme.color,
+      icon: theme.icon,
+      checkin_radius_meters: theme.checkin_radius_meters,
+      xp_per_checkin: theme.xp_per_checkin,
     },
     checked: checkedSet.has(loc.id),
   }))
 
   return (
-    <CategoryDetailClient
-      category={localizedCategory}
+    <ThemeDetailClient
+      theme={localizedTheme}
       locations={detailLocations}
       checkedCount={detailLocations.filter(l => l.checked).length}
       friends={friends}

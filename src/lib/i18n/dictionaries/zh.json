@@ -5,7 +5,7 @@
   },
   "nav": {
     "map": "地圖",
-    "categories": "主題",
+    "themes": "主題",
     "leaderboard": "排行榜",
     "friends": "好友",
     "profile": "個人檔案"
@@ -39,8 +39,8 @@
     "loginLink": "登入",
     "loginSuffix": "",
     "visited": "已造訪",
-    "category": "主題",
-    "allCategories": "所有主題",
+    "theme": "主題",
+    "allThemes": "所有主題",
     "moreLocations": "+{count} 處",
     "searchPlaceholder": "搜尋地點・主題",
     "searchInputPlaceholder": "輸入地點或主題名稱…",
@@ -86,7 +86,7 @@
     "processing": "處理中...",
     "change": "更換照片"
   },
-  "categories": {
+  "themes": {
     "title": "主題一覽",
     "complete": "★ 完成",
     "spots": "處",
@@ -163,16 +163,17 @@
   },
   "admin": {
     "title": "管理後台",
-    "categories": "主題管理",
-    "addCategory": "新增主題",
-    "editCategory": "編輯主題",
-    "deleteCategory": "刪除主題",
+    "themes": "主題管理",
+    "addTheme": "新增主題",
+    "editTheme": "編輯主題",
+    "deleteTheme": "刪除主題",
     "deleteConfirm": "確定要刪除此主題嗎？相關的地點和稱號也會一併刪除。",
     "nameJa": "名稱（日文）",
     "nameEn": "名稱（英文）",
     "nameZh": "名稱（中文）",
     "description": "描述",
     "color": "顏色",
+    "themeSlug": "短代碼（slug）",
     "icon": "圖示（Emoji）",
     "checkinRadius": "打卡半徑（m）",
     "xpPerCheckin": "打卡 XP",
@@ -194,7 +195,7 @@
     "lat": "緯度",
     "lng": "經度",
     "active": "啟用",
-    "noCategories": "尚無主題",
+    "noThemes": "尚無主題",
     "noLocations": "尚無地點",
     "locationCount": "{count} 處"
   }

@@ -13,8 +13,9 @@ export async function PUT(
   const body = await request.json()
 
   const { data, error } = await (supabase as any)
-    .from('categories')
+    .from('themes')
     .update({
+      theme_id: body.theme_id,
       name: body.name,
       name_en: body.name_en,
       name_zh: body.name_zh,
@@ -24,7 +25,7 @@ export async function PUT(
       checkin_radius_meters: body.checkin_radius_meters,
       xp_per_checkin: body.xp_per_checkin,
     })
-    .eq('id', id)
+    .eq('uuid', id)
     .select()
     .single()
 
@@ -44,9 +45,9 @@ export async function DELETE(
   const { id } = await params
 
   const { error } = await supabase
-    .from('categories')
+    .from('themes')
     .delete()
-    .eq('id', id) as any
+    .eq('uuid', id) as any
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 

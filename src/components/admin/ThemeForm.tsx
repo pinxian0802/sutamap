@@ -5,27 +5,28 @@ import { useDictionary } from '@/lib/i18n/context'
 import { Trash2 } from 'lucide-react'
 import type { Database } from '@/types/database'
 
-type Category = Database['public']['Tables']['categories']['Row']
+type Theme = Database['public']['Tables']['themes']['Row']
 
 interface Props {
-  category?: Category
-  onSaved: (cat: Category) => void
+  theme?: Theme
+  onSaved: (theme: Theme) => void
   onCancel: () => void
   onDeleted?: () => void
 }
 
-export function CategoryForm({ category, onSaved, onCancel, onDeleted }: Props) {
+export function ThemeForm({ theme, onSaved, onCancel, onDeleted }: Props) {
   const dict = useDictionary()
-  const isEdit = !!category
+  const isEdit = !!theme
 
-  const [name, setName] = useState(category?.name ?? '')
-  const [nameEn, setNameEn] = useState(category?.name_en ?? '')
-  const [nameZh, setNameZh] = useState(category?.name_zh ?? '')
-  const [description, setDescription] = useState(category?.description ?? '')
-  const [color, setColor] = useState(category?.color ?? '#7aa83c')
-  const [icon, setIcon] = useState(category?.icon ?? '')
-  const [checkinRadius, setCheckinRadius] = useState(category?.checkin_radius_meters ?? 500)
-  const [xpPerCheckin, setXpPerCheckin] = useState(category?.xp_per_checkin ?? 100)
+  const [themeSlug, setThemeSlug] = useState(theme?.theme_id ?? '')
+  const [name, setName] = useState(theme?.name ?? '')
+  const [nameEn, setNameEn] = useState(theme?.name_en ?? '')
+  const [nameZh, setNameZh] = useState(theme?.name_zh ?? '')
+  const [description, setDescription] = useState(theme?.description ?? '')
+  const [color, setColor] = useState(theme?.color ?? '#7aa83c')
+  const [icon, setIcon] = useState(theme?.icon ?? '')
+  const [checkinRadius, setCheckinRadius] = useState(theme?.checkin_radius_meters ?? 500)
+  const [xpPerCheckin, setXpPerCheckin] = useState(theme?.xp_per_checkin ?? 100)
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -34,6 +35,7 @@ export function CategoryForm({ category, onSaved, onCancel, onDeleted }: Props) 
     setSaving(true)
 
     const payload = {
+      theme_id: themeSlug,
       name,
       name_en: nameEn,
       name_zh: nameZh,
@@ -45,7 +47,7 @@ export function CategoryForm({ category, onSaved, onCancel, onDeleted }: Props) 
     }
 
     try {
-      const url = isEdit ? `/api/admin/categories/${category.id}` : '/api/admin/categories'
+      const url = isEdit ? `/api/admin/themes/${theme.uuid}` : '/api/admin/themes'
       const res = await fetch(url, {
         method: isEdit ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -62,10 +64,10 @@ export function CategoryForm({ category, onSaved, onCancel, onDeleted }: Props) 
   }
 
   const handleDelete = async () => {
-    if (!category) return
+    if (!theme) return
     setSaving(true)
     try {
-      const res = await fetch(`/api/admin/categories/${category.id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/admin/themes/${theme.uuid}`, { method: 'DELETE' })
       if (!res.ok) throw new Error()
       onDeleted?.()
     } catch {
@@ -78,9 +80,12 @@ export function CategoryForm({ category, onSaved, onCancel, onDeleted }: Props) 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="text-xs font-bold text-sub uppercase tracking-wider">
-        {isEdit ? dict.admin.editCategory : dict.admin.addCategory}
+        {isEdit ? dict.admin.editTheme : dict.admin.addTheme}
       </div>
 
+      <Field label={dict.admin.themeSlug}>
+        <input className="adm-input" value={themeSlug} onChange={e => setThemeSlug(e.target.value)} placeholder="japan-castles" required />
+      </Field>
       <Field label={dict.admin.nameJa}>
         <input className="adm-input" value={name} onChange={e => setName(e.target.value)} required />
       </Field>
@@ -131,7 +136,7 @@ export function CategoryForm({ category, onSaved, onCancel, onDeleted }: Props) 
               <p className="text-xs text-terra">{dict.admin.deleteConfirm}</p>
               <div className="flex gap-2">
                 <button type="button" className="sm-btn !py-2 !text-[12px] flex-1 !bg-terra !text-white" onClick={handleDelete} disabled={saving}>
-                  {dict.admin.deleteCategory}
+                  {dict.admin.deleteTheme}
                 </button>
                 <button type="button" className="sm-btn sm-btn-ghost !py-2 !text-[12px] flex-1" onClick={() => setConfirmDelete(false)}>
                   {dict.admin.cancel}
@@ -141,7 +146,7 @@ export function CategoryForm({ category, onSaved, onCancel, onDeleted }: Props) 
           ) : (
             <button type="button" className="flex items-center gap-1.5 text-xs text-terra hover:underline" onClick={() => setConfirmDelete(true)}>
               <Trash2 size={13} />
-              {dict.admin.deleteCategory}
+              {dict.admin.deleteTheme}
             </button>
           )}
         </div>

@@ -9,12 +9,13 @@ interface Location {
   name: string
   lat: number
   lng: number
-  category_id: string
-  categories: { id: string; name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
+  theme_id: string
+  themes: { name: string; color: string; icon: string; checkin_radius_meters: number; xp_per_checkin: number }
 }
 
-interface Category {
-  id: string
+interface Theme {
+  uuid: string
+  theme_id: string
   name: string
   color: string
   icon: string
@@ -22,14 +23,14 @@ interface Category {
 
 interface Props {
   locations: Location[]
-  categories: Category[]
+  themes: Theme[]
   checkedSet: Set<string>
   onSelectLocation: (loc: Location) => void
-  onSelectCategory: (catId: string) => void
+  onSelectTheme: (themeId: string) => void
   onClose: () => void
 }
 
-export function MapSearch({ locations, categories, checkedSet, onSelectLocation, onSelectCategory, onClose }: Props) {
+export function MapSearch({ locations, themes, checkedSet, onSelectLocation, onSelectTheme, onClose }: Props) {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const dict = useDictionary()
@@ -43,12 +44,12 @@ export function MapSearch({ locations, categories, checkedSet, onSelectLocation,
   const locationResults = q.length > 0
     ? locations.filter(loc =>
         loc.name.toLowerCase().includes(q) ||
-        loc.categories.name.toLowerCase().includes(q)
+        loc.themes.name.toLowerCase().includes(q)
       ).slice(0, 20)
     : []
 
-  const categoryResults = q.length > 0
-    ? categories.filter(cat => cat.name.toLowerCase().includes(q))
+  const themeResults = q.length > 0
+    ? themes.filter(theme => theme.name.toLowerCase().includes(q))
     : []
 
   return (
@@ -84,22 +85,22 @@ export function MapSearch({ locations, categories, checkedSet, onSelectLocation,
             <div className="text-[11px] font-bold tracking-[.12em] text-sub uppercase mt-[14px] mb-[6px] ml-[2px]">
               {dict.map.searchByTheme}
             </div>
-            {categories.map(cat => {
-              const catLocations = locations.filter(l => l.category_id === cat.id)
-              const checkedCount = catLocations.filter(l => checkedSet.has(l.id)).length
+            {themes.map(theme => {
+              const themeLocations = locations.filter(l => l.theme_id === theme.theme_id)
+              const checkedCount = themeLocations.filter(l => checkedSet.has(l.id)).length
               return (
                 <button
-                  key={cat.id}
+                  key={theme.uuid}
                   className="flex items-center gap-3 w-full text-left py-[13px] px-[2px] border-b border-line2 cursor-pointer bg-transparent border-x-0 border-t-0"
-                  onClick={() => onSelectCategory(cat.id)}
+                  onClick={() => onSelectTheme(theme.theme_id)}
                 >
-                  <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[18px]" style={{ background: cat.color }}>
-                    {cat.icon}
+                  <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[18px]" style={{ background: theme.color }}>
+                    {theme.icon}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14.5px] font-bold">{cat.name}</div>
+                    <div className="text-[14.5px] font-bold">{theme.name}</div>
                     <div className="text-[11.5px] text-sub mt-[2px]">
-                      {checkedCount} / {catLocations.length} {dict.map.completed}
+                      {checkedCount} / {themeLocations.length} {dict.map.completed}
                     </div>
                   </div>
                   <ChevronRight size={16} strokeWidth={2} className="text-sub" />
@@ -111,7 +112,7 @@ export function MapSearch({ locations, categories, checkedSet, onSelectLocation,
               {dict.map.recentLocations}
             </div>
             {locations.slice(0, 5).map(loc => {
-              const c = loc.categories
+              const t = loc.themes
               const checked = checkedSet.has(loc.id)
               return (
                 <button
@@ -119,12 +120,12 @@ export function MapSearch({ locations, categories, checkedSet, onSelectLocation,
                   className="flex items-center gap-3 w-full text-left py-[13px] px-[2px] border-b border-line2 cursor-pointer bg-transparent border-x-0 border-t-0"
                   onClick={() => onSelectLocation(loc)}
                 >
-                  <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[16px]" style={{ background: c.color }}>
-                    {c.icon}
+                  <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[16px]" style={{ background: t.color }}>
+                    {t.icon}
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="text-[14.5px] font-bold">{loc.name}</div>
-                    <div className="text-[11.5px] text-sub mt-[2px]">{c.name}</div>
+                    <div className="text-[11.5px] text-sub mt-[2px]">{t.name}</div>
                   </div>
                   {checked
                     ? <Check size={16} strokeWidth={2.4} className="text-green" />
@@ -133,27 +134,27 @@ export function MapSearch({ locations, categories, checkedSet, onSelectLocation,
               )
             })}
           </>
-        ) : (categoryResults.length > 0 || locationResults.length > 0) ? (
+        ) : (themeResults.length > 0 || locationResults.length > 0) ? (
           <>
-            {categoryResults.length > 0 && (
+            {themeResults.length > 0 && (
               <>
                 <div className="text-[11px] font-bold tracking-[.12em] text-sub uppercase mt-[14px] mb-[6px] ml-[2px]">
                   {dict.map.themeSection}
                 </div>
-                {categoryResults.map(cat => {
-                  const catLocations = locations.filter(l => l.category_id === cat.id)
+                {themeResults.map(theme => {
+                  const themeLocations = locations.filter(l => l.theme_id === theme.theme_id)
                   return (
                     <button
-                      key={cat.id}
+                      key={theme.uuid}
                       className="flex items-center gap-3 w-full text-left py-[13px] px-[2px] border-b border-line2 cursor-pointer bg-transparent border-x-0 border-t-0"
-                      onClick={() => onSelectCategory(cat.id)}
+                      onClick={() => onSelectTheme(theme.theme_id)}
                     >
-                      <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[18px]" style={{ background: cat.color }}>
-                        {cat.icon}
+                      <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[18px]" style={{ background: theme.color }}>
+                        {theme.icon}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <div className="text-[14.5px] font-bold">{cat.name}</div>
-                        <div className="text-[11.5px] text-sub mt-[2px]">{catLocations.length} {dict.map.locations}</div>
+                        <div className="text-[14.5px] font-bold">{theme.name}</div>
+                        <div className="text-[11.5px] text-sub mt-[2px]">{themeLocations.length} {dict.map.locations}</div>
                       </div>
                       <ChevronRight size={16} strokeWidth={2} className="text-sub" />
                     </button>
@@ -168,7 +169,7 @@ export function MapSearch({ locations, categories, checkedSet, onSelectLocation,
                   {dict.map.locationSection}
                 </div>
                 {locationResults.map(loc => {
-                  const c = loc.categories
+                  const t = loc.themes
                   const checked = checkedSet.has(loc.id)
                   return (
                     <button
@@ -176,12 +177,12 @@ export function MapSearch({ locations, categories, checkedSet, onSelectLocation,
                       className="flex items-center gap-3 w-full text-left py-[13px] px-[2px] border-b border-line2 cursor-pointer bg-transparent border-x-0 border-t-0"
                       onClick={() => onSelectLocation(loc)}
                     >
-                      <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[16px]" style={{ background: c.color }}>
-                        {c.icon}
+                      <span className="w-[38px] h-[38px] rounded-[11px] grid place-items-center flex-shrink-0 text-white text-[16px]" style={{ background: t.color }}>
+                        {t.icon}
                       </span>
                       <div className="flex-1 min-w-0">
                         <div className="text-[14.5px] font-bold">{loc.name}</div>
-                        <div className="text-[11.5px] text-sub mt-[2px]">{c.name}</div>
+                        <div className="text-[11.5px] text-sub mt-[2px]">{t.name}</div>
                       </div>
                       {checked
                         ? <Check size={16} strokeWidth={2.4} className="text-green" />
