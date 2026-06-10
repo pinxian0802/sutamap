@@ -42,8 +42,8 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   const themeProgress = (themes ?? []).map((theme: any) => ({
     id: theme.uuid, name: localizedName(theme, locale), color: theme.color, icon: theme.icon,
-    total: totalPerTheme[theme.uuid] ?? 0,
-    checked: checkedPerTheme[theme.uuid] ?? 0,
+    total: totalPerTheme[theme.theme_id] ?? 0,
+    checked: checkedPerTheme[theme.theme_id] ?? 0,
   }))
 
   return (

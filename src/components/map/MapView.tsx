@@ -50,6 +50,7 @@ export function MapView({ locations, themes, userCheckinLocationIds, friendCheck
   const plainGroupRef = useRef<any>(null)
   const markersRef = useRef<Map<string, { marker: any; themeId: string }>>(new Map())
   const friendLayerRef = useRef<any[]>([])
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
   const checkedSet = new Set(userCheckinLocationIds)
   const locked = lockedThemeId != null
   const [selectedThemeId, setSelectedThemeId] = useState<string | null>(lockedThemeId ?? null)
@@ -93,6 +94,12 @@ export function MapView({ locations, themes, userCheckinLocationIds, friendCheck
 
       mapInstanceRef.current = map
       leafletRef.current = L
+
+      // Keep Leaflet in sync with the container size (fixes gray tiles when the
+      // container is sized/resized after init, e.g. responsive or sticky layouts).
+      const ro = new ResizeObserver(() => map.invalidateSize())
+      ro.observe(mapRef.current!)
+      resizeObserverRef.current = ro
 
       const clusterGroup = new MarkerClusterGroup({ showCoverageOnHover: false })
       clusterRef.current = clusterGroup
@@ -178,6 +185,8 @@ export function MapView({ locations, themes, userCheckinLocationIds, friendCheck
     return () => {
       cancelled = true
       document.removeEventListener('open-checkin', handleOpenCheckin)
+      resizeObserverRef.current?.disconnect()
+      resizeObserverRef.current = null
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
         mapInstanceRef.current = null

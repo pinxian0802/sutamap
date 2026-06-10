@@ -47,8 +47,8 @@ export default async function ProfilePage() {
     name: localizedName(theme, locale),
     color: theme.color,
     icon: theme.icon,
-    total: totalPerTheme[theme.uuid] ?? 0,
-    checked: checkedPerTheme[theme.uuid] ?? 0,
+    total: totalPerTheme[theme.theme_id] ?? 0,
+    checked: checkedPerTheme[theme.theme_id] ?? 0,
   }))
 
   const earnedTitles = (userTitles?.map((ut: any) => ut.titles).filter(Boolean) ?? [])

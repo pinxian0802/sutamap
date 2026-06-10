@@ -57,23 +57,43 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 pt-2 pb-4">
-      {/* back + header */}
-      <div className="flex items-center gap-[8px] px-[2px] pt-[6px] pb-[14px]">
-        <button onClick={() => router.back()} className="sm-iconbtn" aria-label="back">
-          <ChevronLeft size={18} className="text-sub" />
-        </button>
-        <div className="flex items-center gap-[9px] min-w-0">
-          <span
-            className="w-[26px] h-[26px] rounded-lg text-white grid place-items-center flex-shrink-0 text-[15px]"
-            style={{ background: theme.color }}
-          >
-            {theme.icon}
-          </span>
-          <h1 className="text-[19px] font-bold truncate" style={{ fontFamily: 'var(--font-display)' }}>{theme.name}</h1>
+    <div className="max-w-md lg:max-w-none mx-auto lg:h-[100dvh] lg:flex lg:overflow-hidden">
+      {/* embedded map — mobile: card on top; desktop: right column, full-bleed */}
+      <div ref={mapWrapRef} className="overflow-hidden mx-4 mt-2 mb-3 rounded-[16px] border border-[var(--line)] shadow-[0_10px_24px_-16px_rgba(45,74,107,0.4)] lg:m-0 lg:order-2 lg:flex-1 lg:rounded-none lg:border-0 lg:shadow-none">
+        <div className="w-full h-[320px] lg:h-full">
+          <MapView
+            locations={locations}
+            themes={[{ uuid: theme.uuid, theme_id: theme.theme_id, name: theme.name, color: theme.color, icon: theme.icon }]}
+            userCheckinLocationIds={locations.filter(l => l.checked).map(l => l.id)}
+            friendCheckins={[]}
+            isLoggedIn={isLoggedIn}
+            lockedThemeId={theme.theme_id}
+            focusLocationId={focusLocationId}
+            embedded
+          />
         </div>
       </div>
 
+      {/* left column: header + scrollable stats/list/friends */}
+      <div className="lg:order-1 lg:w-[30%] lg:flex lg:flex-col lg:min-h-0 lg:border-r lg:border-[var(--line)]">
+        {/* back + header */}
+        <div className="flex items-center gap-[8px] px-4 lg:px-3 pt-[8px] pb-[14px] lg:flex-shrink-0">
+          <button onClick={() => router.back()} className="sm-iconbtn" aria-label="back">
+            <ChevronLeft size={18} className="text-sub" />
+          </button>
+          <div className="flex items-center gap-[9px] min-w-0">
+            <span
+              className="w-[26px] h-[26px] rounded-lg text-white grid place-items-center flex-shrink-0 text-[15px]"
+              style={{ background: theme.color }}
+            >
+              {theme.icon}
+            </span>
+            <h1 className="text-[19px] font-bold truncate" style={{ fontFamily: 'var(--font-display)' }}>{theme.name}</h1>
+          </div>
+        </div>
+
+        {/* scrollable content */}
+        <div className="px-4 lg:px-3 pb-4 lg:pb-3 lg:flex-1 lg:min-h-0 lg:overflow-y-auto space-y-3">
       {/* intro + stats */}
       <div className="sm-card">
         {theme.description && (
@@ -105,22 +125,6 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
           <div className="sm-pbar" style={{ height: 6 }}>
             <div className="sm-pfill" style={{ width: `${pct}%`, background: theme.color }} />
           </div>
-        </div>
-      </div>
-
-      {/* embedded map */}
-      <div ref={mapWrapRef} className="sm-card overflow-hidden p-0">
-        <div className="w-full" style={{ height: 280 }}>
-          <MapView
-            locations={locations}
-            themes={[{ uuid: theme.uuid, theme_id: theme.theme_id, name: theme.name, color: theme.color, icon: theme.icon }]}
-            userCheckinLocationIds={locations.filter(l => l.checked).map(l => l.id)}
-            friendCheckins={[]}
-            isLoggedIn={isLoggedIn}
-            lockedThemeId={theme.theme_id}
-            focusLocationId={focusLocationId}
-            embedded
-          />
         </div>
       </div>
 
@@ -170,6 +174,8 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
           </div>
         </div>
       )}
+      </div>
+      </div>
     </div>
   )
 }

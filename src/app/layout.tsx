@@ -47,7 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           :root { --font-display: 'RocknRoll One', 'Zen Kaku Gothic New', sans-serif; }
         `}</style>
       </head>
-      <body className={`${zenKaku.variable} ${jetbrainsMono.variable} font-sans pb-[56px]`}>
+      <body className={`${zenKaku.variable} ${jetbrainsMono.variable} font-sans`}>
         <I18nProvider dict={dict} lang={lang}>
           {children}
           <NavBar />

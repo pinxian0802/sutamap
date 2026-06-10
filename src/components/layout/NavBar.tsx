@@ -23,9 +23,13 @@ export function NavBar() {
 
   const isAuthPage = pathname.startsWith('/auth')
   const isAdminPage = pathname.startsWith('/admin')
-  if (isAuthPage || isAdminPage) return null
+  const isThemeDetailPage = pathname.startsWith('/themes/')
+  if (isAuthPage || isAdminPage || isThemeDetailPage) return null
 
   return (
+    <>
+    {/* reserves flow space for the fixed nav so page content isn't hidden behind it */}
+    <div className="h-[56px]" aria-hidden />
     <nav className="sm-nav">
       {NAV_ITEMS.map(item => {
         const isActive =
@@ -55,5 +59,6 @@ export function NavBar() {
         )
       })}
     </nav>
+    </>
   )
 }
