@@ -164,7 +164,8 @@
     "logout": "ログアウト"
   },
   "common": {
-    "unknown": "不明"
+    "unknown": "不明",
+    "close": "閉じる"
   },
   "admin": {
     "title": "管理画面",

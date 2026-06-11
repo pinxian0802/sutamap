@@ -164,7 +164,8 @@
     "logout": "登出"
   },
   "common": {
-    "unknown": "未知"
+    "unknown": "未知",
+    "close": "關閉"
   },
   "admin": {
     "title": "管理後台",

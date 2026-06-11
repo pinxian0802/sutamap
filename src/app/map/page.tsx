@@ -17,16 +17,20 @@ export default async function MapPage() {
 
   let userCheckinLocationIds: string[] = []
   let userCheckinPhotos: Record<string, string> = {}
+  let userCheckinDates: Record<string, string> = {}
   let friendCheckins: { locationId: string; userId: string; username: string; color: string }[] = []
 
   if (user) {
     const [{ data: checkins }, { data: friendships }] = await Promise.all([
-      supabase.from('checkins').select('location_id, photo_url').eq('user_id', user.id).eq('is_first', true) as any,
+      supabase.from('checkins').select('location_id, photo_url, created_at').eq('user_id', user.id).eq('is_first', true) as any,
       supabase.from('friendships').select('requester_id, addressee_id').or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`).eq('status', 'accepted') as any,
     ])
 
     userCheckinLocationIds = (checkins ?? []).map((c: any) => c.location_id)
-    ;(checkins ?? []).forEach((c: any) => { if (c.photo_url) userCheckinPhotos[c.location_id] = c.photo_url })
+    ;(checkins ?? []).forEach((c: any) => {
+      if (c.photo_url) userCheckinPhotos[c.location_id] = c.photo_url
+      if (c.created_at) userCheckinDates[c.location_id] = c.created_at
+    })
 
     const friendIds: string[] = (friendships ?? []).map((f: any) =>
       f.requester_id === user.id ? f.addressee_id : f.requester_id
@@ -68,6 +72,7 @@ export default async function MapPage() {
       themes={localizedThemes}
       userCheckinLocationIds={userCheckinLocationIds}
       userCheckinPhotos={userCheckinPhotos}
+      userCheckinDates={userCheckinDates}
       friendCheckins={friendCheckins}
       isLoggedIn={!!user}
     />
