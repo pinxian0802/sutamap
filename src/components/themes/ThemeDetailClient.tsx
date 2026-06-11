@@ -59,7 +59,7 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
   return (
     <div className="max-w-md lg:max-w-none mx-auto lg:h-[100dvh] lg:flex lg:overflow-hidden">
       {/* embedded map — mobile: card on top; desktop: right column, full-bleed */}
-      <div ref={mapWrapRef} className="overflow-hidden mx-4 mt-2 mb-3 rounded-[16px] border border-[var(--line)] shadow-[0_10px_24px_-16px_rgba(45,74,107,0.4)] lg:m-0 lg:order-2 lg:flex-1 lg:rounded-none lg:border-0 lg:shadow-none">
+      <div ref={mapWrapRef} className="overflow-hidden m-4 lg:ml-0 rounded-[16px] border border-[var(--line)] shadow-[0_10px_24px_-16px_rgba(45,74,107,0.4)] lg:order-2 lg:flex-1">
         <div className="w-full h-[320px] lg:h-full">
           <MapView
             locations={locations}
@@ -75,9 +75,9 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
       </div>
 
       {/* left column: header + scrollable stats/list/friends */}
-      <div className="lg:order-1 lg:w-[30%] lg:flex lg:flex-col lg:min-h-0 lg:border-r lg:border-[var(--line)]">
+      <div className="lg:order-1 lg:w-[30%] lg:flex lg:flex-col lg:min-h-0">
         {/* back + header */}
-        <div className="flex items-center gap-[8px] px-4 lg:px-3 pt-[8px] pb-[14px] lg:flex-shrink-0">
+        <div className="flex items-center gap-[8px] px-4 pt-0 pb-0 lg:pt-4 lg:flex-shrink-0">
           <button onClick={() => router.back()} className="sm-iconbtn" aria-label="back">
             <ChevronLeft size={18} className="text-sub" />
           </button>
@@ -93,7 +93,7 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
         </div>
 
         {/* scrollable content */}
-        <div className="px-4 lg:px-3 pb-4 lg:pb-3 lg:flex-1 lg:min-h-0 lg:overflow-y-auto space-y-3">
+        <div className="px-4 pt-0 pb-4 lg:pt-4 lg:pb-4 lg:flex-1 lg:min-h-0 lg:overflow-y-auto space-y-4">
       {/* intro + stats */}
       <div className="sm-card">
         {theme.description && (
@@ -139,7 +139,6 @@ export function ThemeDetailClient({ theme, locations, checkedCount, friends, isL
               key={loc.id}
               onClick={() => handleLocationClick(loc.id)}
               className="flex items-center gap-[9px] w-full text-left py-[10px] cursor-pointer bg-transparent border-none"
-              style={i === 0 ? undefined : { borderTop: '1px solid var(--line2)' }}
             >
               <span
                 className="w-[22px] h-[22px] rounded-full grid place-items-center flex-shrink-0"

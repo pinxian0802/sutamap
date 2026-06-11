@@ -156,7 +156,8 @@
     "saveSuccess": "儲存成功",
     "usernameTooLong": "使用者名稱不能超過20字",
     "uploadFailed": "上傳失敗",
-    "language": "語言"
+    "language": "語言",
+    "logout": "登出"
   },
   "common": {
     "unknown": "未知"

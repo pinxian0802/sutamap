@@ -156,7 +156,8 @@
     "saveSuccess": "Saved successfully",
     "usernameTooLong": "Username must be 20 characters or less",
     "uploadFailed": "Upload failed",
-    "language": "Language"
+    "language": "Language",
+    "logout": "Logout"
   },
   "common": {
     "unknown": "Unknown"

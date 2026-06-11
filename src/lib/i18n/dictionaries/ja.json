@@ -156,7 +156,8 @@
     "saveSuccess": "保存しました",
     "usernameTooLong": "ユーザー名は20文字以内にしてください",
     "uploadFailed": "アップロードに失敗しました",
-    "language": "言語"
+    "language": "言語",
+    "logout": "ログアウト"
   },
   "common": {
     "unknown": "不明"

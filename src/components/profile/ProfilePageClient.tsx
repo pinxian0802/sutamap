@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ProfileHeader } from './ProfileHeader'
 import { TitleSelector } from './TitleSelector'
 import { ThemeProgressList } from './ThemeProgressList'
@@ -9,6 +10,7 @@ import { LanguageModal } from './LanguageModal'
 import { useDictionary } from '@/lib/i18n/context'
 import { Dropdown, DropdownItem } from '@/components/ui/Dropdown'
 import { Settings } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props {
   profile: any
@@ -21,8 +23,15 @@ interface Props {
 
 export function ProfilePageClient({ profile, earnedTitles, themeProgress, totalCheckins, totalSpots, rank }: Props) {
   const dict = useDictionary()
+  const router = useRouter()
   const [showEdit, setShowEdit] = useState(false)
   const [showLanguage, setShowLanguage] = useState(false)
+
+  async function handleLogout() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/')
+  }
 
   return (
     <div className="max-w-md mx-auto px-4 pt-2 pb-4 space-y-[13px]">
@@ -31,6 +40,7 @@ export function ProfilePageClient({ profile, earnedTitles, themeProgress, totalC
         <Dropdown trigger={<button className="sm-iconbtn"><Settings size={16} className="text-sub" /></button>}>
           <DropdownItem onClick={() => setShowEdit(true)}>{dict.profile.edit}</DropdownItem>
           <DropdownItem onClick={() => setShowLanguage(true)}>{dict.profile.language}</DropdownItem>
+          <DropdownItem onClick={handleLogout}>{dict.profile.logout}</DropdownItem>
         </Dropdown>
       </div>
       <ProfileHeader
