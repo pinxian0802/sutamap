@@ -54,19 +54,6 @@ export function CheckinModal({ location, isLoggedIn, alreadyCheckedIn, onClose }
       )}
     >
       <div className="px-[18px] pb-6 overflow-hidden" style={{ maxHeight: 'calc(92vh - 100px)' }}>
-        <div className="flex gap-[10px] mb-4">
-          {[
-            { k: 'XP', v: `+${location.themes.xp_per_checkin}`, highlight: true },
-            { k: '半徑', v: `${location.themes.checkin_radius_meters}m` },
-          ].map((s, i) => (
-            <div key={i} className="flex-1 text-center bg-paper2 rounded-[13px] py-3 px-1">
-              <div className="sm-mono text-[17px] font-bold" style={{ color: s.highlight ? 'var(--green-d)' : 'var(--ink)' }}>
-                {s.v}
-              </div>
-              <div className="text-[10.5px] text-sub mt-[3px]">{s.k}</div>
-            </div>
-          ))}
-        </div>
         <CheckinFlow
           location={location}
           isLoggedIn={isLoggedIn}

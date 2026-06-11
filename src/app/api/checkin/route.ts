@@ -49,7 +49,15 @@ export async function POST(request: NextRequest) {
     .eq('is_first', true)
     .maybeSingle() as { data: { id: string } | null; error: unknown }
 
-  const isFirst = !existing
+  // Already visited — block re-checkin entirely (no revisit records)
+  if (existing) {
+    return NextResponse.json(
+      { error: 'Already checked in', code: 'ALREADY_CHECKED_IN' },
+      { status: 409 }
+    )
+  }
+
+  const isFirst = true
 
   // Insert check-in
   const { error: checkinError } = await supabase

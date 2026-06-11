@@ -2,6 +2,9 @@ export type Json = string | number | boolean | null | { [key: string]: Json } | 
 
 export interface Database {
   public: {
+    Views: Record<string, never>
+    Enums: Record<string, never>
+    CompositeTypes: Record<string, never>
     Tables: {
       themes: {
         Row: {
@@ -19,6 +22,7 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['themes']['Row'], 'uuid' | 'created_at'>
         Update: Partial<Database['public']['Tables']['themes']['Insert']>
+        Relationships: []
       }
       locations: {
         Row: {
@@ -35,6 +39,7 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['locations']['Row'], 'id' | 'created_at'>
         Update: Partial<Database['public']['Tables']['locations']['Insert']>
+        Relationships: []
       }
       user_profiles: {
         Row: {
@@ -49,6 +54,7 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['user_profiles']['Row'], 'created_at'>
         Update: Partial<Database['public']['Tables']['user_profiles']['Insert']>
+        Relationships: []
       }
       checkins: {
         Row: {
@@ -64,6 +70,7 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['checkins']['Row'], 'id' | 'created_at'>
         Update: Partial<Database['public']['Tables']['checkins']['Insert']>
+        Relationships: []
       }
       titles: {
         Row: {
@@ -76,6 +83,7 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['titles']['Row'], 'id'>
         Update: Partial<Database['public']['Tables']['titles']['Insert']>
+        Relationships: []
       }
       user_titles: {
         Row: {
@@ -86,6 +94,7 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['user_titles']['Row'], 'id' | 'earned_at'>
         Update: never
+        Relationships: []
       }
       friendships: {
         Row: {
@@ -97,6 +106,33 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['friendships']['Row'], 'id' | 'created_at'>
         Update: Pick<Database['public']['Tables']['friendships']['Row'], 'status'>
+        Relationships: []
+      }
+    }
+    Functions: {
+      get_all_map_locations: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_leaderboard: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_friends_with_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_location_counts_by_theme: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_profile_stats: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
+      get_locations_for_theme: {
+        Args: { p_theme_id: string }
+        Returns: Json
       }
     }
   }

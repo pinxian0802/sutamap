@@ -78,7 +78,11 @@
     "firstCheckin": "First check-in",
     "done": "Done",
     "photoAttached": "PHOTO ATTACHED",
-    "exifGps": "Read EXIF GPS"
+    "exifGps": "Read EXIF GPS",
+    "radiusLabel": "Radius",
+    "alreadyVisitedTitle": "Already visited",
+    "visitedOn": "Visited on {date}",
+    "loadingRecord": "Loading..."
   },
   "photo": {
     "processFailed": "Failed to process photo",

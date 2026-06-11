@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { PhotoCapture } from './PhotoCapture'
 import { haversineDistance } from '@/lib/geo/distance'
-import { useDictionary, formatTemplate } from '@/lib/i18n/context'
+import { useDictionary, useLocale, formatTemplate } from '@/lib/i18n/context'
 import { Check } from 'lucide-react'
 import { CheckinV1Stamp } from '@/components/animations/CheckinSuccessAnim'
 import { CheckinLevelUpPause } from '@/components/animations/CheckinLevelUpFlow'
@@ -29,7 +29,10 @@ type Step = 'photo' | 'gps' | 'submitting' | 'success' | 'error'
 export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete }: Props) {
   const router = useRouter()
   const dict = useDictionary()
+  const locale = useLocale()
   const [step, setStep] = useState<Step>('photo')
+  const [visitRecord, setVisitRecord] = useState<{ photoUrl: string | null; createdAt: string } | null>(null)
+  const [recordLoading, setRecordLoading] = useState(false)
   const [photo, setPhoto] = useState<Blob | null>(null)
   const [photoGps, setPhotoGps] = useState<{ lat: number; lng: number } | null>(null)
   const [localPhotoUrl, setLocalPhotoUrl] = useState<string | null>(null)
@@ -43,6 +46,16 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
     xpBefore?: number
     xpMax?: number
   } | null>(null)
+
+  useEffect(() => {
+    if (!alreadyCheckedIn || !isLoggedIn) return
+    setRecordLoading(true)
+    fetch(`/api/checkin/record?locationId=${location.id}`)
+      .then(r => r.json())
+      .then(d => setVisitRecord(d.record))
+      .catch(() => {})
+      .finally(() => setRecordLoading(false))
+  }, [alreadyCheckedIn, isLoggedIn, location.id])
 
   function handlePhotoReady(blob: Blob, gps: { lat: number; lng: number } | null) {
     setPhoto(blob)
@@ -125,6 +138,50 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
     )
   }
 
+  // Already visited — re-checkin is blocked; show the previous visit record
+  if (alreadyCheckedIn && step !== 'success') {
+    const localeTag = { ja: 'ja-JP', en: 'en-US', zh: 'zh-TW' }[locale]
+    return (
+      <div className="text-center space-y-4 py-1">
+        {recordLoading ? (
+          <p className="text-sub py-10">{dict.checkin.loadingRecord}</p>
+        ) : (
+          <>
+            {visitRecord?.photoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={visitRecord.photoUrl}
+                alt=""
+                className="w-full max-h-[300px] object-cover rounded-[16px]"
+              />
+            )}
+            <div className="flex items-center justify-center gap-[8px]">
+              <span className="inline-grid place-items-center w-[26px] h-[26px] rounded-full bg-tint">
+                <Check size={15} strokeWidth={2.8} className="text-green-d" />
+              </span>
+              <span className="text-[16px] font-bold">{dict.checkin.alreadyVisitedTitle}</span>
+            </div>
+            {visitRecord?.createdAt && (
+              <p className="text-[12.5px] text-sub">
+                {formatTemplate(dict.checkin.visitedOn, {
+                  date: new Date(visitRecord.createdAt).toLocaleDateString(localeTag),
+                })}
+              </p>
+            )}
+          </>
+        )}
+        <div className="px-4 pb-4">
+          <button
+            className="sm-btn sm-btn-primary w-full"
+            onClick={() => (onComplete ? onComplete() : router.push('/map'))}
+          >
+            {dict.checkin.done}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (step === 'success' && result) {
     const xpBefore = result.xpBefore ?? 0
     const xpMax = result.xpMax ?? 100
@@ -178,12 +235,19 @@ export function CheckinFlow({ location, isLoggedIn, alreadyCheckedIn, onComplete
 
   return (
     <div className="space-y-4">
-      {alreadyCheckedIn && (
-        <div className="flex items-center gap-[9px] p-[11px_13px] rounded-[12px] bg-tint">
-          <Check size={16} strokeWidth={2.6} className="text-green-d" />
-          <span className="flex-1 text-[12.5px] text-green-d font-semibold">
-            {dict.checkin.alreadyVisited}
-          </span>
+      {step === 'photo' && (
+        <div className="flex gap-[10px]">
+          {[
+            { k: 'XP', v: `+${location.themes.xp_per_checkin}`, highlight: true },
+            { k: dict.checkin.radiusLabel, v: `${location.themes.checkin_radius_meters}m` },
+          ].map((s, i) => (
+            <div key={i} className="flex-1 text-center bg-paper2 rounded-[13px] py-3 px-1">
+              <div className="sm-mono text-[17px] font-bold" style={{ color: s.highlight ? 'var(--green-d)' : 'var(--ink)' }}>
+                {s.v}
+              </div>
+              <div className="text-[10.5px] text-sub mt-[3px]">{s.k}</div>
+            </div>
+          ))}
         </div>
       )}
       <PhotoCapture onReady={handlePhotoReady} />

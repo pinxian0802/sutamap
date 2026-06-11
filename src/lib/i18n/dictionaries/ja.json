@@ -78,7 +78,11 @@
     "firstCheckin": "初回打卡",
     "done": "完了",
     "photoAttached": "PHOTO ATTACHED",
-    "exifGps": "EXIF GPS を読み取り"
+    "exifGps": "EXIF GPS を読み取り",
+    "radiusLabel": "半径",
+    "alreadyVisitedTitle": "訪問済み",
+    "visitedOn": "{date} に訪問",
+    "loadingRecord": "読み込み中..."
   },
   "photo": {
     "processFailed": "写真の処理に失敗しました",

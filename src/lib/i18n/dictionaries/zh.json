@@ -78,7 +78,11 @@
     "firstCheckin": "首次打卡",
     "done": "完成",
     "photoAttached": "照片已附加",
-    "exifGps": "讀取 EXIF GPS"
+    "exifGps": "讀取 EXIF GPS",
+    "radiusLabel": "半徑",
+    "alreadyVisitedTitle": "已造訪",
+    "visitedOn": "造訪於 {date}",
+    "loadingRecord": "讀取中..."
   },
   "photo": {
     "processFailed": "照片處理失敗",
