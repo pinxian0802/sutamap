@@ -19,16 +19,18 @@ export default async function ThemeDetailPage({ params }: { params: Promise<{ id
   const locationIds: string[] = (locations ?? []).map((l: any) => l.id)
 
   let checkedSet = new Set<string>()
+  let checkinPhotos: Record<string, string> = {}
   let friends: DetailFriend[] = []
 
   if (user && locationIds.length > 0) {
     const { data: myCheckins } = await supabase
       .from('checkins')
-      .select('location_id')
+      .select('location_id, photo_url')
       .eq('user_id', user.id)
       .eq('is_first', true)
       .in('location_id', locationIds) as any
     checkedSet = new Set<string>((myCheckins ?? []).map((c: any) => c.location_id))
+    ;(myCheckins ?? []).forEach((c: any) => { if (c.photo_url) checkinPhotos[c.location_id] = c.photo_url })
 
     const { data: friendships } = await supabase
       .from('friendships')
@@ -101,6 +103,7 @@ export default async function ThemeDetailPage({ params }: { params: Promise<{ id
       checkedCount={detailLocations.filter(l => l.checked).length}
       friends={friends}
       isLoggedIn={!!user}
+      userCheckinPhotos={checkinPhotos}
     />
   )
 }

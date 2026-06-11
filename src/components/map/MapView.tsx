@@ -35,6 +35,7 @@ interface Props {
   locations: Location[]
   themes: Theme[]
   userCheckinLocationIds: string[]
+  userCheckinPhotos?: Record<string, string>
   friendCheckins: FriendCheckin[]
   isLoggedIn: boolean
   lockedThemeId?: string
@@ -42,7 +43,7 @@ interface Props {
   embedded?: boolean
 }
 
-export function MapView({ locations, themes, userCheckinLocationIds, friendCheckins, isLoggedIn, lockedThemeId, focusLocationId, embedded = false }: Props) {
+export function MapView({ locations, themes, userCheckinLocationIds, userCheckinPhotos, friendCheckins, isLoggedIn, lockedThemeId, focusLocationId, embedded = false }: Props) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
   const leafletRef = useRef<any>(null)
@@ -133,25 +134,23 @@ export function MapView({ locations, themes, userCheckinLocationIds, friendCheck
 
         const marker = L.marker([loc.lat, loc.lng], { icon })
 
-        const popupHtml = locked
-          ? `
-            <div style="padding:12px 16px;min-width:160px;font-family:var(--font-sans,'Zen Kaku Gothic New',sans-serif)">
-              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:4px">${loc.themes.name}</div>
-              <div style="font-size:15px;font-weight:700;color:#2d4a6b">${loc.name}</div>
-            </div>
-          `
-          : `
-            <div style="padding:12px 16px;min-width:160px;font-family:var(--font-sans,'Zen Kaku Gothic New',sans-serif)">
-              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:4px">${loc.themes.name}</div>
-              <div style="font-size:15px;font-weight:700;color:#2d4a6b;margin-bottom:8px">${loc.name}</div>
-              <button
-                onclick="document.dispatchEvent(new CustomEvent('open-checkin',{detail:{id:'${loc.id}'}}))"
-                style="width:100%;padding:8px;background:#7aa83c;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 10px -4px rgba(122,168,60,.7)"
-              >${isChecked ? dict.map.revisit : dict.map.checkin}</button>
-            </div>
-          `
+        const photoUrl = userCheckinPhotos?.[loc.id]?.replace(/"/g, '%22')
 
-        marker.bindPopup(popupHtml, { closeButton: false })
+        const checkBadge = `<div style="position:absolute;bottom:8px;right:8px;width:22px;height:22px;border-radius:50%;background:#7aa83c;border:2px solid rgba(255,255,255,.92);display:grid;place-items:center;box-sizing:border-box"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg></div>`
+
+        const photoSection = photoUrl
+          ? `<div style="position:relative"><img src="${photoUrl}" style="width:100%;height:126px;object-fit:cover;display:block" /><div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(20,35,55,.38));pointer-events:none"></div>${checkBadge}</div>`
+          : ''
+
+        const btnHtml = `<button onclick="document.dispatchEvent(new CustomEvent('open-checkin',{detail:{id:'${loc.id}'}}))" style="width:100%;padding:9px 12px;background:#7aa83c;color:#fff;border:none;border-radius:10px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 14px -6px rgba(122,168,60,.65);box-sizing:border-box"><span>${isChecked ? dict.map.revisit : dict.map.checkin}</span><span style="font-size:10px;background:rgba(255,255,255,.22);padding:2px 7px;border-radius:5px">+${loc.themes.xp_per_checkin} XP</span></button>`
+
+        const bodyHtml = photoUrl
+          ? `<div style="padding:12px 15px ${locked ? '13px' : '14px'}"><div style="font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${color};margin-bottom:3px">${loc.themes.name}</div><div style="font-size:14.5px;font-weight:700;color:#2d4a6b;line-height:1.25${locked ? '' : ';margin-bottom:10px'}">${loc.name}</div>${locked ? '' : btnHtml}</div>`
+          : `<div style="padding:14px 15px ${locked ? '14px' : '13px'}"><div style="display:flex;align-items:stretch;gap:10px${locked ? '' : ';margin-bottom:11px'}"><div style="width:3px;border-radius:2px;background:${color};flex-shrink:0"></div><div style="min-width:0"><div style="font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${color};margin-bottom:3px">${loc.themes.name}</div><div style="font-size:14.5px;font-weight:700;color:#2d4a6b;line-height:1.25">${loc.name}</div></div></div>${locked ? '' : btnHtml}</div>`
+
+        const popupHtml = `<div style="width:196px;background:#fbf8f1;font-family:var(--font-sans,'Zen Kaku Gothic New',sans-serif)">${photoSection}${bodyHtml}</div>`
+
+        marker.bindPopup(popupHtml, { closeButton: false, className: 'sm-popup' })
 
         markersRef.current.set(loc.id, { marker, themeId: loc.theme_id })
 

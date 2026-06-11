@@ -17,15 +17,17 @@ export default async function MapPage() {
   ])
 
   let userCheckinLocationIds: string[] = []
+  let userCheckinPhotos: Record<string, string> = {}
   let friendCheckins: { locationId: string; userId: string; username: string; color: string }[] = []
 
   if (user) {
     const { data: checkins } = await supabase
       .from('checkins')
-      .select('location_id')
+      .select('location_id, photo_url')
       .eq('user_id', user.id)
-      .eq('is_first', true) as { data: { location_id: string }[] | null; error: unknown }
+      .eq('is_first', true) as { data: { location_id: string; photo_url: string | null }[] | null; error: unknown }
     userCheckinLocationIds = checkins?.map(c => c.location_id) ?? []
+    checkins?.forEach(c => { if (c.photo_url) userCheckinPhotos[c.location_id] = c.photo_url })
 
     const { data: friendships } = await (supabase as any)
       .from('friendships')
@@ -78,6 +80,7 @@ export default async function MapPage() {
       locations={localizedLocations}
       themes={localizedThemes}
       userCheckinLocationIds={userCheckinLocationIds}
+      userCheckinPhotos={userCheckinPhotos}
       friendCheckins={friendCheckins}
       isLoggedIn={!!user}
     />
