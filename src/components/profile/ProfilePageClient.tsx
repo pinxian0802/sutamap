@@ -16,9 +16,10 @@ interface Props {
   themeProgress: any[]
   totalCheckins: number
   totalSpots: number
+  rank: number
 }
 
-export function ProfilePageClient({ profile, earnedTitles, themeProgress, totalCheckins, totalSpots }: Props) {
+export function ProfilePageClient({ profile, earnedTitles, themeProgress, totalCheckins, totalSpots, rank }: Props) {
   const dict = useDictionary()
   const [showEdit, setShowEdit] = useState(false)
   const [showLanguage, setShowLanguage] = useState(false)
@@ -42,6 +43,7 @@ export function ProfilePageClient({ profile, earnedTitles, themeProgress, totalC
         totalCheckins={totalCheckins}
         totalTitles={earnedTitles.length}
         totalSpots={totalSpots}
+        rank={rank}
       />
       <TitleSelector
         earnedTitles={earnedTitles}

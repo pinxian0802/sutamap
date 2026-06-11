@@ -20,6 +20,12 @@ export default async function ProfilePage() {
     supabase.from('themes').select('*') as any,
   ])
 
+  const { count: higherXpCount } = await supabase
+    .from('user_profiles')
+    .select('id', { count: 'exact', head: true })
+    .gt('total_xp', profile?.total_xp ?? 0) as any
+  const rank = (higherXpCount ?? 0) + 1
+
   const { data: firstCheckins } = await supabase
     .from('checkins')
     .select('location_id, locations(theme_id)')
@@ -69,6 +75,7 @@ export default async function ProfilePage() {
       themeProgress={themeProgress}
       totalCheckins={totalCheckins}
       totalSpots={totalSpots}
+      rank={rank}
     />
   )
 }

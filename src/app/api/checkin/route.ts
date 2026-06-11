@@ -132,8 +132,8 @@ export async function POST(request: NextRequest) {
         .maybeSingle() as { data: { id: string; name: string; name_en?: string; name_zh?: string } | null; error: unknown }
 
       if (title) {
-        await supabase.from('user_titles').upsert({ user_id: user.id, title_id: title.id } as any)
-        newTitle = { ...title, name: localizedName(title, locale) }
+        const { error: titleError } = await supabase.from('user_titles').upsert({ user_id: user.id, title_id: title.id } as any)
+        if (!titleError) newTitle = { ...title, name: localizedName(title, locale) }
       }
     }
   }

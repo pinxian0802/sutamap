@@ -13,9 +13,11 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const [
     { data: profile },
     { data: themes },
+    { data: userTitles },
   ] = await Promise.all([
     supabase.from('user_profiles').select('*, titles(name, name_en, name_zh)').eq('id', userId).single() as any,
     supabase.from('themes').select('*') as any,
+    supabase.from('user_titles').select('id').eq('user_id', userId) as any,
   ])
 
   if (!profile) notFound()
@@ -46,6 +48,16 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
     checked: checkedPerTheme[theme.theme_id] ?? 0,
   }))
 
+  const totalSpots = Object.values(totalPerTheme).reduce((a, b) => a + b, 0)
+  const totalCheckins = Object.values(checkedPerTheme).reduce((a, b) => a + b, 0)
+  const totalTitles = userTitles?.length ?? 0
+
+  const { count: higherXpCount } = await supabase
+    .from('user_profiles')
+    .select('id', { count: 'exact', head: true })
+    .gt('total_xp', profile.total_xp ?? 0) as any
+  const rank = (higherXpCount ?? 0) + 1
+
   return (
     <div className="max-w-md mx-auto p-4 space-y-4">
       <ProfileHeader
@@ -55,6 +67,10 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         totalXp={profile.total_xp}
         level={profile.level}
         activeTitle={profile.titles ? localizedName(profile.titles, locale) : null}
+        totalCheckins={totalCheckins}
+        totalTitles={totalTitles}
+        totalSpots={totalSpots}
+        rank={rank}
       />
       <ThemeProgressList themes={themeProgress} />
     </div>
