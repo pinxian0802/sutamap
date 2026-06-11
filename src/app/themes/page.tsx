@@ -8,14 +8,14 @@ export default async function ThemesPage() {
   const locale = await getLocale()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const [{ data: themes }, { data: locations }] = await Promise.all([
+  const [{ data: themes }, { data: locationCounts }] = await Promise.all([
     supabase.from('themes').select('*') as any,
-    supabase.from('locations').select('id, theme_id').eq('is_active', true) as any,
+    supabase.rpc('get_location_counts_by_theme') as any,
   ])
 
   const totalPerTheme: Record<string, number> = {}
-  ;(locations ?? []).forEach((l: any) => {
-    totalPerTheme[l.theme_id] = (totalPerTheme[l.theme_id] ?? 0) + 1
+  ;(locationCounts ?? []).forEach((row: any) => {
+    totalPerTheme[row.theme_id] = Number(row.cnt)
   })
 
   let checkedPerTheme: Record<string, number> = {}

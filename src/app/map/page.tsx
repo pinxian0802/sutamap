@@ -11,7 +11,7 @@ export default async function MapPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   const [{ data: locations }, { data: themes }] = await Promise.all([
-    supabase.from('locations').select('*, themes(name, color, icon, checkin_radius_meters, xp_per_checkin)').eq('is_active', true),
+    supabase.rpc('get_all_map_locations') as any,
     supabase.from('themes').select('*'),
   ])
 

@@ -12,7 +12,7 @@ export default async function ThemeDetailPage({ params }: { params: Promise<{ id
 
   const [{ data: theme }, { data: locations }] = await Promise.all([
     supabase.from('themes').select('*').eq('theme_id', id).single() as any,
-    supabase.from('locations').select('*').eq('theme_id', id).eq('is_active', true) as any,
+    supabase.rpc('get_locations_for_theme', { p_theme_id: id }) as any,
   ])
 
   if (!theme) notFound()
