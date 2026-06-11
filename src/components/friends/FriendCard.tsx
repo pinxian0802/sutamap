@@ -14,12 +14,14 @@ interface Props {
   status: 'pending' | 'accepted' | 'rejected'
   isRequester: boolean
   color?: string
+  totalCheckins: number
+  rank: number | null
   onAccept: (id: string) => void
   onReject: (id: string) => void
   onRemove: (id: string) => void
 }
 
-export function FriendCard({ friendshipId, userId, username, level, avatarUrl, status, isRequester, color = '#8fa6bd', onAccept, onReject, onRemove }: Props) {
+export function FriendCard({ friendshipId, userId, username, level, avatarUrl, status, isRequester, color = '#8fa6bd', totalCheckins, rank, onAccept, onReject, onRemove }: Props) {
   const dict = useDictionary()
 
   if (status === 'pending') {
@@ -63,10 +65,10 @@ export function FriendCard({ friendshipId, userId, username, level, avatarUrl, s
           </div>
           <div className="text-[11.5px] text-sub mt-1 flex gap-3">
             <span className="sm-mono inline-flex items-center gap-0.5">
-              <MapPin size={12} strokeWidth={2} className="text-sub" />—
+              <MapPin size={12} strokeWidth={2} className="text-sub" />{totalCheckins}
             </span>
             <span className="sm-mono inline-flex items-center gap-0.5">
-              <Medal size={12} strokeWidth={2} className="text-sub" />—
+              <Medal size={12} strokeWidth={2} className="text-sub" />{rank != null ? `#${rank}` : '—'}
             </span>
           </div>
         </div>

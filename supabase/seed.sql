@@ -283,3 +283,193 @@ values
 
 insert into public.titles (name, name_en, name_zh, description, theme_id)
 values ('ワンピース像制覇', 'One Piece Statues', '海賊王雕像制覇', '熊本のONE PIECEキャラクター銅像をすべて巡った', 'one-piece-statues');
+
+-- ============================================================
+-- RPC Functions
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION get_profile_stats(p_user_id uuid)
+RETURNS JSON
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+AS $$
+DECLARE
+  result JSON;
+BEGIN
+  WITH location_totals AS (
+    SELECT theme_id, COUNT(*)::integer AS total
+    FROM locations
+    WHERE is_active = true
+    GROUP BY theme_id
+  ),
+  user_checkins AS (
+    SELECT l.theme_id, COUNT(*)::integer AS checked
+    FROM checkins c
+    JOIN locations l ON l.id = c.location_id
+    WHERE c.user_id = p_user_id AND c.is_first = true
+    GROUP BY l.theme_id
+  )
+  SELECT json_build_object(
+    'profile', (
+      SELECT json_build_object(
+        'id', p.id,
+        'username', p.username,
+        'user_code', p.user_code,
+        'avatar_url', p.avatar_url,
+        'total_xp', p.total_xp,
+        'level', p.level,
+        'active_title_id', p.active_title_id,
+        'titles', CASE WHEN t.id IS NOT NULL
+          THEN json_build_object('name', t.name, 'name_en', t.name_en, 'name_zh', t.name_zh)
+          ELSE NULL END,
+        'rank', (SELECT COUNT(*) + 1 FROM user_profiles WHERE total_xp > COALESCE(p.total_xp, -1))
+      )
+      FROM user_profiles p
+      LEFT JOIN titles t ON t.id = p.active_title_id
+      WHERE p.id = p_user_id
+    ),
+    'earned_titles', (
+      SELECT COALESCE(json_agg(json_build_object(
+        'id', t.id,
+        'name', t.name,
+        'name_en', t.name_en,
+        'name_zh', t.name_zh,
+        'description', t.description
+      )), '[]'::json)
+      FROM user_titles ut
+      JOIN titles t ON t.id = ut.title_id
+      WHERE ut.user_id = p_user_id
+    ),
+    'theme_progress', (
+      SELECT COALESCE(json_agg(json_build_object(
+        'uuid', th.uuid,
+        'theme_id', th.theme_id,
+        'name', th.name,
+        'name_en', th.name_en,
+        'name_zh', th.name_zh,
+        'color', th.color,
+        'icon', th.icon,
+        'total', COALESCE(lt.total, 0),
+        'checked', COALESCE(uc.checked, 0)
+      )), '[]'::json)
+      FROM themes th
+      LEFT JOIN location_totals lt ON lt.theme_id = th.theme_id
+      LEFT JOIN user_checkins uc ON uc.theme_id = th.theme_id
+    )
+  ) INTO result;
+
+  RETURN result;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_leaderboard()
+RETURNS TABLE (
+  id             uuid,
+  username       text,
+  level          integer,
+  avatar_url     text,
+  total_xp       integer,
+  total_checkins bigint,
+  is_friend      boolean
+)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+AS $$
+  WITH checkin_counts AS (
+    SELECT user_id, COUNT(*) AS total_checkins
+    FROM checkins
+    WHERE is_first = true
+    GROUP BY user_id
+  ),
+  friend_ids AS (
+    SELECT
+      CASE WHEN requester_id = auth.uid() THEN addressee_id ELSE requester_id END AS friend_id
+    FROM friendships
+    WHERE auth.uid() IS NOT NULL
+      AND (requester_id = auth.uid() OR addressee_id = auth.uid())
+      AND status = 'accepted'
+  ),
+  top_by_xp AS (
+    SELECT p.id FROM user_profiles p ORDER BY p.total_xp DESC LIMIT 50
+  ),
+  top_by_checkins AS (
+    SELECT cc.user_id AS id FROM checkin_counts cc ORDER BY cc.total_checkins DESC LIMIT 50
+  ),
+  relevant_ids AS (
+    SELECT id FROM top_by_xp
+    UNION
+    SELECT id FROM top_by_checkins
+    UNION
+    SELECT friend_id AS id FROM friend_ids
+    UNION
+    SELECT auth.uid() WHERE auth.uid() IS NOT NULL
+  )
+  SELECT
+    p.id,
+    p.username,
+    p.level,
+    p.avatar_url,
+    p.total_xp,
+    COALESCE(cc.total_checkins, 0)             AS total_checkins,
+    (fi.friend_id IS NOT NULL OR p.id = auth.uid()) AS is_friend
+  FROM relevant_ids ri
+  JOIN user_profiles p ON p.id = ri.id
+  LEFT JOIN checkin_counts cc ON cc.user_id = p.id
+  LEFT JOIN friend_ids fi ON fi.friend_id = p.id
+$$;
+CREATE OR REPLACE FUNCTION get_friends_with_stats()
+RETURNS TABLE (
+  friendship_id  uuid,
+  user_id        uuid,
+  username       text,
+  level          integer,
+  avatar_url     text,
+  status         text,
+  is_requester   boolean,
+  total_checkins bigint,
+  rank           bigint
+)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+AS $$
+  WITH friend_list AS (
+    SELECT
+      f.id AS friendship_id,
+      f.status,
+      CASE WHEN f.requester_id = auth.uid() THEN f.addressee_id ELSE f.requester_id END AS friend_id,
+      (f.requester_id = auth.uid()) AS is_requester
+    FROM friendships f
+    WHERE (f.requester_id = auth.uid() OR f.addressee_id = auth.uid())
+      AND f.status != 'rejected'
+  ),
+  checkin_counts AS (
+    SELECT c.user_id, COUNT(*) AS total_checkins
+    FROM checkins c
+    WHERE c.is_first = true
+      AND c.user_id IN (SELECT friend_id FROM friend_list)
+    GROUP BY c.user_id
+  ),
+  user_ranks AS (
+    SELECT
+      p.id,
+      RANK() OVER (ORDER BY p.total_xp DESC) AS rank
+    FROM user_profiles p
+  )
+  SELECT
+    fl.friendship_id,
+    fl.friend_id                    AS user_id,
+    p.username,
+    p.level,
+    p.avatar_url,
+    fl.status,
+    fl.is_requester,
+    COALESCE(cc.total_checkins, 0)  AS total_checkins,
+    ur.rank
+  FROM friend_list fl
+  JOIN user_profiles p ON p.id = fl.friend_id
+  LEFT JOIN checkin_counts cc ON cc.user_id = fl.friend_id
+  JOIN user_ranks ur ON ur.id = fl.friend_id
+$$;

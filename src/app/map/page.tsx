@@ -8,7 +8,6 @@ const FRIEND_COLORS = ['#f97316', '#a855f7', '#ec4899', '#14b8a6', '#f59e0b', '#
 export default async function MapPage() {
   const supabase = await createClient()
   const locale = await getLocale()
-
   const { data: { user } } = await supabase.auth.getUser()
 
   const [{ data: locations }, { data: themes }] = await Promise.all([
@@ -21,38 +20,26 @@ export default async function MapPage() {
   let friendCheckins: { locationId: string; userId: string; username: string; color: string }[] = []
 
   if (user) {
-    const { data: checkins } = await supabase
-      .from('checkins')
-      .select('location_id, photo_url')
-      .eq('user_id', user.id)
-      .eq('is_first', true) as { data: { location_id: string; photo_url: string | null }[] | null; error: unknown }
-    userCheckinLocationIds = checkins?.map(c => c.location_id) ?? []
-    checkins?.forEach(c => { if (c.photo_url) userCheckinPhotos[c.location_id] = c.photo_url })
+    const [{ data: checkins }, { data: friendships }] = await Promise.all([
+      supabase.from('checkins').select('location_id, photo_url').eq('user_id', user.id).eq('is_first', true) as any,
+      supabase.from('friendships').select('requester_id, addressee_id').or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`).eq('status', 'accepted') as any,
+    ])
 
-    const { data: friendships } = await (supabase as any)
-      .from('friendships')
-      .select('requester_id, addressee_id')
-      .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
-      .eq('status', 'accepted')
+    userCheckinLocationIds = (checkins ?? []).map((c: any) => c.location_id)
+    ;(checkins ?? []).forEach((c: any) => { if (c.photo_url) userCheckinPhotos[c.location_id] = c.photo_url })
 
-    const friendIds = ((friendships ?? []) as any[]).map((f: any) =>
+    const friendIds: string[] = (friendships ?? []).map((f: any) =>
       f.requester_id === user.id ? f.addressee_id : f.requester_id
     )
 
     if (friendIds.length > 0) {
-      const { data: friendProfiles } = await supabase
-        .from('user_profiles')
-        .select('id, username')
-        .in('id', friendIds) as { data: { id: string; username: string }[] | null; error: unknown }
-
-      const { data: fCheckins } = await (supabase as any)
-        .from('checkins')
-        .select('location_id, user_id')
-        .in('user_id', friendIds)
-        .eq('is_first', true)
+      const [{ data: friendProfiles }, { data: fCheckins }] = await Promise.all([
+        supabase.from('user_profiles').select('id, username').in('id', friendIds) as any,
+        supabase.from('checkins').select('location_id, user_id').in('user_id', friendIds).eq('is_first', true) as any,
+      ])
 
       friendCheckins = ((fCheckins ?? []) as any[]).map((c: any) => {
-        const profile = friendProfiles?.find(p => p.id === c.user_id)
+        const profile = (friendProfiles ?? []).find((p: any) => p.id === c.user_id)
         const colorIdx = friendIds.indexOf(c.user_id) % FRIEND_COLORS.length
         return {
           locationId: c.location_id,

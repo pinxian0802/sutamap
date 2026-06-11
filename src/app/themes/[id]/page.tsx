@@ -10,11 +10,12 @@ export default async function ThemeDetailPage({ params }: { params: Promise<{ id
   const locale = await getLocale()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { data: theme } = await supabase.from('themes').select('*').eq('theme_id', id).single() as any
+  const [{ data: theme }, { data: locations }] = await Promise.all([
+    supabase.from('themes').select('*').eq('theme_id', id).single() as any,
+    supabase.from('locations').select('*').eq('theme_id', id).eq('is_active', true) as any,
+  ])
 
   if (!theme) notFound()
-
-  const { data: locations } = await supabase.from('locations').select('*').eq('theme_id', theme.theme_id).eq('is_active', true) as any
 
   const locationIds: string[] = (locations ?? []).map((l: any) => l.id)
 
@@ -23,37 +24,23 @@ export default async function ThemeDetailPage({ params }: { params: Promise<{ id
   let friends: DetailFriend[] = []
 
   if (user && locationIds.length > 0) {
-    const { data: myCheckins } = await supabase
-      .from('checkins')
-      .select('location_id, photo_url')
-      .eq('user_id', user.id)
-      .eq('is_first', true)
-      .in('location_id', locationIds) as any
+    const [{ data: myCheckins }, { data: friendships }] = await Promise.all([
+      supabase.from('checkins').select('location_id, photo_url').eq('user_id', user.id).eq('is_first', true).in('location_id', locationIds) as any,
+      supabase.from('friendships').select('requester_id, addressee_id').or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`).eq('status', 'accepted') as any,
+    ])
+
     checkedSet = new Set<string>((myCheckins ?? []).map((c: any) => c.location_id))
     ;(myCheckins ?? []).forEach((c: any) => { if (c.photo_url) checkinPhotos[c.location_id] = c.photo_url })
-
-    const { data: friendships } = await supabase
-      .from('friendships')
-      .select('requester_id, addressee_id')
-      .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
-      .eq('status', 'accepted') as any
 
     const friendIds: string[] = (friendships ?? []).map((f: any) =>
       f.requester_id === user.id ? f.addressee_id : f.requester_id
     )
 
     if (friendIds.length > 0) {
-      const { data: friendProfiles } = await supabase
-        .from('user_profiles')
-        .select('id, username')
-        .in('id', friendIds) as any
-
-      const { data: fCheckins } = await supabase
-        .from('checkins')
-        .select('location_id, user_id')
-        .eq('is_first', true)
-        .in('user_id', friendIds)
-        .in('location_id', locationIds) as any
+      const [{ data: friendProfiles }, { data: fCheckins }] = await Promise.all([
+        supabase.from('user_profiles').select('id, username').in('id', friendIds) as any,
+        supabase.from('checkins').select('location_id, user_id').eq('is_first', true).in('user_id', friendIds).in('location_id', locationIds) as any,
+      ])
 
       const countByFriend: Record<string, number> = {}
       ;(fCheckins ?? []).forEach((c: any) => {

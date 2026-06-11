@@ -14,6 +14,8 @@ interface FriendItem {
   avatarUrl?: string | null
   status: 'pending' | 'accepted' | 'rejected'
   isRequester: boolean
+  totalCheckins: number
+  rank: number | null
 }
 
 interface Props {

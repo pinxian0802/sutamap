@@ -10,72 +10,41 @@ export default async function ProfilePage() {
   if (!user) redirect('/auth/login')
   const locale = await getLocale()
 
-  const [
-    { data: profile },
-    { data: userTitles },
-    { data: themes },
-  ] = await Promise.all([
-    supabase.from('user_profiles').select('*, titles(name, name_en, name_zh)').eq('id', user.id).single() as any,
-    supabase.from('user_titles').select('titles(*)').eq('user_id', user.id) as any,
-    supabase.from('themes').select('*') as any,
-  ])
+  const { data: stats } = await supabase.rpc('get_profile_stats', { p_user_id: user.id }) as any
+  if (!stats?.profile) redirect('/auth/login')
 
-  const { count: higherXpCount } = await supabase
-    .from('user_profiles')
-    .select('id', { count: 'exact', head: true })
-    .gt('total_xp', profile?.total_xp ?? 0) as any
-  const rank = (higherXpCount ?? 0) + 1
+  const profile = {
+    ...stats.profile,
+    titles: stats.profile.titles
+      ? { ...stats.profile.titles, name: localizedName(stats.profile.titles, locale) }
+      : null,
+  }
 
-  const { data: firstCheckins } = await supabase
-    .from('checkins')
-    .select('location_id, locations(theme_id)')
-    .eq('user_id', user.id)
-    .eq('is_first', true) as any
-
-  const { data: locationCounts } = await supabase
-    .from('locations')
-    .select('theme_id')
-    .eq('is_active', true) as any
-
-  const totalPerTheme: Record<string, number> = {}
-  locationCounts?.forEach((l: any) => {
-    totalPerTheme[l.theme_id] = (totalPerTheme[l.theme_id] ?? 0) + 1
-  })
-
-  const checkedPerTheme: Record<string, number> = {}
-  firstCheckins?.forEach((c: any) => {
-    const themeId = c.locations?.theme_id
-    if (themeId) checkedPerTheme[themeId] = (checkedPerTheme[themeId] ?? 0) + 1
-  })
-
-  const themeProgress = (themes ?? []).map((theme: any) => ({
-    id: theme.uuid,
-    name: localizedName(theme, locale),
-    color: theme.color,
-    icon: theme.icon,
-    total: totalPerTheme[theme.theme_id] ?? 0,
-    checked: checkedPerTheme[theme.theme_id] ?? 0,
+  const earnedTitles = (stats.earned_titles ?? []).map((t: any) => ({
+    ...t,
+    name: localizedName(t, locale),
   }))
 
-  const earnedTitles = (userTitles?.map((ut: any) => ut.titles).filter(Boolean) ?? [])
-    .map((t: any) => ({ ...t, name: localizedName(t, locale) }))
+  const themeProgress = (stats.theme_progress ?? []).map((t: any) => ({
+    id: t.uuid,
+    name: localizedName(t, locale),
+    color: t.color,
+    icon: t.icon,
+    total: t.total,
+    checked: t.checked,
+  }))
 
-  const totalSpots = Object.values(totalPerTheme).reduce((a, b) => a + b, 0)
-  const totalCheckins = Object.values(checkedPerTheme).reduce((a, b) => a + b, 0)
-
-  const localizedProfile = profile ? {
-    ...profile,
-    titles: profile.titles ? { ...profile.titles, name: localizedName(profile.titles, locale) } : null,
-  } : profile
+  const totalCheckins = themeProgress.reduce((a: number, t: any) => a + t.checked, 0)
+  const totalSpots = themeProgress.reduce((a: number, t: any) => a + t.total, 0)
 
   return (
     <ProfilePageClient
-      profile={localizedProfile}
+      profile={profile}
       earnedTitles={earnedTitles}
       themeProgress={themeProgress}
       totalCheckins={totalCheckins}
       totalSpots={totalSpots}
-      rank={rank}
+      rank={stats.profile.rank}
     />
   )
 }
