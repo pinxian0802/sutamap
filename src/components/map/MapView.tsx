@@ -155,7 +155,7 @@ export function MapView({ locations, themes, userCheckinLocationIds, userCheckin
       ro.observe(mapRef.current!)
       resizeObserverRef.current = ro
 
-      const clusterGroup = new MarkerClusterGroup({ showCoverageOnHover: false })
+      const clusterGroup = new MarkerClusterGroup({ showCoverageOnHover: false, chunkedLoading: true, maxClusterRadius: 20 })
       clusterRef.current = clusterGroup
 
       const plainGroup = L.layerGroup()
@@ -254,18 +254,14 @@ export function MapView({ locations, themes, userCheckinLocationIds, userCheckin
     const map = mapInstanceRef.current
     if (!cluster || !plain) return
 
-    // All themes → cluster. Single theme → no clustering.
-    const useCluster = selectedThemeId === null
-
     cluster.clearLayers()
     plain.clearLayers()
+
     const bounds: [number, number][] = []
     markersRef.current.forEach(({ marker, themeId }) => {
       if (selectedThemeId === null || themeId === selectedThemeId) {
-        if (useCluster) {
-          cluster.addLayer(marker)
-        } else {
-          plain.addLayer(marker)
+        cluster.addLayer(marker)
+        if (selectedThemeId !== null) {
           const ll = marker.getLatLng()
           bounds.push([ll.lat, ll.lng])
         }
